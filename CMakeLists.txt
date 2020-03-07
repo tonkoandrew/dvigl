@@ -50,7 +50,7 @@ elseif(UNIX AND NOT APPLE)
   add_definitions(${OPENGL_DEFINITIONS})
   find_package(X11 REQUIRED)
   # note that the order is important for setting the libs
-  set(LIBS ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread ${ASSIMP_LIBRARY})
+  set(LIBS ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread)
   set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
 elseif(APPLE)
   INCLUDE_DIRECTORIES(/System/Library/Frameworks)
