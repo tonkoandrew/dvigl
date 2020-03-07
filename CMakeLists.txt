@@ -15,11 +15,18 @@ endif(WIN32)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s")
 
 # find the required packages
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 find_package(SDL2 REQUIRED)
 message(STATUS "SDL 2 included at ${SDL2_INCLUDE_DIRS}")
+
+find_package(Freetype REQUIRED)
+message(STATUS "Freetype at ${FREETYPE_LIBRARIES}")
+
+find_package(PNG REQUIRED)
+message(STATUS "PNG at ${PNG_LIBRARIES}")
 
 find_package(SDL2_image REQUIRED)
 message(STATUS "SDL2_image included at ${SDL2_IMAGE_INCLUDE_DIRS}")
@@ -32,6 +39,12 @@ message(STATUS "SDL2_ttf included at ${SDL2_TTF_INCLUDE_DIRS}")
 
 find_package(SDL2_net REQUIRED)
 message(STATUS "SDL2_net included at ${SDL2_NET_INCLUDE_DIRS}")
+
+if(WIN32)
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
+else()
+    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
+endif(WIN32)
 
 find_package(GLM REQUIRED)
 message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
@@ -50,7 +63,7 @@ elseif(UNIX AND NOT APPLE)
   add_definitions(${OPENGL_DEFINITIONS})
   find_package(X11 REQUIRED)
   # note that the order is important for setting the libs
-  set(LIBS ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread)
+  set(LIBS ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread)
   set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
 elseif(APPLE)
   INCLUDE_DIRECTORIES(/System/Library/Frameworks)
