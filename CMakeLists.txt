@@ -46,14 +46,17 @@ message(STATUS "Found Bullet in ${BULLET_INCLUDE_DIRS}")
 find_package(GLM REQUIRED)
 message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 
+find_package(ASSIMP REQUIRED)
+message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
+
+find_package(IrrXML REQUIRED )
+message(STATUS "Found IrrXML in ${IRRXML_INCLUDE_DIR}")
+
 if(WIN32)
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
 else()
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 endif(WIN32)
-
-find_package(ASSIMP REQUIRED)
-message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
 
 if(WIN32)
   set(LIBS opengl32 assimp)
@@ -63,8 +66,9 @@ elseif(UNIX AND NOT APPLE)
   add_definitions(${OPENGL_DEFINITIONS})
   find_package(X11 REQUIRED)
   # note that the order is important for setting the libs
-  set(LIBS ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread)
+  set(LIBS ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread)
   set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
+  # set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl -lIrrXML")
 elseif(APPLE)
   INCLUDE_DIRECTORIES(/System/Library/Frameworks)
   FIND_LIBRARY(COCOA_LIBRARY Cocoa)

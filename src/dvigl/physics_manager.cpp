@@ -41,7 +41,7 @@ bool PhysicsMgr::init()
 
 rbInfo.m_restitution     = 1.0f;
 rbInfo.m_friction        = 0.01f;
-rbInfo.m_linearDamping = 0.001f;
+rbInfo.m_linearDamping = 0.1f;
 rbInfo.m_rollingFriction = 0.01f;
 // rbInfo.m_mass            = 0.0f;
 
@@ -112,7 +112,8 @@ body->setRestitution(1.0);
 void PhysicsMgr::update(float time_delta)
 {
     // LOG("%f\n", time_delta * 0.5f);
-    dynamicsWorld->stepSimulation(time_delta * 0.5f, 1);
+    float mm = 0.005f;
+    dynamicsWorld->stepSimulation((time_delta*mm), 10, 1./100);
 
     btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[1];
 
