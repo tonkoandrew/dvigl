@@ -8,7 +8,7 @@ Scene::Scene()
     current_camera->move_back(100.0f);
     current_camera->move_up(20.0f);
 
-    current_camera->yaw(-0.54f);
+    // current_camera->yaw(-0.54f);
 }
 
 CameraNode * Scene::get_current_camera(void) { return current_camera; }

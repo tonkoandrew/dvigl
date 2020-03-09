@@ -10,6 +10,7 @@ class ModelMgr : public Singleton<ModelMgr>
     ModelNode * get_model(std::string name);
     bool load_model(std::string name, std::string file_name);
     bool generate_model(std::string name, SDL_Surface * surf);
+    bool generate_plane_model(std::string name, int w, int h);
     void release();
 
   private:

@@ -37,6 +37,19 @@ bool ModelMgr::generate_model(std::string name, SDL_Surface * surf)
     return true;
 }
 
+bool ModelMgr::generate_plane_model(std::string name, int w, int h)
+{
+    auto it = models.find(name);
+    while (it != models.end())
+    {
+        it->second->release();
+        models.erase(it);
+        it = models.find(name);
+    }
+    models[name] = new ModelNode(w * 0.1f, h * 0.1f);
+    return true;
+}
+
 ModelNode * ModelMgr::get_model(std::string name)
 {
     auto it = models.find(name);

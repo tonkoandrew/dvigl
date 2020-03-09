@@ -57,6 +57,11 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
+    if (!ModelMgr::ptr()->generate_plane_model("plane", 100, 100))
+    {
+        return false;
+    }
+
     ModelNode * m = ModelMgr::ptr()->get_model("yoda");
     if (!m)
     {
@@ -70,6 +75,14 @@ bool SceneMgr::load_scene(std::string file_name)
     m->roll(-3.14f);
 
 
+    m = ModelMgr::ptr()->get_model("plane");
+    // m->move_down(20.0f);
+    // m->move_right(120.0f);
+    m->move_back(20.0f);
+    m->move_up(20.0f);
+    m->roll(-3.14f);
+    // m->yaw(3.14f/2.0f);
+    
     return true;
 }
 
@@ -78,6 +91,8 @@ void SceneMgr::update(float time_delta)
     ModelNode * m = ModelMgr::ptr()->get_model("yoda");
     m->roll(0.0001 * time_delta);
 
+    // m = ModelMgr::ptr()->get_model("plane");
+    // m->move_forward(0.01* time_delta);
 }
 
 Scene * SceneMgr::get_current_scene()

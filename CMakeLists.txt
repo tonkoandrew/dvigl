@@ -40,20 +40,20 @@ message(STATUS "SDL2_ttf included at ${SDL2_TTF_INCLUDE_DIRS}")
 find_package(SDL2_net REQUIRED)
 message(STATUS "SDL2_net included at ${SDL2_NET_INCLUDE_DIRS}")
 
+find_package(Bullet REQUIRED)
+message(STATUS "Found Bullet in ${BULLET_INCLUDE_DIRS}")
+
+find_package(GLM REQUIRED)
+message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
+
 if(WIN32)
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
 else()
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 endif(WIN32)
 
-find_package(GLM REQUIRED)
-message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
-
 find_package(ASSIMP REQUIRED)
 message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
-
-find_package(Bullet REQUIRED)
-message(STATUS "Found Bullet in ${BULLET_INCLUDE_DIRS}")
 
 if(WIN32)
   set(LIBS opengl32 assimp)

@@ -9,21 +9,14 @@ bool PhysicsMgr::init()
 
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     collisionConfiguration = new btDefaultCollisionConfiguration();
-
     ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
     dispatcher = new btCollisionDispatcher(collisionConfiguration);
-
     ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
     overlappingPairCache = new btDbvtBroadphase();
-
     ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
     solver = new btSequentialImpulseConstraintSolver;
-
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-
-    dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
-
-
+    dynamicsWorld->setGravity(btVector3(0.0f, -9.8f, 0.0f));
 
     btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
     collisionShapes.push_back(groundShape);
@@ -47,9 +40,10 @@ bool PhysicsMgr::init()
 
 
 rbInfo.m_restitution     = 1.0f;
-rbInfo.m_friction        = 30.0f;
-rbInfo.m_rollingFriction = 3.0f;
-rbInfo.m_mass            = 0.0f;
+rbInfo.m_friction        = 0.01f;
+rbInfo.m_linearDamping = 0.001f;
+rbInfo.m_rollingFriction = 0.01f;
+// rbInfo.m_mass            = 0.0f;
 
     btRigidBody* body = new btRigidBody(rbInfo);
 
@@ -79,7 +73,7 @@ body->setRestitution(1.0);
         btTransform startTransform;
         startTransform.setIdentity();
 
-        btScalar mass(1000.f);
+        btScalar mass(1.f);
 
         //rigidbody is dynamic if and only if mass is non zero, otherwise static
         bool isDynamic = (mass != 0.f);
@@ -94,9 +88,15 @@ body->setRestitution(1.0);
         btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 
-        rbInfo.m_restitution   = 1.0f;
-        rbInfo.m_friction        = 1.0f;
-        rbInfo.m_rollingFriction = 1.0f;
+        rbInfo.m_restitution     = 1.0f;
+        rbInfo.m_friction        = 0.01f;
+        rbInfo.m_linearDamping = 0.1f;
+        rbInfo.m_rollingFriction = 0.01f;
+
+
+        // rbInfo.m_restitution   = 1.0f;
+        // rbInfo.m_friction        = 1.0f;
+        // rbInfo.m_rollingFriction = 1.0f;
 
         btRigidBody* body = new btRigidBody(rbInfo);
         // body->setDamping(0, 0);
@@ -111,7 +111,8 @@ body->setRestitution(1.0);
 
 void PhysicsMgr::update(float time_delta)
 {
-    dynamicsWorld->stepSimulation(time_delta * 0.01f, 1);
+    // LOG("%f\n", time_delta * 0.5f);
+    dynamicsWorld->stepSimulation(time_delta * 0.5f, 1);
 
     btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[1];
 
