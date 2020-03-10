@@ -6,12 +6,10 @@ precision mediump float;
 
 uniform sampler2D texture;
 
-varying vec3 v_normal;
 varying vec2 v_texcoord;
-
+varying vec3 v_normal;
 varying vec4 pos;
-uniform int is_pressed;
-uniform int is_hover;
+
 
 void main()
 {

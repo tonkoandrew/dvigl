@@ -91,6 +91,8 @@ bool SceneMgr::load_scene(std::string file_name)
 
 void SceneMgr::update(float time_delta)
 {
+    // current_scene->get_current_camera()->move_forward(time_delta * 0.01);
+
     ModelNode * m = ModelMgr::ptr()->get_model("yoda");
     m->roll(0.0003 * time_delta);
 

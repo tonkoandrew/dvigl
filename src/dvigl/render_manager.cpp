@@ -136,40 +136,25 @@ void RenderMgr::render_frame(float time_delta)
 
     glm::mat4 view_m = camera->get_view_matrix();
 
-    // yodacamera->move_back(300.0f);
-    // yodacamera->move_up(40.0f);
-    // yodacamera->yaw(-0.64f);
 
     glm::mat4 view_proj_m = proj_m * view_m;
 
     ModelNode * m = ModelMgr::ptr()->get_model("yoda");
-    // m->roll(0.0005f* time_delta);
+
     model_m = m->get_model_matrix();
     mvp = view_proj_m * model_m;
     s->uniformMatrix4("mvp", mvp);
-    s->uniform1i("is_pressed", 1);
-    s->uniform1i("is_hover", 1);
-    // TextureMgr::ptr()->get_texture("yoda")->bind();
 
     m->draw();
-
-
-
-    // m = ModelMgr::ptr()->get_model("plane");
-    // // m->roll(0.0005f* time_delta);
-    // model_m = m->get_model_matrix();
-    // mvp = view_proj_m * model_m;
-    // s->uniformMatrix4("mvp", mvp);
-    // s->uniform1i("is_pressed", 1);
-    // s->uniform1i("is_hover", 1);
-    // TextureMgr::ptr()->get_texture("yoda")->bind();
-
-    // m->draw();
 
     SDL_GL_SwapWindow(main_window);
 }
 
-SDL_Window * RenderMgr::get_main_window() { return main_window; }
+SDL_Window * RenderMgr::get_main_window()
+{
+    return main_window;
+}
+
 void RenderMgr::release()
 {
     if (gl_context)

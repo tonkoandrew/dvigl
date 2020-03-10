@@ -11,9 +11,9 @@ attribute vec2 attr_texcoord;
 
 varying vec2 v_texcoord;
 varying vec3 v_normal;
+varying vec4 pos;
 
 uniform mat4 mvp;
-varying vec4 pos;
 
 void main()
 {
