@@ -182,4 +182,6 @@ void Mesh::draw()
     }
 }
 
-void Mesh::release() { glDeleteVertexArrays(1, &vao); }
+void Mesh::release() {
+    glDeleteVertexArrays(1, &vao);
+}

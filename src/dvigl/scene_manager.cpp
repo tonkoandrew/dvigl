@@ -40,10 +40,11 @@ bool SceneMgr::load_scene(std::string file_name)
 
 
     // if (!TextureMgr::ptr()->load_texture("yoda", "res/textures/yoda.png"))
-    if (!TextureMgr::ptr()->load_texture("yoda", "../res/textures/guard1_body.tga"))
-    {
-        return false;
-    }
+    // if (!TextureMgr::ptr()->load_texture("yoda", "../res/textures/guard1_body.tga"))
+    // if (!TextureMgr::ptr()->load_texture("yoda", "../res/textures/guard1_face.tga"))
+    // {
+    //     return false;
+    // }
 
 
     if (!FontMgr::ptr()->load_font("FreeSans_150", "../res/fonts/Magician.ttf", 150))
@@ -53,15 +54,16 @@ bool SceneMgr::load_scene(std::string file_name)
 
     // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/boblampclean.md5anim"))
     if (!ModelMgr::ptr()->load_model("yoda", "../res/models/boblampclean.md5mesh"))
-    // if (!ModelMgr::ptr()->load_model("yoda", "res/models/yoda.dae"))
+    // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/yoda.3ds"))
+    // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/yoda.dae"))
     {
         return false;
     }
 
-    if (!ModelMgr::ptr()->generate_plane_model("plane", 100, 100))
-    {
-        return false;
-    }
+    // if (!ModelMgr::ptr()->generate_plane_model("plane", 100, 100))
+    // {
+    //     return false;
+    // }
 
     ModelNode * m = ModelMgr::ptr()->get_model("yoda");
     if (!m)
@@ -76,13 +78,13 @@ bool SceneMgr::load_scene(std::string file_name)
     m->roll(-3.14f);
 
 
-    m = ModelMgr::ptr()->get_model("plane");
-    // m->move_down(20.0f);
-    // m->move_right(120.0f);
-    m->move_back(20.0f);
-    m->move_up(20.0f);
-    m->roll(-3.14f);
-    // m->yaw(3.14f/2.0f);
+    // m = ModelMgr::ptr()->get_model("plane");
+    // // m->move_down(20.0f);
+    // // m->move_right(120.0f);
+    // m->move_back(20.0f);
+    // m->move_up(20.0f);
+    // m->roll(-3.14f);
+    // // m->yaw(3.14f/2.0f);
     
     return true;
 }
@@ -90,7 +92,7 @@ bool SceneMgr::load_scene(std::string file_name)
 void SceneMgr::update(float time_delta)
 {
     ModelNode * m = ModelMgr::ptr()->get_model("yoda");
-    m->roll(0.0001 * time_delta);
+    m->roll(0.0003 * time_delta);
 
     // m = ModelMgr::ptr()->get_model("plane");
     // m->move_forward(0.01* time_delta);

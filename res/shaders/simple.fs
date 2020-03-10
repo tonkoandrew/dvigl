@@ -12,7 +12,6 @@ varying vec2 v_texcoord;
 varying vec4 pos;
 uniform int is_pressed;
 uniform int is_hover;
-uniform float ui_alpha;
 
 void main()
 {

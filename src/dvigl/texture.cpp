@@ -17,5 +17,12 @@ Texture::Texture(SDL_Surface * surf)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surf->pixels);
 }
 
-void Texture::bind() { glBindTexture(GL_TEXTURE_2D, texture_ID); }
-void Texture::release() { glDeleteTextures(1, &texture_ID); }
+void Texture::bind()
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_ID);
+}
+
+void Texture::release() {
+    glDeleteTextures(1, &texture_ID);
+}

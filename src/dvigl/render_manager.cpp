@@ -149,25 +149,22 @@ void RenderMgr::render_frame(float time_delta)
     s->uniformMatrix4("mvp", mvp);
     s->uniform1i("is_pressed", 1);
     s->uniform1i("is_hover", 1);
-    TextureMgr::ptr()->get_texture("yoda")->bind();
+    // TextureMgr::ptr()->get_texture("yoda")->bind();
 
-    s->uniform1f("ui_alpha", 1.0f);
     m->draw();
 
 
 
+    // m = ModelMgr::ptr()->get_model("plane");
+    // // m->roll(0.0005f* time_delta);
+    // model_m = m->get_model_matrix();
+    // mvp = view_proj_m * model_m;
+    // s->uniformMatrix4("mvp", mvp);
+    // s->uniform1i("is_pressed", 1);
+    // s->uniform1i("is_hover", 1);
+    // TextureMgr::ptr()->get_texture("yoda")->bind();
 
-    m = ModelMgr::ptr()->get_model("plane");
-    // m->roll(0.0005f* time_delta);
-    model_m = m->get_model_matrix();
-    mvp = view_proj_m * model_m;
-    s->uniformMatrix4("mvp", mvp);
-    s->uniform1i("is_pressed", 1);
-    s->uniform1i("is_hover", 1);
-    TextureMgr::ptr()->get_texture("yoda")->bind();
-
-    s->uniform1f("ui_alpha", 1.0f);
-    m->draw();
+    // m->draw();
 
     SDL_GL_SwapWindow(main_window);
 }

@@ -13,5 +13,5 @@ class ModelNode : public Node
     void release();
 
   private:
-    Mesh * m;
+    std::vector<Mesh*> meshes;
 };

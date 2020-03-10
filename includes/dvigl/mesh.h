@@ -1,6 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
+class Texture;
+
 class Mesh
 {
   public:
@@ -9,6 +11,8 @@ class Mesh
     Mesh(struct aiMesh * mesh);
     void draw();
     void release();
+    Texture* texture;
+    int mat_idx;
 
   protected:
     unsigned int vao;
