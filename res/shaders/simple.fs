@@ -13,9 +13,6 @@ varying vec4 pos;
 
 void main()
 {
-	vec4 diffuse = texture2D(texture, v_texcoord);
-	diffuse.a = 1.0;
-    // gl_FragColor = vec4(diffuse.xyz * 1.1, diffuse.a);
-	gl_FragColor = diffuse;
+	gl_FragColor = texture2D(texture, v_texcoord);
     // gl_FragColor = vec4((1.0-v_normal)*0.5, 1.0);
 }

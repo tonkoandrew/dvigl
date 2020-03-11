@@ -97,7 +97,7 @@ bool RenderMgr::init()
     // glEnable(GL_CULL_FACE);
     glEnable(GL_STENCIL_TEST);
 
-    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
 #ifdef __PLATFORM_ANDROID__
     glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
 #endif
