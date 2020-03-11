@@ -3,7 +3,7 @@
 #include <dvigl/texture_manager.h>
 #include <dvigl/texture.h>
 
-ModelNode::ModelNode(char * content, int content_size)
+ModelNode::ModelNode(char * content, int content_size, std::string format)
 {
     const struct aiScene * scene;
     scene = aiImportFileFromMemory(
@@ -19,7 +19,7 @@ ModelNode::ModelNode(char * content, int content_size)
         //     aiProcess_FindInvalidData | aiProcess_FindDegenerates | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph |
             // 0,
             aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices,
-        "md5mesh");
+        format.c_str());
     if (!scene)
     {
         LOG("ERROR LOADING MODEL\n");

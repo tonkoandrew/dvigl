@@ -5,7 +5,7 @@
 ModelMgr gModelMgr;
 
 bool ModelMgr::init() { return true; }
-bool ModelMgr::load_model(std::string name, std::string file_name)
+bool ModelMgr::load_model(std::string name, std::string file_name, std::string format)
 {
     auto it = models.find(name);
     while (it != models.end())
@@ -20,7 +20,7 @@ bool ModelMgr::load_model(std::string name, std::string file_name)
     {
         return false;
     }
-    models[name] = new ModelNode(content, size);
+    models[name] = new ModelNode(content, size, format);
     return true;
 }
 

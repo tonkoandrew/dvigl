@@ -52,10 +52,10 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
-    // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/boblampclean.md5anim"))
-    if (!ModelMgr::ptr()->load_model("yoda", "../res/models/boblampclean.md5mesh"))
-    // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/yoda.3ds"))
-    // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/yoda.dae"))
+    // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/boblampclean.md5anim", "md5anim"))
+    if (!ModelMgr::ptr()->load_model("yoda", "../res/models/boblampclean.md5mesh", "md5mesh"))
+    // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/yoda.3ds", "3ds"))
+    // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/yoda.dae", "collada"))
     {
         return false;
     }
