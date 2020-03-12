@@ -32,7 +32,8 @@ bool SceneMgr::load_scene(std::string file_name) {
     return false;
   }
 
-  if (!m_mesh.LoadMesh("../res/models/boblampclean.md5mesh")) {
+  // if (!m_mesh.LoadMesh("../res/models/boblampclean.md5mesh")) {
+  if (!m_mesh.LoadMesh("../res/models/samba_dancing.dae")) {
     // if (!m_mesh.LoadMesh("../res/models/yoda.3ds")) {
     // if (!m_mesh.LoadMesh("../res/models/yoda.dae")) {
     printf("Mesh load failed\n");
@@ -85,10 +86,10 @@ bool SceneMgr::load_scene(std::string file_name) {
   }
 
   // m->move_forward(180.0f);
-  m->move_down(20.0f);
+  // m->move_down(20.0f);
   m->move_right(120.0f);
-  m->pitch(-3.14f / 2.0f);
-  m->roll(-3.14f);
+  // m->pitch(-3.14f / 2.0f);
+  m->yaw(-3.14f);
 
   // m = ModelMgr::ptr()->get_model("plane");
   // // m->move_down(20.0f);
@@ -97,6 +98,9 @@ bool SceneMgr::load_scene(std::string file_name) {
   // m->move_up(20.0f);
   // m->roll(-3.14f);
   // // m->yaw(3.14f/2.0f);
+
+current_scene->get_current_camera()->move_back(100);
+current_scene->get_current_camera()->move_up(100);
 
   return true;
 }
