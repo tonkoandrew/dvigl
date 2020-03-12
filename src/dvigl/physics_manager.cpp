@@ -77,7 +77,7 @@ bool PhysicsMgr::init() {
     if (isDynamic)
       colShape->calculateLocalInertia(mass, localInertia);
 
-    startTransform.setOrigin(btVector3(0, 30, 0));
+    startTransform.setOrigin(btVector3(0, 5, 0));
 
     // using motionstate is recommended, it provides interpolation capabilities,
     // and only synchronizes 'active' objects
