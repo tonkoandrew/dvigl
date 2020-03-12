@@ -81,11 +81,11 @@ typedef GLuint GLhandleARB;
 
 #include <dvigl/singleton.h>
 
-// #include <list>
 // #include <algorithm>
 // #include <set>
 // #include <stack>
 // #include <queue>
+#include <list>
 #include <cstdlib>
 #include <map>
 #include <string>
@@ -107,3 +107,5 @@ typedef GLuint GLhandleARB;
 #define attr_normal_loc 1
 #define attr_tangent_loc 2
 #define attr_texcoord_loc 3
+
+#define INVALID_UNIFORM_LOCATION 0xffffffff

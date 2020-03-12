@@ -144,8 +144,10 @@ void RenderMgr::render_frame(float time_delta)
     model_m = m->get_model_matrix();
     mvp = view_proj_m * model_m;
     s->uniformMatrix4("mvp", mvp);
+    
+    // m->draw();
 
-    m->draw();
+SceneMgr::ptr()->m_mesh.Render(mvp);
 
     SDL_GL_SwapWindow(main_window);
 }

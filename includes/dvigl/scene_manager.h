@@ -1,5 +1,6 @@
 #pragma once
 #include <dvigl/core.h>
+#include <dvigl/skinned_mesh.h>
 
 class Scene;
 
@@ -12,7 +13,10 @@ class SceneMgr : public Singleton<SceneMgr>
     Scene * get_current_scene();
     void release();
 
+    SkinnedMesh m_mesh;
+
   private:
     Scene * current_scene;
     std::vector<Scene *> loaded_scenes;
+
 };

@@ -1,18 +1,21 @@
+#version 330
+
 #ifdef GL_ES
 // Set default precision to medium
 precision mediump int;
 precision mediump float;
 #endif
 
-uniform sampler2D texture;
+uniform sampler2D tex;
 
-varying vec2 v_texcoord;
-varying vec3 v_normal;
-varying vec4 pos;
+in vec2 v_texcoord;
+in vec3 v_normal;
+in vec4 v_pos;
 
+out vec4 FragColor;
 
 void main()
 {
-	gl_FragColor = texture2D(texture, v_texcoord);
-    // gl_FragColor = vec4((1.0-v_normal)*0.5, 1.0);
+	FragColor = texture(tex, v_texcoord);
+    // FragColor = vec4((1.0-v_normal)*0.5, 1.0);
 }

@@ -17,6 +17,8 @@ SceneMgr gSceneMgr;
 bool SceneMgr::init()
 {
     current_scene = new Scene();
+
+
     return true;
 }
 
@@ -25,6 +27,19 @@ bool SceneMgr::load_scene(std::string file_name)
 
     if (!ShaderMgr::ptr()->load_shader("simple", "../res/shaders/simple.vs", "../res/shaders/simple.fs"))
     {
+        return false;
+    }
+
+
+    if (!ShaderMgr::ptr()->load_shader("skinned", "../res/shaders/skinned.vs", "../res/shaders/skinned.fs"))
+    {
+        return false;
+    }
+
+    if (!m_mesh.LoadMesh("../res/models/boblampclean.md5mesh")) {
+    // if (!m_mesh.LoadMesh("../res/models/yoda.3ds")) {
+    // if (!m_mesh.LoadMesh("../res/models/yoda.dae")) {
+        printf("Mesh load failed\n");
         return false;
     }
 
@@ -93,8 +108,8 @@ void SceneMgr::update(float time_delta)
 {
     // current_scene->get_current_camera()->move_forward(time_delta * 0.01);
 
-    ModelNode * m = ModelMgr::ptr()->get_model("yoda");
-    m->roll(0.0003 * time_delta);
+    // ModelNode * m = ModelMgr::ptr()->get_model("yoda");
+    // m->roll(0.0003 * time_delta);
 
     // m = ModelMgr::ptr()->get_model("plane");
     // m->move_forward(0.01* time_delta);

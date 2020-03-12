@@ -1,5 +1,6 @@
 #include <dvigl/shader.h>
 
+
 bool Shader::compile_and_link(char * vs_content, char * fs_content)
 {
     GLhandleARB vs_ID;
@@ -73,37 +74,41 @@ GLhandleARB Shader::compile(GLenum type, char * content)
 void Shader::bind() { glUseProgram(program_object); }
 void Shader::uniformMatrix4(std::string name, glm::mat4 value)
 {
-    int location;
-    location = glGetUniformLocation(program_object, name.c_str());
+    int location = get_uniform_location(name);
     glUniformMatrix4fv(location, 1 /*only setting 1 matrix*/, false /*transpose?*/, glm::value_ptr(value));
 }
 
 void Shader::uniformMatrix3(std::string name, glm::mat3 value)
 {
-    int location;
-    location = glGetUniformLocation(program_object, name.c_str());
+    int location = get_uniform_location(name);
     glUniformMatrix3fv(location, 1 /*only setting 1 matrix*/, false /*transpose?*/, glm::value_ptr(value));
 }
 
 void Shader::uniform1i(std::string name, int value)
 {
-    int location;
-    location = glGetUniformLocation(program_object, name.c_str());
+    int location = get_uniform_location(name);
     glUniform1i(location, value);
 }
 
 void Shader::uniform1f(std::string name, float value)
 {
-    int location;
-    location = glGetUniformLocation(program_object, name.c_str());
+    int location = get_uniform_location(name);
     glUniform1f(location, value);
 }
 
 void Shader::uniform3f(std::string name, glm::vec3 value)
 {
-    int location;
-    location = glGetUniformLocation(program_object, name.c_str());
+    int location = get_uniform_location(name);
     glUniform3fv(location, 1, glm::value_ptr(value));
+}
+
+GLint Shader::get_uniform_location(std::string name)
+{
+    GLint location = glGetUniformLocation(program_object, name.c_str());
+    if (location == INVALID_UNIFORM_LOCATION) {
+        LOG("Warning! Unable to get the location of uniform '%s'\n", name.c_str());
+    }
+    return location;
 }
 
 void Shader::release() { glDeleteProgram(program_object); }
