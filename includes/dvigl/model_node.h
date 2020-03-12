@@ -4,14 +4,13 @@
 
 class Mesh;
 
-class ModelNode : public Node
-{
-  public:
-    ModelNode(char * content, int content_size, std::string format);
-    ModelNode(int w, int h);
-    void draw();
-    void release();
+class ModelNode : public Node {
+public:
+  ModelNode(char *content, int content_size, std::string format);
+  ModelNode(int w, int h);
+  void draw();
+  void release();
 
-  private:
-    std::vector<Mesh*> meshes;
+private:
+  std::vector<Mesh *> meshes;
 };

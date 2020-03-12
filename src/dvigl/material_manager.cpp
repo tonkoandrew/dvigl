@@ -3,7 +3,6 @@
 MaterialMgr gMaterialMgr;
 
 bool MaterialMgr::init() { return true; }
-void MaterialMgr::release()
-{
-    // release materials
+void MaterialMgr::release() {
+  // release materials
 }

@@ -20,15 +20,15 @@
 #include <glad/glad.h>
 
 #if defined(__PLATFORM_ANDROID__)
-#include <GLES/gl.h>
-#include <GLES/glext.h>
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_mixer.h"
 #include "SDL_net.h"
 #include "SDL_ttf.h"
+#include <GLES/gl.h>
+#include <GLES/glext.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 typedef GLuint GLhandleARB;
 #endif
 
@@ -61,21 +61,19 @@ typedef GLuint GLhandleARB;
 #include <SDL2/SDL_ttf.h>
 #endif
 
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
-#include <glm/gtc/constants.hpp>         //glm::pi<float>()
-#include <glm/gtc/matrix_transform.hpp>  // glm::translate, glm::rotate, glm::scale, glm::perspective
-#include <glm/gtc/type_ptr.hpp>          // glm::value_ptr
-#include <glm/mat4x4.hpp>                // glm::mat4
-#include <glm/vec3.hpp>                  // glm::vec3
-#include <glm/vec4.hpp>                  // glm::vec4, glm::ivec4
+#include <glm/gtc/constants.hpp> //glm::pi<float>()
+#include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
+#include <glm/gtc/type_ptr.hpp> // glm::value_ptr
+#include <glm/mat4x4.hpp>       // glm::mat4
+#include <glm/vec3.hpp>         // glm::vec3
+#include <glm/vec4.hpp>         // glm::vec4, glm::ivec4
 
-
-#include <assimp/cimport.h>      // C importer interface
-#include <assimp/postprocess.h>  // Post processing flags
-#include <assimp/scene.h>        // Output data structure
-#include <assimp/cexport.h>  // C exporter interface
+#include <assimp/cexport.h>     // C exporter interface
+#include <assimp/cimport.h>     // C importer interface
+#include <assimp/postprocess.h> // Post processing flags
+#include <assimp/scene.h>       // Output data structure
 
 // ---- include STL ----
 
@@ -85,8 +83,8 @@ typedef GLuint GLhandleARB;
 // #include <set>
 // #include <stack>
 // #include <queue>
-#include <list>
 #include <cstdlib>
+#include <list>
 #include <map>
 #include <string>
 #include <vector>
@@ -100,7 +98,6 @@ typedef GLuint GLhandleARB;
 #include <cstdio>
 #define LOG printf
 #endif
-
 
 // GLSL attributes location
 #define attr_pos_loc 0

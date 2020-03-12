@@ -3,12 +3,11 @@
 
 class CameraNode;
 
-class Scene
-{
-  public:
-    Scene();
-    CameraNode * get_current_camera(void);
+class Scene {
+public:
+  Scene();
+  CameraNode *get_current_camera(void);
 
-  private:
-    CameraNode * current_camera;
+private:
+  CameraNode *current_camera;
 };
