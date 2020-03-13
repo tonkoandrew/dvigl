@@ -89,6 +89,8 @@ typedef GLuint GLhandleARB;
 #include <string>
 #include <vector>
 
+#include <assert.h>
+
 // LOGGING
 
 #if defined(__PLATFORM_ANDROID__)
@@ -98,6 +100,29 @@ typedef GLuint GLhandleARB;
 #include <cstdio>
 #define LOG printf
 #endif
+
+#define ZERO_MEM(a) memset(a, 0, sizeof(a))
+#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a) / sizeof(a[0]))
+
+#ifdef WIN32
+#define SNPRINTF _snprintf_s
+#define VSNPRINTF vsnprintf_s
+#define RANDOM rand
+#define SRANDOM srand((unsigned)time(NULL))
+#else
+#define SNPRINTF snprintf
+#define VSNPRINTF vsnprintf
+#define RANDOM random
+#define SRANDOM srandom(getpid())
+#endif
+
+#define SAFE_DELETE(p)                                                         \
+  if (p) {                                                                     \
+    delete p;                                                                  \
+    p = NULL;                                                                  \
+  }
+
+#define GLCheckError() (glGetError() == GL_NO_ERROR)
 
 // GLSL attributes location
 #define attr_pos_loc 0

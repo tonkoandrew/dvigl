@@ -1,6 +1,5 @@
 #pragma once
 #include <dvigl/core.h>
-#include <dvigl/temp_math_3d.h>
 
 using namespace std;
 
@@ -18,7 +17,7 @@ public:
 
   uint NumBones() const { return m_NumBones; }
 
-  void BoneTransform(float TimeInSeconds, vector<Matrix4f> &Transforms);
+  void BoneTransform(float TimeInSeconds, vector<glm::mat4> &Transforms);
 
   float GetRunningTime();
 
@@ -38,12 +37,12 @@ private:
 #define NUM_BONES_PER_VEREX 4
 
   struct BoneInfo {
-    Matrix4f BoneOffset;
-    Matrix4f FinalTransformation;
+    glm::mat4 BoneOffset;
+    glm::mat4 FinalTransformation;
 
     BoneInfo() {
-      BoneOffset.SetZero();
-      FinalTransformation.SetZero();
+      BoneOffset = glm::mat4(0.0f);
+      FinalTransformation = glm::mat4(0.0f);
     }
   };
 
@@ -73,11 +72,11 @@ private:
   const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation,
                                  const string NodeName);
   void ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
-                         const Matrix4f &ParentTransform);
+                         const glm::mat4 &ParentTransform);
   bool InitFromScene(const aiScene *pScene, const string &Filename);
   void InitMesh(uint MeshIndex, const aiMesh *paiMesh,
-                vector<Vector3f> &Positions, vector<Vector3f> &Normals,
-                vector<Vector2f> &TexCoords, vector<VertexBoneData> &Bones,
+                vector<glm::vec3> &Positions, vector<glm::vec3> &Normals,
+                vector<glm::vec2> &TexCoords, vector<VertexBoneData> &Bones,
                 vector<unsigned int> &Indices);
   void LoadBones(uint MeshIndex, const aiMesh *paiMesh,
                  vector<VertexBoneData> &Bones);
@@ -118,7 +117,7 @@ private:
   map<string, uint> m_BoneMapping; // maps a bone name to its index
   uint m_NumBones;
   vector<BoneInfo> m_BoneInfo;
-  Matrix4f m_GlobalInverseTransform;
+  glm::mat4 m_GlobalInverseTransform;
 
   const aiScene *m_pScene;
 };
