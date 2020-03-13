@@ -332,11 +332,9 @@ void SkinnedMesh::Render(glm::mat4 mvp) {
     glUniformMatrix4fv(m_boneLocation[i], 1, GL_TRUE,
                        (const GLfloat *)Transforms[i]);
   }
+
   glUniform3f(m_eyeWorldPosLocation, 0, 0, 10);
-
-  Matrix4f WVP(mvp);
-  glUniformMatrix4fv(m_WVPLocation, 1, GL_TRUE, (const GLfloat *)WVP);
-
+  glUniformMatrix4fv(m_WVPLocation, 1, false, glm::value_ptr(mvp));
   glBindVertexArray(m_VAO);
 
   for (uint i = 0; i < m_Entries.size(); i++) {

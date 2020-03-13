@@ -99,8 +99,8 @@ bool SceneMgr::load_scene(std::string file_name) {
   // m->roll(-3.14f);
   // // m->yaw(3.14f/2.0f);
 
-current_scene->get_current_camera()->move_back(100);
-current_scene->get_current_camera()->move_up(100);
+  current_scene->get_current_camera()->move_back(100);
+  current_scene->get_current_camera()->move_up(100);
 
   return true;
 }
