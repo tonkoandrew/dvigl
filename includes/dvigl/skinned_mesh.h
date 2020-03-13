@@ -31,7 +31,6 @@ public:
 
   GLuint m_WVPLocation;
   GLuint m_colorTextureLocation;
-  GLuint m_eyeWorldPosLocation;
 
 private:
 #define NUM_BONES_PER_VEREX 4

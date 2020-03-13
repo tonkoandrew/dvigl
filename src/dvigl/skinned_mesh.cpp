@@ -381,7 +381,6 @@ void SkinnedMesh::Render(glm::mat4 mvp) {
                        glm::value_ptr(Transforms[i]));
   }
 
-  glUniform3f(m_eyeWorldPosLocation, 0, 0, 10);
   glUniformMatrix4fv(m_WVPLocation, 1, false, glm::value_ptr(mvp));
   glBindVertexArray(m_VAO);
 
