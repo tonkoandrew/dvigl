@@ -29,4 +29,4 @@ Now try to run
 
 -- Demo
 
-[![Demo](http://tonko.im/screen.gif)](https://github.com/tonkoandrew/dvigl)
+[![Demo](http://tonko.im/screen.gif)](http://tonko.im/screen.gif)
