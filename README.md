@@ -26,3 +26,7 @@ Now try to run
 ./bin/dvigl/dvigl
 
 ```
+
+-- Demo
+
+[![Demo](http://tonko.im/screen.gif)](https://github.com/tonkoandrew/dvigl)
