@@ -29,4 +29,4 @@ Now try to run
 
 ## Demo
 
-[![Demo](https://s5.gifyu.com/images/screen2375502277d6312b.gif)](http://tonko.im/screen.gif)
+![Demo](https://s5.gifyu.com/images/screen2375502277d6312b.gif)
