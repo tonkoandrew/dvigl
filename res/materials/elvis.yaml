@@ -1,0 +1,5 @@
+diffuse: 'FatElvis_diffuse.jpg'
+normal: 'FatElvis_normal.jpg'
+uv_params:
+  offset_x: 0
+  offset_y: 0

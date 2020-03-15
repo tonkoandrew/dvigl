@@ -16,8 +16,8 @@ Texture::Texture(SDL_Surface *surf) {
                GL_UNSIGNED_BYTE, surf->pixels);
 }
 
-void Texture::bind() {
-  glActiveTexture(GL_TEXTURE0);
+void Texture::bind(GLint id) {
+  glActiveTexture(id);
   glBindTexture(GL_TEXTURE_2D, texture_ID);
 }
 

@@ -4,6 +4,7 @@
 
 #include <dvigl/shader.h>
 #include <dvigl/shader_manager.h>
+#include <dvigl/material_manager.h>
 
 #ifndef WIN32
 #include <sys/time.h>
@@ -168,6 +169,7 @@ bool SkinnedMesh::LoadMesh(const string &Filename) {
 bool SkinnedMesh::InitFromScene(const aiScene *pScene, const string &Filename) {
   m_Entries.resize(pScene->mNumMeshes);
   m_Textures.resize(pScene->mNumMaterials);
+  m_NormalMaps.resize(pScene->mNumMaterials);
 
   vector<glm::vec3> Positions;
   vector<glm::vec3> Normals;
@@ -320,6 +322,7 @@ bool SkinnedMesh::InitMaterials(const aiScene *pScene, const string &Filename) {
   //     Dir = Filename.substr(0, SlashIndex);
   // }
   Dir = "../res/textures";
+  MaterialMgr::ptr()->load_material("../res/materials/elvis.yaml");
 
   bool Ret = true;
 
@@ -328,6 +331,7 @@ bool SkinnedMesh::InitMaterials(const aiScene *pScene, const string &Filename) {
     const aiMaterial *pMaterial = pScene->mMaterials[i];
 
     m_Textures[i] = NULL;
+    m_NormalMaps[i] = NULL;
 
     if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
       aiString Path;
@@ -349,6 +353,14 @@ bool SkinnedMesh::InitMaterials(const aiScene *pScene, const string &Filename) {
         }
 
         m_Textures[i] = TextureMgr::ptr()->get_texture(FullPath);
+
+        FullPath = Dir + "/" + "FatElvis_normal.jpg";
+        // m_Textures[i] = new TempTexture(GL_TEXTURE_2D, FullPath.c_str());
+        if (!TextureMgr::ptr()->load_texture(FullPath, FullPath)) {
+          LOG("FAILED TO LOAD Texture");
+          return false;
+        }
+        m_NormalMaps[i] = TextureMgr::ptr()->get_texture(FullPath);
       }
     }
   }
@@ -375,6 +387,10 @@ void SkinnedMesh::Render(glm::mat4 mvp) {
   s->bind();
 
   s->uniform1i("gColorMap", 0);
+  // s->uniform1i("gColorMap", GL_TEXTURE0);
+
+  s->uniform1i("gNormalMap", 1);
+  // s->uniform1i("gNormalMap", GL_TEXTURE1);
 
   for (uint i = 0; i < Transforms.size(); i++) {
     glUniformMatrix4fv(m_boneLocation[i], 1, false,
@@ -390,7 +406,11 @@ void SkinnedMesh::Render(glm::mat4 mvp) {
     assert(MaterialIndex < m_Textures.size());
 
     if (m_Textures[MaterialIndex]) {
-      m_Textures[MaterialIndex]->bind();
+      m_Textures[MaterialIndex]->bind(GL_TEXTURE0);
+    }
+
+    if (m_NormalMaps[MaterialIndex]) {
+      m_NormalMaps[MaterialIndex]->bind(GL_TEXTURE1);
     }
 
     glDrawElementsBaseVertex(GL_TRIANGLES, m_Entries[i].NumIndices,

@@ -16,6 +16,8 @@
 #endif
 #endif
 
+#include <yaml-cpp/yaml.h>
+
 // include SDL and libs:
 #include <glad/glad.h>
 

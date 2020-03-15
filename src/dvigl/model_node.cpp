@@ -105,7 +105,7 @@ ModelNode::ModelNode(int w, int h) {
 
 void ModelNode::draw() {
   for (unsigned int i = 0; i < meshes.size(); i++) {
-    meshes[i]->texture->bind();
+    meshes[i]->texture->bind(GL_TEXTURE0);
     meshes[i]->draw();
   }
 }

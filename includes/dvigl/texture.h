@@ -4,7 +4,7 @@
 class Texture {
 public:
   Texture(SDL_Surface *surf);
-  void bind();
+  void bind(GLint id);
   void release();
 
 private:
