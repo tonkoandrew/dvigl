@@ -16,6 +16,17 @@ bool MaterialMgr::load_material(std::string file_name)
 
     LOG("LOADING MATERIAL: %s\n", file_name.c_str());
 
+    LOG("NODE TYPE: ");
+    switch (node.Type()) {
+      case YAML::NodeType::Null: LOG("Null\n"); break;
+      case YAML::NodeType::Scalar: LOG("Scalar\n"); break;
+      case YAML::NodeType::Sequence: LOG("Sequence\n"); break;
+      case YAML::NodeType::Map: LOG("Map\n"); break;
+      case YAML::NodeType::Undefined: LOG("Undefined\n"); break;
+      default:
+       LOG("WTF???\n");
+    }
+
     if (node["diffuse"])
     {
       LOG("DIFFUSE MAP: %s\n", node["diffuse"].as<std::string>().c_str());
