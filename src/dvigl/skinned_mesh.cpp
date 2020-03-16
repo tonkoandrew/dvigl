@@ -2,9 +2,9 @@
 #include <dvigl/texture.h>
 #include <dvigl/texture_manager.h>
 
+#include <dvigl/material_manager.h>
 #include <dvigl/shader.h>
 #include <dvigl/shader_manager.h>
-#include <dvigl/material_manager.h>
 
 #ifndef WIN32
 #include <sys/time.h>

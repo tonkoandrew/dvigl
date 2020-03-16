@@ -133,3 +133,7 @@ typedef GLuint GLhandleARB;
 #define attr_texcoord_loc 3
 
 #define INVALID_UNIFORM_LOCATION 0xffffffff
+
+
+extern "C" int dvigl_init();
+extern "C" int dvigl_main();

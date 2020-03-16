@@ -3,7 +3,7 @@
 
 class Application : public Singleton<Application> {
 public:
-  bool init(int argc, char *argv[]);
+  bool init();
   bool main_loop();
   void exit();
   int get_error_code();

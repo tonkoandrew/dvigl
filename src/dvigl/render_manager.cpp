@@ -29,10 +29,12 @@ bool RenderMgr::init() {
   // matching GLX visual on Intel video
 
   int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-// | SDL_WINDOW_ALLOW_HIGHDPI
-// | SDL_WINDOW_MOUSE_FOCUS
-// | SDL_WINDOW_INPUT_GRABBED
-// | SDL_WINDOW_FULLSCREEN
+              // | SDL_WINDOW_ALLOW_HIGHDPI
+              // | SDL_WINDOW_MOUSE_FOCUS
+              // | SDL_WINDOW_INPUT_GRABBED
+              // | SDL_WINDOW_FULLSCREEN
+              // | SDL_WINDOW_BORDERLESS
+              | SDL_WINDOW_RESIZABLE
 #ifdef __PLATFORM_ANDROID__
               | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN_DESKTOP
 #else

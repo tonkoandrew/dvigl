@@ -1,21 +1,21 @@
 #include <dvigl/application.h>
 #include <dvigl/core.h>
 
-#ifdef __PLATFORM_ANDROID__
-int SDL_main(int argc, char *argv[])
-#else
-#undef main
-int main(int argc, char *argv[])
-#endif
-{
-  LOG("Hello\n");
+#include <dvigl/render_manager.h>
+
+extern "C" int dvigl_init() {
   Application *app = Application::ptr();
-  if (app->init(argc, argv)) {
-    if (app->main_loop()) {
-      app->release();
-      LOG("Exiting\n");
-      std::exit(0);
-    }
+  if (app->init()) {
+    return 0;
+  }
+  return app->get_error_code();
+}
+
+extern "C" int dvigl_main() {
+  Application *app = Application::ptr();
+  if (app->main_loop()) {
+    app->release();
+    return 0;
   }
   return app->get_error_code();
 }

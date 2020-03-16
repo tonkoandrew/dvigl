@@ -15,7 +15,7 @@
 
 Application gApplication;
 
-bool Application::init(int argc, char *argv[]) {
+bool Application::init() {
   error_code = 0;
   int result = SDL_Init(SDL_INIT_EVERYTHING);
   if (result) {
