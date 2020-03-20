@@ -110,10 +110,10 @@ bool RenderMgr::init() {
 }
 
 void RenderMgr::render_frame(float time_delta) {
+  // SDL_GL_MakeCurrent(main_window, gl_context);
+
   int w, h;
   SDL_GL_GetDrawableSize(main_window, &w, &h);
-
-  // float aspect = (float)w / (float)(h>1 ? h:1);
 
   glViewport(0, 0, w, h);
 
@@ -125,7 +125,7 @@ void RenderMgr::render_frame(float time_delta) {
   float aspect = (float)w / (float)(h > 1 ? h : 1);
   glm::mat4 mvp;
   glm::mat4 model_m;
-  glm::mat4 proj_m = glm::perspective(45.0f, aspect, 10.0f, 1000.0f);
+  glm::mat4 proj_m = glm::perspective(45.0f, aspect, 1.0f, 1000.0f);
 
   Scene *current_scene = SceneMgr::ptr()->get_current_scene();
   CameraNode *camera = current_scene->get_current_camera();
@@ -145,6 +145,10 @@ void RenderMgr::render_frame(float time_delta) {
   SceneMgr::ptr()->m_mesh.Render(mvp);
 
   SDL_GL_SwapWindow(main_window);
+
+  if (glGetError() != 0) {
+    LOG("GL ERRORS HERE ================\n");
+  }
 }
 
 SDL_Window *RenderMgr::get_main_window() { return main_window; }

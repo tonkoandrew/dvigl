@@ -19,3 +19,8 @@ extern "C" int dvigl_main() {
   }
   return app->get_error_code();
 }
+
+extern "C" Uint32 dvigl_get_window_id() {
+  SDL_Window *w = RenderMgr::ptr()->get_main_window();
+  return SDL_GetWindowID(w);
+}

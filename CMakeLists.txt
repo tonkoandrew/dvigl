@@ -114,24 +114,19 @@ target_link_libraries(${NAME} ${LIBS})
 
 set(LIBS ${NAME} ${LIBS})
 
-###
-### Build editor
-###
-set(NAME "editor")
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+###
+### Build game
+###
+set(NAME "game")
 
 file(GLOB SOURCE
     "src/${NAME}/*.h"
     "src/${NAME}/*.cpp"
 )
 
-qt5_wrap_cpp(SOURCE includes/${NAME}/controller.h includes/${NAME}/worker.h includes/${NAME}/mainwindow.h)
-qt5_wrap_ui(SOURCE src/${NAME}/mainwindow.ui)
-
-add_executable(editor ${SOURCE})
-# set_target_properties(${NAME} PROPERTIES AUTOMOC TRUE)
+add_executable(${NAME} ${SOURCE})
 target_link_libraries(${NAME} ${LIBS})
 
 if(WIN32)
@@ -144,17 +139,26 @@ elseif(APPLE)
     set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}/bin")
 endif(WIN32)
 
+
 ###
-### Build game
+### Build editor
 ###
-set(NAME "game")
+set(NAME "editor")
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# set(LIBS Qt5::Widgets)
 
 file(GLOB SOURCE
     "src/${NAME}/*.h"
     "src/${NAME}/*.cpp"
 )
 
-add_executable(game ${SOURCE})
+qt5_wrap_cpp(SOURCE src/${NAME}/mainwindow.h)
+qt5_wrap_ui(SOURCE src/${NAME}/mainwindow.ui)
+
+add_executable(${NAME} ${SOURCE})
+# set_target_properties(${NAME} PROPERTIES AUTOMOC TRUE)
 target_link_libraries(${NAME} ${LIBS})
 
 if(WIN32)
