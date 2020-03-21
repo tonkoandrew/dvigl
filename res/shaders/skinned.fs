@@ -18,6 +18,7 @@ void main()
     In.TexCoord = TexCoord0;
 
     // FragColor = texture(gColorMap, In.TexCoord.xy);
-    FragColor = texture(gNormalMap, In.TexCoord.xy) * 0.0005 + texture(gColorMap, In.TexCoord.xy)*0.9995;
+    // FragColor = texture(gNormalMap, In.TexCoord.xy) * 0.0005 + texture(gColorMap, In.TexCoord.xy)*0.9995;
+    FragColor = texture(gNormalMap, In.TexCoord.xy) * 0.005 + texture(gColorMap, In.TexCoord.xy)*0.995 + vec4(0.0);
 
 }

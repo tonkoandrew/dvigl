@@ -7,19 +7,19 @@ class Texture;
 
 class SkinnedMesh {
 public:
-  SkinnedMesh();
+  SkinnedMesh(const aiScene *pScene);
 
   ~SkinnedMesh();
 
-  bool LoadMesh(const string &Filename);
-
-  void Render(glm::mat4 mvp);
+  void draw(glm::mat4 mvp);
 
   uint NumBones() const { return m_NumBones; }
 
   void BoneTransform(float TimeInSeconds, vector<glm::mat4> &Transforms);
 
   float GetRunningTime();
+
+  void release();
 
   typedef std::list<GLuint> ShaderObjList;
   ShaderObjList m_shaderObjList;
@@ -80,7 +80,6 @@ private:
   void LoadBones(uint MeshIndex, const aiMesh *paiMesh,
                  vector<VertexBoneData> &Bones);
   bool InitMaterials(const aiScene *pScene, const string &Filename);
-  void Clear();
 
 #define INVALID_MATERIAL 0xFFFFFFFF
 

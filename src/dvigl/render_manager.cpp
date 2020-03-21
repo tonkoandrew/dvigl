@@ -9,6 +9,7 @@
 
 #include <dvigl/model_manager.h>
 #include <dvigl/model_node.h>
+#include <dvigl/skinned_model_node.h>
 
 #include <dvigl/camera_node.h>
 #include <dvigl/scene.h>
@@ -149,7 +150,20 @@ void RenderMgr::render_frame(float time_delta) {
 
   m->draw();
 
-  SceneMgr::ptr()->m_mesh.Render(mvp);
+
+  // Shader *ss = ShaderMgr::ptr()->get_shader("skinned");
+  // ss->bind();
+  SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
+  model_m = elvis->get_model_matrix();
+  mvp = view_proj_m * model_m;
+  // ss->uniformMatrix4("gWVP", mvp);
+  elvis->draw(mvp);
+
+  SkinnedModelNode *bob = ModelMgr::ptr()->get_skinned_model("bob");
+  model_m = bob->get_model_matrix();
+  mvp = view_proj_m * model_m;
+  // ss->uniformMatrix4("gWVP", mvp);
+  bob->draw(mvp);
 
   SDL_GL_SwapWindow(main_window);
 

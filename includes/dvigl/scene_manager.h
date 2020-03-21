@@ -1,6 +1,5 @@
 #pragma once
 #include <dvigl/core.h>
-#include <dvigl/skinned_mesh.h>
 
 class Scene;
 
@@ -11,8 +10,6 @@ public:
   void update(float time_delta);
   Scene *get_current_scene();
   void release();
-
-  SkinnedMesh m_mesh;
 
 private:
   Scene *current_scene;

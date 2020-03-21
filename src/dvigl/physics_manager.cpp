@@ -1,5 +1,6 @@
 #include <dvigl/model_manager.h>
 #include <dvigl/model_node.h>
+#include <dvigl/skinned_model_node.h>
 #include <dvigl/physics_manager.h>
 
 PhysicsMgr gPhysicsMgr;
@@ -23,7 +24,7 @@ bool PhysicsMgr::init() {
   dynamicsWorld->setGravity(btVector3(0.0f, -9.8f, 0.0f));
 
   btCollisionShape *groundShape =
-      new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+      new btBoxShape(btVector3(btScalar(250.), btScalar(50.), btScalar(50.)));
   collisionShapes.push_back(groundShape);
 
   btTransform groundTransform;
@@ -77,7 +78,7 @@ bool PhysicsMgr::init() {
     if (isDynamic)
       colShape->calculateLocalInertia(mass, localInertia);
 
-    startTransform.setOrigin(btVector3(0, 5, 0));
+    startTransform.setOrigin(btVector3(85, 15, 0));
 
     // using motionstate is recommended, it provides interpolation capabilities,
     // and only synchronizes 'active' objects
@@ -127,6 +128,11 @@ void PhysicsMgr::update(float time_delta) {
                           float(trans.getOrigin().getY()),
                           float(trans.getOrigin().getZ()));
   m->set_pose(v);
+
+
+  // SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
+  // elvis->set_pose(v);
+
   // LOG("world pos object = %.8f, %.8f, %.8f\n",
   // float(trans.getOrigin().getX()), float(trans.getOrigin().getY()),
   // float(trans.getOrigin().getZ()));

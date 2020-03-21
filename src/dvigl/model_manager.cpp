@@ -1,19 +1,31 @@
 #include <dvigl/file_system_manager.h>
 #include <dvigl/model_manager.h>
 #include <dvigl/model_node.h>
+#include <dvigl/skinned_model_node.h>
 
 ModelMgr gModelMgr;
 
 bool ModelMgr::init() { return true; }
 
 bool ModelMgr::load_skinned_model(std::string name, std::string file_name,
-                          std::string format) {
-
-    return true;
+                          std::string format, float scale) {
+  auto it = skinned_models.find(name);
+  while (it != skinned_models.end()) {
+    it->second->release();
+    skinned_models.erase(it);
+    it = skinned_models.find(name);
+  }
+  char *content = FileSystemMgr::ptr()->get_content(file_name);
+  int size = FileSystemMgr::ptr()->get_size(file_name);
+  if (!content) {
+    return false;
+  }
+  skinned_models[name] = new SkinnedModelNode(content, size, format, scale);
+  return true;
 }
 
 bool ModelMgr::load_model(std::string name, std::string file_name,
-                          std::string format) {
+                          std::string format, float scale) {
   auto it = models.find(name);
   while (it != models.end()) {
     it->second->release();
@@ -25,7 +37,7 @@ bool ModelMgr::load_model(std::string name, std::string file_name,
   if (!content) {
     return false;
   }
-  models[name] = new ModelNode(content, size, format);
+  models[name] = new ModelNode(content, size, format, scale);
   return true;
 }
 
@@ -60,14 +72,14 @@ ModelNode *ModelMgr::get_model(std::string name) {
   return models[name];
 }
 
-// SkinnedModelNode *ModelMgr::get_skinned_model(std::string name) {
-//   auto it = skinned_models.find(name);
-//   if (it == skinned_models.end()) {
-//     LOG("SkinnedModel %s not found\n", name.c_str());
-//     return NULL;
-//   }
-//   return skinned_models[name];
-// }
+SkinnedModelNode *ModelMgr::get_skinned_model(std::string name) {
+  auto it = skinned_models.find(name);
+  if (it == skinned_models.end()) {
+    LOG("SkinnedModel %s not found\n", name.c_str());
+    return NULL;
+  }
+  return skinned_models[name];
+}
 
 void ModelMgr::release() {
   // release ttf fonts

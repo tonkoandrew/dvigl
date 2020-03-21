@@ -17,52 +17,15 @@
 #define BONE_WEIGHT_LOCATION 4
 
 long long GetCurrentTimeMillis() {
+  long long result;
 #ifdef WIN32
-  return GetTickCount();
+  result = GetTickCount();
 #else
   timeval t;
   gettimeofday(&t, NULL);
-
-  long long ret = t.tv_sec * 1000 + t.tv_usec / 1000;
-  return ret;
+  result = t.tv_sec * 1000 + t.tv_usec / 1000;
 #endif
-}
-
-void SkinnedMesh::VertexBoneData::AddBoneData(uint BoneID, float Weight) {
-  for (uint i = 0; i < ARRAY_SIZE_IN_ELEMENTS(IDs); i++) {
-    if (Weights[i] == 0.0) {
-      IDs[i] = BoneID;
-      Weights[i] = Weight;
-      return;
-    }
-  }
-
-  // should never get here - more bones than we have space for
-  assert(0);
-}
-
-SkinnedMesh::SkinnedMesh() {
-  m_VAO = 0;
-  ZERO_MEM(m_Buffers);
-  m_NumBones = 0;
-  m_pScene = NULL;
-}
-
-SkinnedMesh::~SkinnedMesh() { Clear(); }
-
-void SkinnedMesh::Clear() {
-  for (uint i = 0; i < m_Textures.size(); i++) {
-    SAFE_DELETE(m_Textures[i]);
-  }
-
-  if (m_Buffers[0] != 0) {
-    glDeleteBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
-  }
-
-  if (m_VAO != 0) {
-    glDeleteVertexArrays(1, &m_VAO);
-    m_VAO = 0;
-  }
+  return result;
 }
 
 inline glm::mat4 aiMatrix4x4ToGlm(aiMatrix4x4 *from) {
@@ -111,9 +74,30 @@ inline glm::mat4 aiMatrix3x3ToGlm(aiMatrix3x3 *from) {
   return to;
 }
 
-bool SkinnedMesh::LoadMesh(const string &Filename) {
-  // Release the previously loaded mesh (if it exists)
-  Clear();
+
+void SkinnedMesh::VertexBoneData::AddBoneData(uint BoneID, float Weight) {
+  for (uint i = 0; i < ARRAY_SIZE_IN_ELEMENTS(IDs); i++) {
+    if (Weights[i] == 0.0) {
+      IDs[i] = BoneID;
+      Weights[i] = Weight;
+      return;
+    }
+  }
+
+  // should never get here - more bones than we have space for
+  assert(0);
+}
+
+SkinnedMesh::SkinnedMesh(const aiScene *pScene) {
+  m_VAO = 0;
+  ZERO_MEM(m_Buffers);
+  m_NumBones = 0;
+  m_pScene = pScene;
+
+  LOG("\n");
+  LOG("SkinnedMesh IMPORTED %d MESHES\n", pScene->mNumMeshes);
+  LOG("SkinnedMesh IMPORTED %d ANIMATIONS\n", pScene->mNumAnimations);
+
   m_startTime = GetCurrentTimeMillis();
   // Create the VAO
   glGenVertexArrays(1, &m_VAO);
@@ -124,23 +108,9 @@ bool SkinnedMesh::LoadMesh(const string &Filename) {
 
   bool Ret = false;
 
-  int flags = aiProcess_Triangulate | aiProcess_GenSmoothNormals |
-              aiProcess_LimitBoneWeights | aiProcess_FindInvalidData |
-              aiProcess_SplitByBoneCount | aiProcess_FlipUVs |
-              aiProcess_JoinIdenticalVertices | 0;
-
-  m_pScene = aiImportFile(Filename.c_str(), flags);
-  if (m_pScene) {
-    LOG("\nMESHES = %d\n", m_pScene->mNumMeshes);
-    LOG("ANIMATIONS = %d\n", m_pScene->mNumAnimations);
-
-    m_GlobalInverseTransform =
-        glm::inverse(aiMatrix4x4ToGlm(&(m_pScene->mRootNode->mTransformation)));
-
-    Ret = InitFromScene(m_pScene, Filename);
-  } else {
-    LOG("Error parsing '%s': '%s'\n", Filename.c_str(), aiGetErrorString());
-  }
+  m_GlobalInverseTransform =
+    glm::inverse(aiMatrix4x4ToGlm(&(pScene->mRootNode->mTransformation)));
+  Ret = InitFromScene(pScene, "../res/models/samba_dancing.dae");
 
   // Make sure the VAO is not changed from the outside
   glBindVertexArray(0);
@@ -163,8 +133,25 @@ bool SkinnedMesh::LoadMesh(const string &Filename) {
     }
   }
 
-  return Ret;
 }
+
+SkinnedMesh::~SkinnedMesh() { release(); }
+
+void SkinnedMesh::release() {
+  for (uint i = 0; i < m_Textures.size(); i++) {
+    SAFE_DELETE(m_Textures[i]);
+  }
+
+  if (m_Buffers[0] != 0) {
+    glDeleteBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
+  }
+
+  if (m_VAO != 0) {
+    glDeleteVertexArrays(1, &m_VAO);
+    m_VAO = 0;
+  }
+}
+
 
 bool SkinnedMesh::InitFromScene(const aiScene *pScene, const string &Filename) {
   m_Entries.resize(pScene->mNumMeshes);
@@ -374,7 +361,7 @@ float SkinnedMesh::GetRunningTime() {
   return RunningTime;
 }
 
-void SkinnedMesh::Render(glm::mat4 mvp) {
+void SkinnedMesh::draw(glm::mat4 mvp) {
   vector<glm::mat4> Transforms;
 
   float RunningTime = GetRunningTime();

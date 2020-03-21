@@ -60,8 +60,6 @@ Mesh::Mesh(int w, int h) {
 }
 
 Mesh::Mesh(struct aiMesh *mesh) {
-  glm::vec3 scale = glm::vec3(1.0f);
-
   // if(mesh->mNumBones > 0)
   // {
   //     scale = glm::vec3(10.0f);
@@ -118,9 +116,9 @@ Mesh::Mesh(struct aiMesh *mesh) {
               mesh->mTextureCoords[0][index].y;
         }
 
-        vertex_data[v_index] = mesh->mVertices[index].x * scale.x;
-        vertex_data[v_index + 1] = mesh->mVertices[index].y * scale.y;
-        vertex_data[v_index + 2] = mesh->mVertices[index].z * scale.z;
+        vertex_data[v_index] = mesh->mVertices[index].x;
+        vertex_data[v_index + 1] = mesh->mVertices[index].y;
+        vertex_data[v_index + 2] = mesh->mVertices[index].z;
         vertex_data[v_index + 3] = 1.0f;
       }
     }

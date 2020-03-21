@@ -3,15 +3,14 @@
 #include <dvigl/texture.h>
 #include <dvigl/texture_manager.h>
 
-ModelNode::ModelNode(char *content, int content_size, std::string format) {
+ModelNode::ModelNode(char *content, int content_size, std::string format, float scale) {
   const struct aiScene *scene;
-  scene = aiImportFileFromMemory(
-      content, content_size,
-      // aiProcessPreset_TargetRealtime_Quality |
+
+int flags =       // aiProcessPreset_TargetRealtime_Quality |
       // aiProcessPreset_TargetRealtime_Fast |
       // aiProcess_SplitLargeMeshes | aiProcess_Triangulate |
       // aiProcess_GenSmoothNormals | aiProcess_SortByPType |
-      //     aiProcess_CalcTangentSpace | aiProcess_RemoveRedundantMaterials |
+          aiProcess_CalcTangentSpace | aiProcess_RemoveRedundantMaterials |
       //     aiProcess_TransformUVCoords |
       //     aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices |
       //     aiProcess_ValidateDataStructure |
@@ -20,14 +19,21 @@ ModelNode::ModelNode(char *content, int content_size, std::string format) {
 
       //     aiProcess_FindInvalidData | aiProcess_FindDegenerates |
       //     aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph |
-      // 0,
-      aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs |
-          aiProcess_JoinIdenticalVertices,
-      format.c_str());
+      aiProcess_Triangulate | aiProcess_GenSmoothNormals |
+       aiProcess_FlipUVs |
+       // aiProcess_ConvertToLeftHanded |
+          aiProcess_JoinIdenticalVertices | aiProcess_GlobalScale | 0;
+
+aiPropertyStore* store = aiCreatePropertyStore();
+aiSetImportPropertyFloat(store, AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, scale);
+scene = aiImportFileFromMemoryWithProperties(content, content_size, flags, format.c_str(), store);
+aiReleasePropertyStore(store);
+
   if (!scene) {
     LOG("ERROR LOADING MODEL\n");
     return;
   }
+
   meshes.resize(scene->mNumMeshes);
   LOG("\n");
   LOG("IMPORTED %d MESHES\n", scene->mNumMeshes);
