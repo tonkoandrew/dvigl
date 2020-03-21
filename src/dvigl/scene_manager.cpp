@@ -11,6 +11,7 @@
 #include <dvigl/model_node.h>
 
 #include <dvigl/camera_node.h>
+#include <dvigl/video_manager.h>
 
 SceneMgr gSceneMgr;
 
@@ -102,14 +103,16 @@ bool SceneMgr::load_scene(std::string file_name) {
   current_scene->get_current_camera()->move_back(100);
   current_scene->get_current_camera()->move_up(100);
 
+  // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
   return true;
 }
 
 void SceneMgr::update(float time_delta) {
+
   // current_scene->get_current_camera()->move_forward(time_delta * 0.01);
 
   // ModelNode * m = ModelMgr::ptr()->get_model("yoda");
-  // m->roll(0.0003 * time_delta);
+  // m->pitch(0.0003 * time_delta);
 
   // m = ModelMgr::ptr()->get_model("plane");
   // m->move_forward(0.01* time_delta);

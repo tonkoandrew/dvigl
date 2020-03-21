@@ -12,6 +12,7 @@
 #include <dvigl/scene_manager.h>
 #include <dvigl/shader_manager.h>
 #include <dvigl/texture_manager.h>
+#include <dvigl/video_manager.h>
 
 Application gApplication;
 
@@ -76,6 +77,14 @@ bool Application::init() {
   if (!AudioMgr::ptr()->init()) {
     LOG("failed\n");
     error_code = 11;
+    return false;
+  }
+  LOG("done\n");
+
+  LOG("initializing VideoMgr... ");
+  if (!VideoMgr::ptr()->init()) {
+    LOG("failed\n");
+    error_code = 15;
     return false;
   }
   LOG("done\n");
@@ -161,6 +170,9 @@ bool Application::main_loop() {
     InputMgr::ptr()->process_input(time_delta);
     ParticleSystemMgr::ptr()->update(time_delta);
     PhysicsMgr::ptr()->update(time_delta);
+
+    VideoMgr::ptr()->update(time_delta);
+
     SceneMgr::ptr()->update(time_delta);
     RenderMgr::ptr()->render_frame(time_delta);
 
@@ -185,6 +197,7 @@ void Application::release() {
   InputMgr::ptr()->release();
   FileSystemMgr::ptr()->release();
   SceneMgr::ptr()->release();
+  VideoMgr::ptr()->release();
   AudioMgr::ptr()->release();
   TextureMgr::ptr()->release();
   ParticleSystemMgr::ptr()->release();

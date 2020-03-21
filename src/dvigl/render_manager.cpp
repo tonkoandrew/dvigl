@@ -68,8 +68,8 @@ bool RenderMgr::init() {
   }
   SDL_ClearError();
 
-  // SDL_Surface * icon = IMG_Load("res/icons/icon.png");
-  // SDL_SetWindowIcon(main_window, icon);
+  SDL_Surface * icon = IMG_Load("../res/icons/icon.png");
+  SDL_SetWindowIcon(main_window, icon);
 
   gl_context = SDL_GL_CreateContext(main_window);
 
@@ -95,10 +95,12 @@ bool RenderMgr::init() {
   // glEnable(GL_CULL_FACE);
   glEnable(GL_STENCIL_TEST);
 
-  glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
-#ifdef __PLATFORM_ANDROID__
-  glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
-#endif
+  glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
+
+//   glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+// #ifdef __PLATFORM_ANDROID__
+//   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
+// #endif
 
 #ifndef __PLATFORM_ANDROID__
   // glShadeModel(GL_SMOOTH);
@@ -106,11 +108,16 @@ bool RenderMgr::init() {
   glFrontFace(GL_CCW);
 // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 #endif
+
+  SDL_GL_GetDrawableSize(main_window, &w, &h);
+  glViewport(0, 0, w, h);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   return true;
 }
 
 void RenderMgr::render_frame(float time_delta) {
-  // SDL_GL_MakeCurrent(main_window, gl_context);
+  SDL_GL_MakeCurrent(main_window, gl_context);
 
   int w, h;
   SDL_GL_GetDrawableSize(main_window, &w, &h);
@@ -140,7 +147,7 @@ void RenderMgr::render_frame(float time_delta) {
   mvp = view_proj_m * model_m;
   s->uniformMatrix4("mvp", mvp);
 
-  // m->draw();
+  m->draw();
 
   SceneMgr::ptr()->m_mesh.Render(mvp);
 

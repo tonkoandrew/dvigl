@@ -1,6 +1,6 @@
 #pragma once
-#include "btBulletDynamicsCommon.h"
 #include <dvigl/core.h>
+#include "btBulletDynamicsCommon.h"
 
 class PhysicsMgr : public Singleton<PhysicsMgr> {
 public:

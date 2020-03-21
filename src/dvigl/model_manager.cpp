@@ -5,6 +5,13 @@
 ModelMgr gModelMgr;
 
 bool ModelMgr::init() { return true; }
+
+bool ModelMgr::load_skinned_model(std::string name, std::string file_name,
+                          std::string format) {
+
+    return true;
+}
+
 bool ModelMgr::load_model(std::string name, std::string file_name,
                           std::string format) {
   auto it = models.find(name);
@@ -52,6 +59,15 @@ ModelNode *ModelMgr::get_model(std::string name) {
   }
   return models[name];
 }
+
+// SkinnedModelNode *ModelMgr::get_skinned_model(std::string name) {
+//   auto it = skinned_models.find(name);
+//   if (it == skinned_models.end()) {
+//     LOG("SkinnedModel %s not found\n", name.c_str());
+//     return NULL;
+//   }
+//   return skinned_models[name];
+// }
 
 void ModelMgr::release() {
   // release ttf fonts

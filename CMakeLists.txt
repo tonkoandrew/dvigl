@@ -56,9 +56,21 @@ message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
 find_package(IrrXML REQUIRED )
 message(STATUS "Found IrrXML in ${IRRXML_INCLUDE_DIR}")
 
+
+
+find_package(OGG REQUIRED )
+message(STATUS "Found OGG in ${OGG_LIBRARY}")
+
+find_package(Vorbis REQUIRED)
+message(STATUS "Found VORBIS_LIBRARIES in ${VORBIS_LIBRARIES}")
+
+find_package(THEORA REQUIRED )
+message(STATUS "Found THEORA in ${THEORA_LIBRARIES}")
+
 # yaml-cpp-0.6.3
 find_package(yaml-cpp REQUIRED)
 message(STATUS "YAML_CPP_INCLUDE_DIR at ${YAML_CPP_INCLUDE_DIR}")
+
 
 if(WIN32)
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
@@ -76,7 +88,7 @@ elseif(UNIX AND NOT APPLE)
   add_definitions(${OPENGL_DEFINITIONS})
   find_package(X11 REQUIRED)
   # note that the order is important for setting the libs
-  set(LIBS Qt5::Widgets ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread)
+  set(LIBS Qt5::Widgets ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread)
   set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
 elseif(APPLE)
   INCLUDE_DIRECTORIES(/System/Library/Frameworks)
@@ -96,6 +108,13 @@ endif(WIN32)
 add_library(GLAD STATIC "src/glad.c")
 
 set(LIBS ${LIBS} GLAD)
+
+
+add_library(THEORAPLAY STATIC "src/theoraplay.c")
+
+target_link_libraries(THEORAPLAY ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${THEORA_LIBRARIES})
+set(LIBS ${LIBS} THEORAPLAY)
+
 
 set(NAME "dvigl")
 
