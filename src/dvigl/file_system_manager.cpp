@@ -11,9 +11,9 @@ char *FileSystemMgr::get_content(std::string file_name) {
   SDL_RWops *rw = SDL_RWFromFile(file_name.c_str(), "rb");
   if (rw != NULL) {
     /* Seek to 0 bytes from the end of the file */
-    bufferLength = SDL_RWseek(rw, 0, RW_SEEK_END);
-    if (bufferLength < 0) {
-      LOG("Could not seek inside %s\n", file_name.c_str());
+    bufferLength = SDL_RWsize(rw);
+    if (bufferLength == 0) {
+      LOG("File is empty: %s\n", file_name.c_str());
     } else {
       SDL_RWseek(rw, 0, RW_SEEK_SET);
       buffer = (char *)malloc(bufferLength + 1);

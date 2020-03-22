@@ -114,6 +114,8 @@ bool RenderMgr::init() {
   glViewport(0, 0, w, h);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  SDL_GL_SwapWindow(main_window);
+
   return true;
 }
 

@@ -10,32 +10,25 @@
 //  libtheora-1.1.1/examples/player_example.c, but this is all my own
 //  code.
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <assert.h>
 
-#include <unistd.h>
-#define sleepms(x) usleep((x) * 1000)
 #define THEORAPLAY_THREAD_T    SDL_Thread*
 #define THEORAPLAY_MUTEX_T     SDL_mutex*
 
 #include <theoraplay/theoraplay.h>
-#include "theora/theoradec.h"
-#include "vorbis/codec.h"
+#include <theora/theoradec.h>
+#include <vorbis/codec.h>
 
 #if defined(__ANDROID__) || defined(ANDROID)
     #define __PLATFORM_ANDROID__
+#endif
+#if defined(_WIN32)
+    #define __PLATFORM_WINDOWS__
+#endif
+#if defined(__APPLE__)
+    #define __PLATFORM_APPLE__
 #else
-    #if defined(_WIN32)
-        #define __PLATFORM_WINDOWS__
-    #else
-        #if defined(__APPLE__)
-            #define __PLATFORM_APPLE__
-        #else
-            #define __PLATFORM_LINUX__
-        #endif
-    #endif
+    #define __PLATFORM_LINUX__
 #endif
 
 #if defined(__PLATFORM_ANDROID__)
@@ -529,7 +522,7 @@ static void WorkerThread(TheoraDecoder *ctx)
                 go_on = !ctx->halt && (ctx->videocount >= ctx->maxframes);
                 Mutex_Unlock(ctx->lock);
                 if (go_on)
-                    sleepms(10);
+                    SDL_Delay(10);
             } // while
             //printf("Awake!\n");
         } // if
@@ -566,18 +559,16 @@ static int WorkerThreadEntry(void *ptr)
 
 static long IoFopenRead(THEORAPLAY_Io *io, void *buf, long buflen)
 {
-    FILE *f = (FILE *) io->userdata;
-    const size_t br = fread(buf, 1, buflen, f);
-    if ((br == 0) && ferror(f))
-        return -1;
+    SDL_RWops *f = (SDL_RWops *) io->userdata;
+    const size_t br = SDL_RWread(f, buf, 1, buflen);
     return (long) br;
 } // IoFopenRead
 
 
 static void IoFopenClose(THEORAPLAY_Io *io)
 {
-    FILE *f = (FILE *) io->userdata;
-    fclose(f);
+    SDL_RWops *f = (SDL_RWops *) io->userdata;
+    SDL_RWclose(f);
     free(io);
 } // IoFopenClose
 
@@ -590,7 +581,7 @@ THEORAPLAY_Decoder *THEORAPLAY_startDecodeFile(const char *fname,
     if (io == NULL)
         return NULL;
 
-    FILE *f = fopen(fname, "rb");
+    SDL_RWops *f = SDL_RWFromFile(fname, "rb");
     if (f == NULL)
     {
         free(io);
