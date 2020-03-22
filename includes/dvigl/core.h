@@ -3,17 +3,17 @@
 // Platform detection:
 
 #if defined(__ANDROID__) || defined(ANDROID)
-#define __PLATFORM_ANDROID__
+    #define __PLATFORM_ANDROID__
 #else
-#if defined(_WIN32)
-#define __PLATFORM_WINDOWS__
-#else
-#if defined(__APPLE__)
-#define __PLATFORM_APPLE__
-#else
-#define __PLATFORM_LINUX__
-#endif
-#endif
+    #if defined(_WIN32)
+        #define __PLATFORM_WINDOWS__
+    #else
+        #if defined(__APPLE__)
+            #define __PLATFORM_APPLE__
+        #else
+            #define __PLATFORM_LINUX__
+        #endif
+    #endif
 #endif
 
 #include <yaml-cpp/yaml.h>

@@ -15,22 +15,44 @@
 #include <string.h>
 #include <assert.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#define THEORAPLAY_THREAD_T    HANDLE
-#define THEORAPLAY_MUTEX_T     HANDLE
-#define sleepms(x) Sleep(x)
-#else
-#include <pthread.h>
 #include <unistd.h>
 #define sleepms(x) usleep((x) * 1000)
-#define THEORAPLAY_THREAD_T    pthread_t
-#define THEORAPLAY_MUTEX_T     pthread_mutex_t
-#endif
+#define THEORAPLAY_THREAD_T    SDL_Thread*
+#define THEORAPLAY_MUTEX_T     SDL_mutex*
 
 #include <theoraplay/theoraplay.h>
 #include "theora/theoradec.h"
 #include "vorbis/codec.h"
+
+#if defined(__ANDROID__) || defined(ANDROID)
+    #define __PLATFORM_ANDROID__
+#else
+    #if defined(_WIN32)
+        #define __PLATFORM_WINDOWS__
+    #else
+        #if defined(__APPLE__)
+            #define __PLATFORM_APPLE__
+        #else
+            #define __PLATFORM_LINUX__
+        #endif
+    #endif
+#endif
+
+#if defined(__PLATFORM_ANDROID__)
+#include "SDL.h"
+#endif
+
+#if defined(__PLATFORM_LINUX__)
+#include <SDL2/SDL.h>
+#endif
+
+#if defined(__PLATFORM_APPLE__)
+#include <SDL2/SDL.h>
+#endif
+
+#if defined(__PLATFORM_WINDOWS__)
+#include <SDL2/SDL.h>
+#endif
 
 #define THEORAPLAY_INTERNAL 1
 
@@ -126,67 +148,40 @@ typedef struct TheoraDecoder
 } TheoraDecoder;
 
 
-#ifdef _WIN32
-static inline int Thread_Create(TheoraDecoder *ctx, void *(*routine) (void*))
+static inline int Thread_Create(TheoraDecoder *ctx, SDL_ThreadFunction routine)
+    // void *(*routine) (void*))
 {
-    ctx->worker = CreateThread(
-        NULL,
-        0,
-        (LPTHREAD_START_ROUTINE) routine,
-        (LPVOID) ctx,
-        0,
-        NULL
-    );
-    return (ctx->worker == NULL);
+    // return pthread_create(&ctx->worker, NULL, routine, ctx);
+    ctx->worker = SDL_CreateThread(routine, NULL, (void*)ctx);
+    return 0;
 }
 static inline void Thread_Join(THEORAPLAY_THREAD_T thread)
 {
-    WaitForSingleObject(thread, INFINITE);
-    CloseHandle(thread);
+    // pthread_join(thread, NULL);
+    SDL_WaitThread(thread, NULL);
 }
 static inline int Mutex_Create(TheoraDecoder *ctx)
 {
-    ctx->lock = CreateMutex(NULL, FALSE, NULL);
-    return (ctx->lock == NULL);
+    ctx->lock = SDL_CreateMutex();
+    return 0;
+    // return pthread_mutex_init(&ctx->lock, NULL);
 }
 static inline void Mutex_Destroy(THEORAPLAY_MUTEX_T mutex)
 {
-    CloseHandle(mutex);
+    // pthread_mutex_destroy(&mutex);
+    SDL_DestroyMutex(mutex);
 }
 static inline void Mutex_Lock(THEORAPLAY_MUTEX_T mutex)
 {
-    WaitForSingleObject(mutex, INFINITE);
+    // pthread_mutex_lock(&mutex);
+    SDL_LockMutex(mutex);
+    // pthread_mutex_lock(&mutex);
 }
 static inline void Mutex_Unlock(THEORAPLAY_MUTEX_T mutex)
 {
-    ReleaseMutex(mutex);
+    SDL_UnlockMutex(mutex);
+    // pthread_mutex_unlock(&mutex);
 }
-#else
-static inline int Thread_Create(TheoraDecoder *ctx, void *(*routine) (void*))
-{
-    return pthread_create(&ctx->worker, NULL, routine, ctx);
-}
-static inline void Thread_Join(THEORAPLAY_THREAD_T thread)
-{
-    pthread_join(thread, NULL);
-}
-static inline int Mutex_Create(TheoraDecoder *ctx)
-{
-    return pthread_mutex_init(&ctx->lock, NULL);
-}
-static inline void Mutex_Destroy(THEORAPLAY_MUTEX_T mutex)
-{
-    pthread_mutex_destroy(&mutex);
-}
-static inline void Mutex_Lock(THEORAPLAY_MUTEX_T mutex)
-{
-    pthread_mutex_lock(&mutex);
-}
-static inline void Mutex_Unlock(THEORAPLAY_MUTEX_T mutex)
-{
-    pthread_mutex_unlock(&mutex);
-}
-#endif
 
 
 static int FeedMoreOggData(THEORAPLAY_Io *io, ogg_sync_state *sync)
@@ -560,12 +555,12 @@ cleanup:
 } // WorkerThread
 
 
-static void *WorkerThreadEntry(void *_this)
+static int WorkerThreadEntry(void *ptr)
 {
-    TheoraDecoder *ctx = (TheoraDecoder *) _this;
+    TheoraDecoder *ctx = (TheoraDecoder *) ptr;
     WorkerThread(ctx);
     //printf("Worker thread is done.\n");
-    return NULL;
+    return 0;
 } // WorkerThreadEntry
 
 

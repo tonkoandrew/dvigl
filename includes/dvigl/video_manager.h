@@ -19,7 +19,7 @@ public:
     void *pixels = NULL;
     int pitch = 0;
     SDL_Renderer* renderer = NULL;
-
+Uint32 baseticks = 0;
   bool init();
   bool load_video(std::string name);
   void update(float time_delta);

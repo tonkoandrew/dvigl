@@ -34,15 +34,6 @@ bool SceneMgr::load_scene(std::string file_name) {
     return false;
   }
 
-  // AudioMgr::ptr()->set_volume(MIX_MAX_VOLUME / 2);
-
-  // if (!AudioMgr::ptr()->load_audio("voodoo_people",
-  // "../res/audio/voodoo_chile.ogg"))
-  // {
-  //     return false;
-  // }
-
-  // AudioMgr::ptr()->get_audio("voodoo_people")->play();
 
   // if (!TextureMgr::ptr()->load_texture("yoda", "res/textures/yoda.png"))
   // if (!TextureMgr::ptr()->load_texture("yoda",
@@ -116,6 +107,15 @@ bool SceneMgr::load_scene(std::string file_name) {
   current_scene->get_current_camera()->move_up(80.0f);
 
   VideoMgr::ptr()->load_video("../res/videos/video.ogv");
+
+  AudioMgr::ptr()->set_volume(MIX_MAX_VOLUME / 2);
+  //   if (!AudioMgr::ptr()->load_audio("elvis", "../res/audio/elvis.ogg"))
+  //   {
+  //       return false;
+  //   }
+
+  //   AudioMgr::ptr()->get_audio("elvis")->play();
+
   return true;
 }
 

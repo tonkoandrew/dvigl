@@ -37,8 +37,7 @@ int FileSystemMgr::get_size(std::string file_name) {
   int size = 0;
   SDL_RWops *rw = SDL_RWFromFile(file_name.c_str(), "rb");
   if (rw != NULL) {
-    /* Seek to 0 bytes from the end of the file */
-    size = SDL_RWseek(rw, 0, RW_SEEK_END);
+    size = SDL_RWsize(rw);
     SDL_RWclose(rw);
   } else {
     LOG("File not exist: %s\n", file_name.c_str());

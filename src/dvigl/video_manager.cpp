@@ -8,8 +8,6 @@ VideoMgr gVideoMgr;
 // ffmpeg -i path/to/eagames.mp4 -codec:v libtheora -qscale:v 7 -codec:a libvorbis -qscale:a 5 ../res/videos/video.ogv
 
 
-static Uint32 baseticks = 0;
-
 typedef struct AudioQueue {
     const THEORAPLAY_AudioPacket *audio;
     int offset;
@@ -87,8 +85,6 @@ bool VideoMgr::load_video(std::string fname) {
 
     decoder = THEORAPLAY_startDecodeFile(fname.c_str(), 30, THEORAPLAY_VIDFMT_IYUV);
 
-    // SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
-
     while (!audio || !video) {
         if (!audio) audio = THEORAPLAY_getAudio(decoder);
         if (!video) video = THEORAPLAY_getVideo(decoder);
@@ -101,8 +97,6 @@ bool VideoMgr::load_video(std::string fname) {
     // int height = 1080;
 
     framems = (video->fps == 0.0) ? 0 : ((Uint32)(1000.0 / video->fps));
-
-    // screen = SDL_CreateWindow("Video Player SDL2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
 
     screen = RenderMgr::ptr()->get_main_window();
 
@@ -191,20 +185,6 @@ void VideoMgr::update(float time_delta) {
         while ((audio = THEORAPLAY_getAudio(decoder)) != NULL)
             queue_audio(audio);
 
-        while (screen && SDL_PollEvent(&event)) {
-            switch (event.type) {
-
-            case SDL_QUIT:
-                quit = 1;
-                break;
-
-            case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_ESCAPE)
-                    quit = 1;
-                break;
-            }
-        }
-
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
@@ -225,7 +205,6 @@ void VideoMgr::release() {
             SDL_Delay(100);
     }
 
-
     if (initfailed)
         LOG("Initialization failed!\n");
     else if (THEORAPLAY_decodingError(decoder))
@@ -237,6 +216,4 @@ void VideoMgr::release() {
     if (video) THEORAPLAY_freeVideo(video);
     if (audio) THEORAPLAY_freeAudio(audio);
     if (decoder) THEORAPLAY_stopDecode(decoder);
-    // SDL_CloseAudio();
-    // SDL_Quit();
 }

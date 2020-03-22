@@ -16,17 +16,6 @@
 #define BONE_ID_LOCATION 3
 #define BONE_WEIGHT_LOCATION 4
 
-long long GetCurrentTimeMillis() {
-  long long result;
-#ifdef WIN32
-  result = GetTickCount();
-#else
-  timeval t;
-  gettimeofday(&t, NULL);
-  result = t.tv_sec * 1000 + t.tv_usec / 1000;
-#endif
-  return result;
-}
 
 inline glm::mat4 aiMatrix4x4ToGlm(aiMatrix4x4 *from) {
   glm::mat4 to;
@@ -98,7 +87,7 @@ SkinnedMesh::SkinnedMesh(const aiScene *pScene) {
   LOG("SkinnedMesh IMPORTED %d MESHES\n", pScene->mNumMeshes);
   LOG("SkinnedMesh IMPORTED %d ANIMATIONS\n", pScene->mNumAnimations);
 
-  m_startTime = GetCurrentTimeMillis();
+  m_startTime = SDL_GetTicks();
   // Create the VAO
   glGenVertexArrays(1, &m_VAO);
   glBindVertexArray(m_VAO);
@@ -356,8 +345,7 @@ bool SkinnedMesh::InitMaterials(const aiScene *pScene, const string &Filename) {
 }
 
 float SkinnedMesh::GetRunningTime() {
-  float RunningTime =
-      (float)((double)GetCurrentTimeMillis() - (double)m_startTime) / 1000.0f;
+  float RunningTime = (SDL_GetTicks() - m_startTime) / 1000.0f;
   return RunningTime;
 }
 
