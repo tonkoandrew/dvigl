@@ -97,7 +97,6 @@ bool VideoMgr::load_video(std::string fname) {
     // int height = 1080;
 
     framems = (video->fps == 0.0) ? 0 : ((Uint32)(1000.0 / video->fps));
-
     screen = RenderMgr::ptr()->get_main_window();
 
     renderer = SDL_CreateRenderer(screen, -1, 0);
@@ -120,7 +119,7 @@ bool VideoMgr::load_video(std::string fname) {
         audio = THEORAPLAY_getAudio(decoder);
     }
 
-    baseticks = SDL_GetTicks();
+    baseticks = SDL_GetTicks() - 20;
 
     if (!quit)
         SDL_PauseAudio(0);
@@ -209,9 +208,7 @@ void VideoMgr::release() {
         LOG("Initialization failed!\n");
     else if (THEORAPLAY_decodingError(decoder))
         LOG("There was an error decoding this file!\n");
-    else
-        LOG("done with this file!\n");
-
+    
     if (texture) SDL_DestroyTexture(texture);
     if (video) THEORAPLAY_freeVideo(video);
     if (audio) THEORAPLAY_freeAudio(audio);

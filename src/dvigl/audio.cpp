@@ -9,6 +9,7 @@ Audio::Audio(std::string filename) {
     // handle error
   }
   music = Mix_LoadMUS(filename.c_str());
+
 }
 
 void Audio::play() {

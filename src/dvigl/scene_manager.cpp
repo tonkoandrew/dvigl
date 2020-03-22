@@ -49,6 +49,7 @@ bool SceneMgr::load_scene(std::string file_name) {
     return false;
   }
 
+
   // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/yoda.dae", "collada", 20.0f))
 
   // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/boblampclean.md5mesh", "md5mesh", 1.5f))
@@ -69,6 +70,8 @@ bool SceneMgr::load_scene(std::string file_name) {
   {
     return false;
   }
+
+  VideoMgr::ptr()->load_video("../res/videos/video.ogv");
 
 
   // if (!ModelMgr::ptr()->generate_plane_model("plane", 100, 100))
@@ -106,15 +109,14 @@ bool SceneMgr::load_scene(std::string file_name) {
   current_scene->get_current_camera()->move_back(200.0f);
   current_scene->get_current_camera()->move_up(80.0f);
 
-  VideoMgr::ptr()->load_video("../res/videos/video.ogv");
 
   AudioMgr::ptr()->set_volume(MIX_MAX_VOLUME / 2);
-  //   if (!AudioMgr::ptr()->load_audio("elvis", "../res/audio/elvis.ogg"))
-  //   {
-  //       return false;
-  //   }
+    if (!AudioMgr::ptr()->load_audio("elvis", "../res/audio/elvis.ogg"))
+    {
+        return false;
+    }
 
-  //   AudioMgr::ptr()->get_audio("elvis")->play();
+    AudioMgr::ptr()->get_audio("elvis")->play();
 
   return true;
 }

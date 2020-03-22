@@ -138,13 +138,12 @@ bool Application::init() {
   }
   LOG("done\n");
 
-  LOG("Loading Scene... ");
+  LOG("Loading Scene...\n");
   if (!SceneMgr::ptr()->load_scene("start.scn")) {
-    LOG("failed\n");
+    LOG("failed to load scene\n");
     error_code = 16;
     return false;
   }
-  LOG("done\n");
 
   return true;
 }
@@ -209,5 +208,5 @@ void Application::release() {
   NetworkMgr::ptr()->release();
   RenderMgr::ptr()->release();
   SDL_Quit();
-  LOG("done\n");
+  LOG("Release finished\n");
 }

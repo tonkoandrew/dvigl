@@ -18,12 +18,17 @@ void InputMgr::process_input(float time_delta) {
 
   CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
+static float angle = 0;
+static float dist = 0;
   if (keystates[SDL_SCANCODE_W]){
     cam->move_forward(0.1f * time_delta);
+    dist -= 0.01 * time_delta;
   }
 
   if (keystates[SDL_SCANCODE_S]){
     cam->move_back(0.1f * time_delta);
+
+    dist += 0.01 * time_delta;
   }
 
   if (keystates[SDL_SCANCODE_Z]){
@@ -43,13 +48,18 @@ void InputMgr::process_input(float time_delta) {
     cam->move_up(0.1f * time_delta);
   }
 
+
   if (keystates[SDL_SCANCODE_A]){
     cam->yaw(0.001f * time_delta);
+    angle += 0.1 * time_delta;
   }
 
   if (keystates[SDL_SCANCODE_D]){
     cam->yaw(-0.001f * time_delta);
+    angle -= 0.1 * time_delta;
   }
+
+  Mix_SetPosition(MIX_CHANNEL_POST, angle, dist);
 }
 
 void InputMgr::release() {}
