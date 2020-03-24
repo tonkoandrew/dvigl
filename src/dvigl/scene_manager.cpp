@@ -111,12 +111,12 @@ bool SceneMgr::load_scene(std::string file_name) {
 
 
   AudioMgr::ptr()->set_volume(MIX_MAX_VOLUME / 2);
-    if (!AudioMgr::ptr()->load_audio("elvis", "../res/audio/elvis.ogg"))
-    {
-        return false;
-    }
+    // if (!AudioMgr::ptr()->load_audio("elvis", "../res/audio/elvis.ogg"))
+    // {
+    //     return false;
+    // }
 
-    AudioMgr::ptr()->get_audio("elvis")->play();
+    // AudioMgr::ptr()->get_audio("elvis")->play();
 
   return true;
 }
