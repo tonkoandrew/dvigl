@@ -29,4 +29,4 @@ Now try to run
 
 ## Demo
 
-![Demo](https://github.com/tonkoandrew/dvigl/raw/master/res/demo.gif?cache=invalidated123)
+![Demo](https://raw.githubusercontent.com/tonkoandrew/dvigl/master/res/demo.gif?cache=false)
