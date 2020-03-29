@@ -138,7 +138,7 @@ bool Application::init() {
   }
   LOG("done\n");
 
-  LOG("Loading Scene...\n");
+  LOG("Loading Scene start.scn\n");
   if (!SceneMgr::ptr()->load_scene("start.scn")) {
     LOG("failed to load scene\n");
     error_code = 16;

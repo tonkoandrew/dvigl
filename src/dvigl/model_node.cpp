@@ -35,9 +35,9 @@ aiReleasePropertyStore(store);
   }
 
   meshes.resize(scene->mNumMeshes);
-  LOG("\n");
-  LOG("IMPORTED %d MESHES\n", scene->mNumMeshes);
-  LOG("IMPORTED %d ANIMATIONS\n", scene->mNumAnimations);
+  // LOG("\n");
+  LOG("ModelNode IMPORTED %d MESHES\n", scene->mNumMeshes);
+  LOG("ModelNode IMPORTED %d ANIMATIONS\n", scene->mNumAnimations);
 
   for (int m = 0; m < scene->mNumMeshes; m++) {
     for (int i = 0; i < (int)scene->mNumAnimations; i++) {

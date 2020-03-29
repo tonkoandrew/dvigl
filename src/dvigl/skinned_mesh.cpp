@@ -83,7 +83,7 @@ SkinnedMesh::SkinnedMesh(const aiScene *pScene) {
   m_NumBones = 0;
   m_pScene = pScene;
 
-  LOG("\n");
+  // LOG("\n");
   LOG("SkinnedMesh IMPORTED %d MESHES\n", pScene->mNumMeshes);
   LOG("SkinnedMesh IMPORTED %d ANIMATIONS\n", pScene->mNumAnimations);
 

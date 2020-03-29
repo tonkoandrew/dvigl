@@ -76,6 +76,8 @@ bool TextureMgr::add_texture(std::string name, SDL_Surface *surf) {
 }
 
 bool TextureMgr::load_texture(std::string name, std::string file_name) {
+
+  LOG("Loading texture %s\n", file_name.c_str());
   SDL_Surface *surf = IMG_Load(file_name.c_str());
   if (!surf) {
     LOG("IMG_Load error: %s\n", IMG_GetError());

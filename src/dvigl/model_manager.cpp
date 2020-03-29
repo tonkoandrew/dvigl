@@ -9,6 +9,7 @@ bool ModelMgr::init() { return true; }
 
 bool ModelMgr::load_skinned_model(std::string name, std::string file_name,
                           std::string format, float scale) {
+  LOG("Loading skinned model %s\n", file_name.c_str());
   auto it = skinned_models.find(name);
   while (it != skinned_models.end()) {
     it->second->release();
@@ -26,6 +27,8 @@ bool ModelMgr::load_skinned_model(std::string name, std::string file_name,
 
 bool ModelMgr::load_model(std::string name, std::string file_name,
                           std::string format, float scale) {
+
+  LOG("Loading static model %s\n", file_name.c_str());
   auto it = models.find(name);
   while (it != models.end()) {
     it->second->release();
