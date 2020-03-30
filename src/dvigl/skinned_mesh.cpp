@@ -365,10 +365,10 @@ void SkinnedMesh::draw(glm::mat4 mvp) {
   // s->uniform1i("gNormalMap", GL_TEXTURE1);
 
 
-  for(int i=0; i<Transforms.size(); i++){
-    glm::mat4 mat = Transforms[i];
-    LOG("Transforms %d = %s\n", i, glm::to_string(mat).c_str());
-  }
+  // for(int i=0; i<Transforms.size(); i++){
+  //   glm::mat4 mat = Transforms[i];
+  //   LOG("Transforms %d = %s\n", i, glm::to_string(mat).c_str());
+  // }
 
   glUniformMatrix4fv(m_boneLocation, Transforms.size(), false, (float*) Transforms.data());
 
@@ -525,6 +525,7 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
 
   glm::mat4 NodeTransformation(
       aiMatrix4x4ToGlm((aiMatrix4x4 *)&(pNode->mTransformation)));
+  LOG("NodeTransformation = %s\n", glm::to_string(NodeTransformation).c_str());
 
   const aiNodeAnim *pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
