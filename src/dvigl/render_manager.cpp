@@ -104,6 +104,12 @@ bool RenderMgr::init() {
 // #endif
 
 #ifndef __PLATFORM_ANDROID__
+  LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+  int max_attrs = 0;
+  glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max_attrs);
+  LOG("%d\n", max_attrs);
+
+  LOG("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   // glShadeModel(GL_SMOOTH);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glFrontFace(GL_CCW);

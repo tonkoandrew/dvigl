@@ -71,7 +71,7 @@ bool SceneMgr::load_scene(std::string file_name) {
     return false;
   }
 
-  VideoMgr::ptr()->load_video("../res/videos/video.ogv");
+  // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
 
 
   // if (!ModelMgr::ptr()->generate_plane_model("plane", 100, 100))

@@ -119,6 +119,7 @@ SkinnedMesh::SkinnedMesh(const aiScene *pScene) {
     m_boneLocation[i] = s->get_uniform_location(Name);
     if (m_boneLocation[i] == INVALID_UNIFORM_LOCATION) {
       Ret = false;
+      LOG("uniform location %s is INVALID\n", Name);
     }
   }
 
@@ -173,6 +174,7 @@ bool SkinnedMesh::InitFromScene(const aiScene *pScene, const string &Filename) {
   TexCoords.reserve(NumVertices);
   Bones.resize(NumVertices);
   Indices.reserve(NumIndices);
+  // LOG("NumVertices = %d\n", NumVertices);
 
   // Initialize the meshes in the scene one by one
   for (uint i = 0; i < m_Entries.size(); i++) {
@@ -387,6 +389,12 @@ void SkinnedMesh::draw(glm::mat4 mvp) {
     if (m_NormalMaps[MaterialIndex]) {
       m_NormalMaps[MaterialIndex]->bind(GL_TEXTURE1);
     }
+
+
+    // LOG("%s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    // if(GLAD_GL_ARB_draw_elements_base_vertex)
+    //   LOG("ARB_draw_elements_base_vertex\n");
 
     glDrawElementsBaseVertex(GL_TRIANGLES, m_Entries[i].NumIndices,
                              GL_UNSIGNED_INT,
