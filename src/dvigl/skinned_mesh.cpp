@@ -542,6 +542,7 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
     aiMatrix3x3 rot = RotationQ.GetMatrix();
     glm::mat4 RotationM = aiMatrix3x3ToGlm(&rot);
+    // LOG("RotationM = %s\n", glm::to_string(RotationM).c_str());
 
     // Interpolate translation and generate translation transformation matrix
     aiVector3D Translation;
@@ -549,6 +550,7 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     glm::mat4 TranslationM = glm::translate(
         glm::mat4(), glm::vec3(Translation.x, Translation.y, Translation.z));
 
+    // LOG("TranslationM = %s\n", glm::to_string(TranslationM).c_str());
     // Combine the above transformations
     NodeTransformation = TranslationM * RotationM * ScalingM;
   }
