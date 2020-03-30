@@ -112,15 +112,10 @@ SkinnedMesh::SkinnedMesh(const aiScene *pScene) {
     Ret = false;
   }
 
-  for (unsigned int i = 0; i < ARRAY_SIZE_IN_ELEMENTS(m_boneLocation); i++) {
-    char Name[128];
-    memset(Name, 0, sizeof(Name));
-    SNPRINTF(Name, sizeof(Name), "gBones[%d]", i);
-    m_boneLocation[i] = s->get_uniform_location(Name);
-    if (m_boneLocation[i] == INVALID_UNIFORM_LOCATION) {
-      Ret = false;
-      LOG("uniform location %s is INVALID\n", Name);
-    }
+  m_boneLocation = s->get_uniform_location("gBones");
+  if (m_boneLocation == INVALID_UNIFORM_LOCATION) {
+    Ret = false;
+    LOG("uniform location gBones is INVALID\n");
   }
 
 }
@@ -369,10 +364,15 @@ void SkinnedMesh::draw(glm::mat4 mvp) {
   s->uniform1i("gNormalMap", 1);
   // s->uniform1i("gNormalMap", GL_TEXTURE1);
 
-  for (uint i = 0; i < Transforms.size(); i++) {
-    glUniformMatrix4fv(m_boneLocation[i], 1, false,
-                       glm::value_ptr(Transforms[i]));
+  glm::mat4* transforms_array;
+  transforms_array = (glm::mat4*) malloc(sizeof(glm::mat4)*Transforms.size());
+  for(int i=0; i<Transforms.size(); ++i){
+    transforms_array[i] = Transforms[i];
   }
+
+  glUniformMatrix4fv(m_boneLocation, Transforms.size(), false, glm::value_ptr(transforms_array[0]));
+
+  free(transforms_array);
 
   glUniformMatrix4fv(m_WVPLocation, 1, false, glm::value_ptr(mvp));
   glBindVertexArray(m_VAO);

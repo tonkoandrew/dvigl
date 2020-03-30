@@ -27,7 +27,7 @@ public:
   long long m_frameTime;
   long long m_startTime;
 
-  GLuint m_boneLocation[MAX_BONES];
+  GLuint m_boneLocation;
 
   GLuint m_WVPLocation;
   GLuint m_colorTextureLocation;

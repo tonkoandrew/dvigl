@@ -106,7 +106,7 @@ bool RenderMgr::init() {
 #ifndef __PLATFORM_ANDROID__
   LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   int max_attrs = 0;
-  glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS_ARB, &max_attrs);
+  glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_attrs);
   LOG("%d\n", max_attrs);
 
   LOG("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
