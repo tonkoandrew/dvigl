@@ -534,8 +534,9 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     aiVector3D Scaling;
     CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
     glm::mat4 ScalingM =
-        glm::scale(glm::mat4(), glm::vec3(Scaling.x, Scaling.y, Scaling.z));
-    LOG("ScalingM = %s\n", glm::to_string(ScalingM).c_str());
+        glm::scale(glm::mat4(1.0), glm::vec3(Scaling.x, Scaling.y, Scaling.z));
+    // LOG("ScalingM = %s\n", glm::to_string(ScalingM).c_str());
+    // LOG("%f %f %f\n", Scaling.x, Scaling.y, Scaling.z);
 
     // Interpolate rotation and generate rotation transformation matrix
     aiQuaternion RotationQ;
@@ -548,7 +549,7 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     aiVector3D Translation;
     CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
     glm::mat4 TranslationM = glm::translate(
-        glm::mat4(), glm::vec3(Translation.x, Translation.y, Translation.z));
+        glm::mat4(1.0), glm::vec3(Translation.x, Translation.y, Translation.z));
 
     // LOG("TranslationM = %s\n", glm::to_string(TranslationM).c_str());
     // Combine the above transformations
