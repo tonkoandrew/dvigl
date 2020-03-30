@@ -72,6 +72,9 @@ typedef GLuint GLhandleARB;
 #include <glm/vec3.hpp>         // glm::vec3
 #include <glm/vec4.hpp>         // glm::vec4, glm::ivec4
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>  // glm::to_string
+
 #include <assimp/cexport.h>     // C exporter interface
 #include <assimp/cimport.h>     // C importer interface
 #include <assimp/postprocess.h> // Post processing flags

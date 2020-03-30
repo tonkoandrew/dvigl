@@ -159,13 +159,13 @@ void RenderMgr::render_frame(float time_delta) {
   m->draw();
 
 
-  // Shader *ss = ShaderMgr::ptr()->get_shader("skinned");
-  // ss->bind();
-  SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
-  model_m = elvis->get_model_matrix();
-  mvp = view_proj_m * model_m;
-  // ss->uniformMatrix4("gWVP", mvp);
-  elvis->draw(mvp);
+  // // Shader *ss = ShaderMgr::ptr()->get_shader("skinned");
+  // // ss->bind();
+  // SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
+  // model_m = elvis->get_model_matrix();
+  // mvp = view_proj_m * model_m;
+  // // ss->uniformMatrix4("gWVP", mvp);
+  // elvis->draw(mvp);
 
   SkinnedModelNode *bob = ModelMgr::ptr()->get_skinned_model("bob");
   model_m = bob->get_model_matrix();
