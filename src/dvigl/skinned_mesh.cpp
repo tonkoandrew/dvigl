@@ -364,15 +364,7 @@ void SkinnedMesh::draw(glm::mat4 mvp) {
   s->uniform1i("gNormalMap", 1);
   // s->uniform1i("gNormalMap", GL_TEXTURE1);
 
-  glm::mat4* transforms_array;
-  transforms_array = (glm::mat4*) malloc(sizeof(glm::mat4)*Transforms.size());
-  for(int i=0; i<Transforms.size(); ++i){
-    transforms_array[i] = Transforms[i];
-  }
-
-  glUniformMatrix4fv(m_boneLocation, Transforms.size(), false, glm::value_ptr(transforms_array[0]));
-
-  free(transforms_array);
+  glUniformMatrix4fv(m_boneLocation, Transforms.size(), false, glm::value_ptr(Transforms[0]));
 
   glUniformMatrix4fv(m_WVPLocation, 1, false, glm::value_ptr(mvp));
   glBindVertexArray(m_VAO);
