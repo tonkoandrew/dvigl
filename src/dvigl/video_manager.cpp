@@ -123,6 +123,7 @@ bool VideoMgr::load_video(std::string fname) {
 
     if (!quit)
         SDL_PauseAudio(0);
+    return true;
 }
 
 
@@ -204,10 +205,12 @@ void VideoMgr::release() {
             SDL_Delay(100);
     }
 
-    if (initfailed)
+    if (initfailed){
         LOG("Initialization failed!\n");
-    else if (THEORAPLAY_decodingError(decoder))
+    }
+    else if (THEORAPLAY_decodingError(decoder)){
         LOG("There was an error decoding this file!\n");
+    }
     
     if (texture) SDL_DestroyTexture(texture);
     if (video) THEORAPLAY_freeVideo(video);

@@ -186,7 +186,7 @@ endif()
 # SDL-2.0 is the name used by FreeBSD ports...
 # don't confuse it for the version number.
 find_library(SDL2_LIBRARY
-  NAMES SDL2 SDL-2.0
+  NAMES SDL2 SDL-2.0 SDL2-static
   HINTS
     ENV SDL2DIR
     ${SDL2_NO_DEFAULT_PATH_CMD}
@@ -235,21 +235,22 @@ endif()
 # The Apple build may not need an explicit flag because one of the
 # frameworks may already provide it.
 # But for non-OSX systems, I will use the CMake Threads package.
-if(NOT APPLE)
-  find_package(Threads QUIET)
-  if(NOT CMAKE_THREAD_LIBS_INIT)
-    set(SDL2_THREADS_NOT_FOUND "Could NOT find Threads (Threads is required by SDL2).")
-    if(SDL2_FIND_REQUIRED)
-      message(FATAL_ERROR ${SDL2_THREADS_NOT_FOUND})
-    else()
-        if(NOT SDL2_FIND_QUIETLY)
-          message(STATUS ${SDL2_THREADS_NOT_FOUND})
-        endif()
-      return()
-    endif()
-    unset(SDL2_THREADS_NOT_FOUND)
-  endif()
-endif()
+
+# if(NOT APPLE)
+#   find_package(Threads QUIET)
+#   if(NOT CMAKE_THREAD_LIBS_INIT)
+#     set(SDL2_THREADS_NOT_FOUND "Could NOT find Threads (Threads is required by SDL2).")
+#     if(SDL2_FIND_REQUIRED)
+#       message(FATAL_ERROR ${SDL2_THREADS_NOT_FOUND})
+#     else()
+#         if(NOT SDL2_FIND_QUIETLY)
+#           message(STATUS ${SDL2_THREADS_NOT_FOUND})
+#         endif()
+#       return()
+#     endif()
+#     unset(SDL2_THREADS_NOT_FOUND)
+#   endif()
+# endif()
 
 # MinGW needs an additional link flag, -mwindows
 # It's total link flags should look like -lmingw32 -lSDL2main -lSDL2 -mwindows

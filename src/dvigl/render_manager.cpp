@@ -18,6 +18,7 @@
 RenderMgr gRenderMgr;
 
 bool RenderMgr::init() {
+  LOG("\n");
   SDL_GL_SetSwapInterval(0); // set VSync
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
@@ -46,8 +47,11 @@ bool RenderMgr::init() {
   std::string window_title = "Window title";
 
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-  int w = 1024;
-  int h = 768;
+  int w = 320;
+  int h = 240;
+
+  // int w = 1024;
+  // int h = 768;
 
   // int w = 1920;
   // int h = 1080;
@@ -83,7 +87,7 @@ bool RenderMgr::init() {
     LOG("Something went wrong!\n");
     return false;
   }
-  // LOG("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
+  LOG("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
 
   SDL_GL_MakeCurrent(main_window, gl_context);
 

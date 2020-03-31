@@ -24,11 +24,14 @@ bool SceneMgr::init() {
 
 bool SceneMgr::load_scene(std::string file_name) {
 
+  LOG("Loading Scene %s\n", file_name.c_str());
+
   if (!ShaderMgr::ptr()->load_shader("simple", "../res/shaders/simple.vs",
                                      "../res/shaders/simple.fs")) {
     return false;
   }
 
+LOG("ShaderMgr loaded shader simple\n");
   if (!ShaderMgr::ptr()->load_shader("skinned", "../res/shaders/skinned.vs",
                                      "../res/shaders/skinned.fs")) {
     return false;

@@ -18,7 +18,10 @@ Application gApplication;
 
 bool Application::init() {
   error_code = 0;
+
   int result = SDL_Init(SDL_INIT_EVERYTHING);
+
+  
   if (result) {
     LOG("SDL_Init failed: %s\n", SDL_GetError());
     error_code = 1;
@@ -138,7 +141,6 @@ bool Application::init() {
   }
   LOG("done\n");
 
-  LOG("Loading Scene start.scn\n");
   if (!SceneMgr::ptr()->load_scene("start.scn")) {
     LOG("failed to load scene\n");
     error_code = 16;
@@ -183,7 +185,7 @@ bool Application::main_loop() {
 
     SDL_Delay(delay);
   }
-  SDL_Quit();
+  // SDL_Quit();
   return true;
 }
 
@@ -192,7 +194,6 @@ void Application::exit() { quit = true; }
 int Application::get_error_code() { return error_code; }
 
 void Application::release() {
-  LOG("release... ");
   InputMgr::ptr()->release();
   FileSystemMgr::ptr()->release();
   SceneMgr::ptr()->release();
@@ -207,6 +208,6 @@ void Application::release() {
   ShaderMgr::ptr()->release();
   NetworkMgr::ptr()->release();
   RenderMgr::ptr()->release();
-  SDL_Quit();
   LOG("Release finished\n");
+  SDL_Quit();
 }

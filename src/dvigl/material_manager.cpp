@@ -47,4 +47,5 @@ bool MaterialMgr::load_material(std::string file_name) {
   // for (std::size_t i=0; i< node.size(); i++) {
   //   LOG("%s\n", node[i].as<int>());
   // }
+  return true;
 }

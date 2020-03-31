@@ -1,4 +1,11 @@
-#version 330
+#version 300 es
+
+#ifdef GL_ES
+// Set default precision to medium
+precision mediump int;
+precision mediump float;
+#endif
+
 
 in vec2 TexCoord0;
 

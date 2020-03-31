@@ -7,19 +7,28 @@ IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
+
+if(WIN32)
+  set(CMAKE_INCLUDE_PATH "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32")
+  set(CMAKE_LIBRARY_PATH "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32")
+  set(CMAKE_PREFIX_PATH "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32")
+endif(WIN32)
+
+find_package(Threads REQUIRED)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/;${CMAKE_MODULE_PATH}")
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-if(WIN32)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-endif(WIN32)
+# if(WIN32)
+#     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+# endif(WIN32)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s")
+list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic")
 
 # find the required packages
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
@@ -92,7 +101,12 @@ endif(WIN32)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 if(WIN32)
-  set(LIBS opengl32 assimp)
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+  find_package(OpenGL REQUIRED)
+  add_definitions(${OPENGL_DEFINITIONS})
+  set(LIBS Qt5::Widgets ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} pthread ${JPEG_LIBRARIES} opengl32.dll 
+    m user32 gdi32 winmm imm32 ole32 oleaut32 version uuid advapi32 setupapi shell32 dinput8 dxerr8 mingw32 ws2_32 wsock32 shlwapi lzma.a zstd.a mpg123.a FLAC.a tiff.a webp.a Iphlpapi vorbisfile.a vorbis.a ogg.a opusfile.a)
+  set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -mwindows")
 elseif(UNIX AND NOT APPLE)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
   find_package(OpenGL REQUIRED)
@@ -172,7 +186,7 @@ add_executable(${NAME} ${SOURCE})
 target_link_libraries(${NAME} ${LIBS})
 
 if(WIN32)
-    set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+    set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 elseif(UNIX AND NOT APPLE)
     set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 elseif(APPLE)

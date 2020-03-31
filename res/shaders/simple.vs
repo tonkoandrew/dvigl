@@ -1,10 +1,11 @@
-#version 330
+#version 300 es
 
-#ifdef GL_ES
-// Set default precision to medium
-precision mediump int;
-precision mediump float;
-#endif
+// #ifdef GL_ES
+// // Set default precision to medium
+// precision mediump int;
+// precision mediump float;
+// // precision mediump vec2;
+// #endif
 
 layout (location = 0) in vec4 attr_pos;
 layout (location = 1) in vec3 attr_normal;

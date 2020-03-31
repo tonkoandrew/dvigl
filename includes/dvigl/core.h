@@ -56,10 +56,10 @@ typedef GLuint GLhandleARB;
 
 #if defined(__PLATFORM_WINDOWS__)
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_net.h>
-#include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_ttf.h>
 #endif
 
@@ -93,6 +93,7 @@ typedef GLuint GLhandleARB;
 #include <map>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include <assert.h>
 
@@ -103,7 +104,7 @@ typedef GLuint GLhandleARB;
 #define LOG(...) __android_log_print(ANDROID_LOG_DEBUG, "corelog", __VA_ARGS__)
 #else
 #include <cstdio>
-#define LOG printf
+#define LOG(...) {printf(__VA_ARGS__); std::cout << std::flush;}
 #endif
 
 #define ZERO_MEM(a) memset(a, 0, sizeof(a))
