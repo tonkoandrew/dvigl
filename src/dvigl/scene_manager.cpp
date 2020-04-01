@@ -111,22 +111,9 @@ bool SceneMgr::load_scene(std::string file_name) {
     }
   }
 
-  GLuint err = glGetError();
-  if (err != 0) {
-    LOG("GL ERRORS BEFORE ================\n");
-    LOG("%d \n", err);
-    LOG("================\n");
-  }
-
   // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
 TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
 
- err = glGetError();
-  if (err != 0) {
-    LOG("GL ERRORS AFTER ================\n");
-    LOG("%d \n", err);
-    LOG("================\n");
-  }
 
   if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg"))
   {
