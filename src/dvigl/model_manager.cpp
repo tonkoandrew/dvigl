@@ -9,6 +9,7 @@ bool ModelMgr::init() { return true; }
 
 bool ModelMgr::load_skinned_model(std::string name, std::string file_name,
                           std::string format, float scale) {
+  file_name = "../res/models/" + file_name;
   LOG("Loading skinned model %s\n", file_name.c_str());
   auto it = skinned_models.find(name);
   while (it != skinned_models.end()) {
@@ -27,7 +28,7 @@ bool ModelMgr::load_skinned_model(std::string name, std::string file_name,
 
 bool ModelMgr::load_model(std::string name, std::string file_name,
                           std::string format, float scale) {
-
+  file_name = "../res/models/" + file_name;
   LOG("Loading static model %s\n", file_name.c_str());
   auto it = models.find(name);
   while (it != models.end()) {
@@ -44,25 +45,25 @@ bool ModelMgr::load_model(std::string name, std::string file_name,
   return true;
 }
 
-bool ModelMgr::generate_model(std::string name, SDL_Surface *surf) {
-  auto it = models.find(name);
-  while (it != models.end()) {
-    it->second->release();
-    models.erase(it);
-    it = models.find(name);
-  }
-  models[name] = new ModelNode(surf->w * 0.1f, surf->h * 0.1f);
-  return true;
-}
+// bool ModelMgr::generate_model(std::string name, SDL_Surface *surf) {
+//   auto it = models.find(name);
+//   while (it != models.end()) {
+//     it->second->release();
+//     models.erase(it);
+//     it = models.find(name);
+//   }
+//   models[name] = new ModelNode(surf->w * 0.1f, surf->h * 0.1f);
+//   return true;
+// }
 
-bool ModelMgr::generate_plane_model(std::string name, int w, int h) {
+bool ModelMgr::generate_plane_model(std::string name, int w, int h, std::string texture) {
   auto it = models.find(name);
   while (it != models.end()) {
     it->second->release();
     models.erase(it);
     it = models.find(name);
   }
-  models[name] = new ModelNode(w * 0.1f, h * 0.1f);
+  models[name] = new ModelNode(w, h, texture);
   return true;
 }
 

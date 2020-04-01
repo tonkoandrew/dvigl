@@ -123,11 +123,11 @@ void PhysicsMgr::update(float time_delta) {
     trans = obj->getWorldTransform();
   }
 
-  ModelNode *m = ModelMgr::ptr()->get_model("yoda");
-  glm::vec3 v = glm::vec3(float(trans.getOrigin().getX()),
-                          float(trans.getOrigin().getY()),
-                          float(trans.getOrigin().getZ()));
-  m->set_pose(v);
+  // ModelNode *m = ModelMgr::ptr()->get_model("yoda");
+  // glm::vec3 v = glm::vec3(float(trans.getOrigin().getX()),
+  //                         float(trans.getOrigin().getY()),
+  //                         float(trans.getOrigin().getZ()));
+  // m->set_pose(v);
 
 
   // SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");

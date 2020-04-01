@@ -1,0 +1,21 @@
+name: start
+skinned_models:
+- file: bob.dae
+  format: collada
+  name: bob
+  position: {x: 0.0, y: 0.0, z: 0.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 1.5
+- file: elvis.dae
+  format: collada
+  name: elvis
+  position: {x: -100.0, y: 0.0, z: 0.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 50.5
+static_models:
+- file: bob.dae
+  format: collada
+  name: yoda
+  position: {x: 100.0, y: 0.0, z: 0.0}
+  rotation: {x: -1.55, y: -2.25, z: 0.0}
+  scale: 1.5

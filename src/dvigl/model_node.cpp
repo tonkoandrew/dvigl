@@ -104,9 +104,10 @@ aiReleasePropertyStore(store);
   }
 }
 
-ModelNode::ModelNode(int w, int h) {
+ModelNode::ModelNode(int w, int h, std::string texture) {
   meshes.resize(1);
   meshes[0] = new Mesh(w, h);
+  meshes[0]->texture = TextureMgr::ptr()->get_texture(texture);
 }
 
 void ModelNode::draw() {

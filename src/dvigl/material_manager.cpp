@@ -9,11 +9,11 @@ void MaterialMgr::release() {
 }
 
 bool MaterialMgr::load_material(std::string file_name) {
+  LOG("LOADING MATERIAL: %s\n", file_name.c_str());
+
   char *content = FileSystemMgr::ptr()->get_content(file_name);
 
   YAML::Node node = YAML::Load(content);
-
-  LOG("LOADING MATERIAL: %s\n", file_name.c_str());
 
   // LOG("NODE TYPE: ");
   // switch (node.Type()) {

@@ -13,6 +13,7 @@
 
 #include <dvigl/camera_node.h>
 #include <dvigl/video_manager.h>
+#include <dvigl/file_system_manager.h>
 
 SceneMgr gSceneMgr;
 
@@ -26,92 +27,117 @@ bool SceneMgr::load_scene(std::string file_name) {
 
   LOG("Loading Scene %s\n", file_name.c_str());
 
+  char *content = FileSystemMgr::ptr()->get_content(file_name);
+  YAML::Node node = YAML::Load(content);
+
   if (!ShaderMgr::ptr()->load_shader("simple", "../res/shaders/simple.vs",
                                      "../res/shaders/simple.fs")) {
     return false;
   }
 
-LOG("ShaderMgr loaded shader simple\n");
   if (!ShaderMgr::ptr()->load_shader("skinned", "../res/shaders/skinned.vs",
                                      "../res/shaders/skinned.fs")) {
     return false;
   }
 
-
-  // if (!TextureMgr::ptr()->load_texture("yoda", "res/textures/yoda.png"))
-  // if (!TextureMgr::ptr()->load_texture("yoda",
-  // "../res/textures/guard1_body.tga"))
-  // if (!TextureMgr::ptr()->load_texture("yoda",
-  // "../res/textures/guard1_face.tga"))
-  // {
-  //     return false;
-  // }
-
-  if (!FontMgr::ptr()->load_font("FreeSans_150", "../res/fonts/Magician.ttf",
-                                 150)) {
-    return false;
-  }
-
-
-  // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/yoda.dae", "collada", 20.0f))
-
-  // if (!ModelMgr::ptr()->load_model("yoda", "../res/models/boblampclean.md5mesh", "md5mesh", 1.5f))
-  if (!ModelMgr::ptr()->load_model("yoda", "../res/models/bob.dae", "collada", 1.5f))
+  if (!FontMgr::ptr()->load_font("FreeSans_150", "../res/fonts/Magician.ttf", 150))
   {
     return false;
   }
 
-  // if (!ModelMgr::ptr()->load_skinned_model("elvis", "../res/models/bob.dae", "collada", 1.5f))
-  if (!ModelMgr::ptr()->load_skinned_model("elvis", "../res/models/elvis.dae", "collada", 50.5f))
-  // if (!ModelMgr::ptr()->load_skinned_model("elvis", "../res/models/yoda.dae", "collada", 20.0f))
-  // if (!ModelMgr::ptr()->load_skinned_model("elvis", "../res/models/samba_dancing.dae", "collada", 0.5f))
+  if (node["static_models"]){
+    if (node["static_models"].Type() != YAML::NodeType::Sequence)
+    {
+      LOG("static_models should be list of objects\n");
+      return false;
+    }
+
+    for (std::size_t i=0; i< node["static_models"].size(); i++) {
+      YAML::Node model = node["static_models"][i];
+      assert(model.Type() == YAML::NodeType::Map);
+      assert(model["file"].Type() == YAML::NodeType::Scalar);
+      std::string name = model["name"].as<std::string>();
+      std::string fname = model["file"].as<std::string>();
+      std::string format = model["format"].as<std::string>();
+      float scale = model["scale"].as<float>();
+
+      if (!ModelMgr::ptr()->load_model(name, fname, format, scale))
+      {
+        return false;
+      }
+
+      YAML::Node pos_node = model["position"];
+      glm::vec3 position = glm::vec3(pos_node["x"].as<float>(), pos_node["y"].as<float>(), pos_node["z"].as<float>());
+
+      YAML::Node rot_node = model["rotation"];
+      glm::vec3 rotation = glm::vec3(rot_node["x"].as<float>(), rot_node["y"].as<float>(), rot_node["z"].as<float>());
+
+      ModelNode *m = ModelMgr::ptr()->get_model(name);
+      m->set_position(position);
+      m->set_rotation(rotation);
+
+    }
+  }
+
+  if (node["skinned_models"]){
+    if (node["skinned_models"].Type() != YAML::NodeType::Sequence)
+    {
+      LOG("skinned_models should be list of objects\n");
+      return false;
+    }
+
+    for (std::size_t i=0; i< node["skinned_models"].size(); i++) {
+      YAML::Node model = node["skinned_models"][i];
+      assert(model.Type() == YAML::NodeType::Map);
+      assert(model["file"].Type() == YAML::NodeType::Scalar);
+      std::string name = model["name"].as<std::string>();
+      std::string fname = model["file"].as<std::string>();
+      std::string format = model["format"].as<std::string>();
+      float scale = model["scale"].as<float>();
+
+      if (!ModelMgr::ptr()->load_skinned_model(name, fname, format, scale))
+      {
+        return false;
+      }
+      YAML::Node pos_node = model["position"];
+      glm::vec3 position = glm::vec3(pos_node["x"].as<float>(), pos_node["y"].as<float>(), pos_node["z"].as<float>());
+
+      YAML::Node rot_node = model["rotation"];
+      glm::vec3 rotation = glm::vec3(rot_node["x"].as<float>(), rot_node["y"].as<float>(), rot_node["z"].as<float>());
+
+      SkinnedModelNode *m = ModelMgr::ptr()->get_skinned_model(name);
+      m->set_position(position);
+      m->set_rotation(rotation);
+    }
+  }
+
+  GLuint err = glGetError();
+  if (err != 0) {
+    LOG("GL ERRORS BEFORE ================\n");
+    LOG("%d \n", err);
+    LOG("================\n");
+  }
+
+  // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
+TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
+
+ err = glGetError();
+  if (err != 0) {
+    LOG("GL ERRORS AFTER ================\n");
+    LOG("%d \n", err);
+    LOG("================\n");
+  }
+
+  if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg"))
   {
-    return false;
+      return false;
   }
-
-  if (!ModelMgr::ptr()->load_skinned_model("bob", "../res/models/bob.dae", "collada", 1.5f))
-  {
-    return false;
-  }
-
-  VideoMgr::ptr()->load_video("../res/videos/video.ogv");
-
-
-  // if (!ModelMgr::ptr()->generate_plane_model("plane", 100, 100))
-  // {
-  //     return false;
-  // }
-
-  ModelNode *yoda = ModelMgr::ptr()->get_model("yoda");
-  if (!yoda) {
-    return false;
-  }
-
-  // yoda->move_forward(0.0f);
-  yoda->move_right(100.0f);
-  yoda->pitch(-3.14f/2);
-  yoda->roll(-3.14f + 1.0f);
-
-  SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
-  if (!elvis) {
-    LOG("NO ELVIS FOUND");
-    return false;
-  }
-  elvis->yaw(-3.14f);
-  elvis->pitch(-3.14f/2);
-
-  SkinnedModelNode *bob = ModelMgr::ptr()->get_skinned_model("bob");
-  if (!bob) {
-    LOG("NO bob FOUND");
-    return false;
-  }
-  bob->move_right(100.0f);
-  bob->yaw(-3.14f);
-  bob->pitch(-3.14f/2);
+  ModelNode *plane = ModelMgr::ptr()->get_model("plane");
+  plane->set_rotation(glm::vec3(3.14/2, 0.0, 0.0));
+  plane->set_position(glm::vec3(-100.0f, 0.0, -50.0));
 
   current_scene->get_current_camera()->move_back(200.0f);
   current_scene->get_current_camera()->move_up(80.0f);
-
 
   AudioMgr::ptr()->set_volume(MIX_MAX_VOLUME / 2);
     // if (!AudioMgr::ptr()->load_audio("elvis", "../res/audio/elvis.ogg"))
@@ -126,21 +152,14 @@ LOG("ShaderMgr loaded shader simple\n");
 
 void SceneMgr::update(float time_delta) {
   SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
-  // elvis->pitch(0.003 * time_delta);
-  // elvis->yaw(0.003 * time_delta);
-  // elvis->move_back(0.1 * time_delta);
-
-  // current_scene->get_current_camera()->move_back(time_delta * 0.01);
-
-  // ModelNode * m = ModelMgr::ptr()->get_model("yoda");
-  // m->pitch(0.0003 * time_delta);
-
-  // m = ModelMgr::ptr()->get_model("plane");
-  // m->move_forward(0.01* time_delta);
 }
 
-Scene *SceneMgr::get_current_scene() { return current_scene; }
+Scene *SceneMgr::get_current_scene()
+{
+  return current_scene;
+}
 
-void SceneMgr::release() {
+void SceneMgr::release()
+{
   // Release all scenes
 }

@@ -47,11 +47,11 @@ bool RenderMgr::init() {
   std::string window_title = "Window title";
 
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-  int w = 320;
-  int h = 240;
+  // int w = 320;
+  // int h = 240;
 
-  // int w = 1024;
-  // int h = 768;
+  int w = 1024;
+  int h = 768;
 
   // int w = 1920;
   // int h = 1080;
@@ -108,13 +108,13 @@ bool RenderMgr::init() {
 // #endif
 
 #ifndef __PLATFORM_ANDROID__
-  LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  int max_attrs = 0;
-  glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_attrs);
-  LOG("%d\n", max_attrs);
+  // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+  // int max_attrs = 0;
+  // glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_attrs);
+  // LOG("%d\n", max_attrs);
 
-  LOG("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  // glShadeModel(GL_SMOOTH);
+  // LOG("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+  // // glShadeModel(GL_SMOOTH);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glFrontFace(GL_CCW);
 // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -163,6 +163,12 @@ void RenderMgr::render_frame(float time_delta) {
   m->draw();
 
 
+  m = ModelMgr::ptr()->get_model("plane");
+  model_m = m->get_model_matrix();
+  mvp = view_proj_m * model_m;
+  s->uniformMatrix4("mvp", mvp);
+  m->draw();
+
   // Shader *ss = ShaderMgr::ptr()->get_shader("skinned");
   // ss->bind();
   SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
@@ -179,8 +185,11 @@ void RenderMgr::render_frame(float time_delta) {
 
   SDL_GL_SwapWindow(main_window);
 
-  if (glGetError() != 0) {
+  GLuint err = glGetError();
+  if (err != 0) {
     LOG("GL ERRORS HERE ================\n");
+    LOG("%d \n", err);
+    LOG("================\n");
   }
 }
 

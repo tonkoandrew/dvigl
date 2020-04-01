@@ -89,5 +89,13 @@ void Node::move_up(float step) { position += up * step; }
 void Node::move_down(float step) { position += up * -step; }
 void Node::move_left(float step) { position += left * step; }
 void Node::move_right(float step) { position += left * -step; }
-void Node::set_pose(glm::vec3 V) { position = V; }
+void Node::set_position(glm::vec3 V) { position = V; }
+
+void Node::set_rotation(glm::vec3 V)
+{
+    rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), V.x);
+    rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), V.y);
+    rotate_around_vector(glm::vec3(0.0, 0.0, 1.0), V.z);
+}
+
 void Node::release() {}

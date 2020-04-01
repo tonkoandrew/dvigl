@@ -18,7 +18,8 @@ public:
   void move_down(float step);
   void move_left(float step);
   void move_right(float step);
-  void set_pose(glm::vec3 V);
+  void set_position(glm::vec3 V);
+  void set_rotation(glm::vec3 V);
   void release();
   friend CameraNode;
   glm::vec3 forward;

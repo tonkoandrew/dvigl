@@ -12,7 +12,7 @@ public:
   bool load_model(std::string name, std::string file_name, std::string format, float scale);
   bool load_skinned_model(std::string name, std::string file_name, std::string format, float scale);
   bool generate_model(std::string name, SDL_Surface *surf);
-  bool generate_plane_model(std::string name, int w, int h);
+  bool generate_plane_model(std::string name, int w, int h, std::string texture);
   void release();
 
 private:
