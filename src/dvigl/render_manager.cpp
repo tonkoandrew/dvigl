@@ -17,183 +17,183 @@
 
 RenderMgr gRenderMgr;
 
-bool RenderMgr::init() {
-  LOG("\n");
-  SDL_GL_SetSwapInterval(0); // set VSync
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
-  // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);  // Couldn't find
-  // matching GLX visual on Intel video
+bool RenderMgr::init()
+{
+    LOG("\n");
+    SDL_GL_SetSwapInterval(0); // set VSync
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
+    // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);  // Couldn't find
+    // matching GLX visual on Intel video
 
-  int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-              // | SDL_WINDOW_ALLOW_HIGHDPI
-              // | SDL_WINDOW_MOUSE_FOCUS
-              // | SDL_WINDOW_INPUT_GRABBED
-              // | SDL_WINDOW_FULLSCREEN
-              // | SDL_WINDOW_BORDERLESS
-              | SDL_WINDOW_RESIZABLE
+    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+        // | SDL_WINDOW_ALLOW_HIGHDPI
+        // | SDL_WINDOW_MOUSE_FOCUS
+        // | SDL_WINDOW_INPUT_GRABBED
+        // | SDL_WINDOW_FULLSCREEN
+        // | SDL_WINDOW_BORDERLESS
+        | SDL_WINDOW_RESIZABLE
 #ifdef __PLATFORM_ANDROID__
-              | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN_DESKTOP
+        | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN_DESKTOP
 #else
 // | SDL_WINDOW_RESIZABLE
 #endif
-      ;
+        ;
 
-  std::string window_title = "Window title";
+    std::string window_title = "Window title";
 
-  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
-  // int w = 320;
-  // int h = 240;
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+    // int w = 320;
+    // int h = 240;
 
-  int w = 1024;
-  int h = 768;
+    int w = 1024;
+    int h = 768;
 
-  // int w = 1920;
-  // int h = 1080;
+    // int w = 1920;
+    // int h = 1080;
 
-  main_window = SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
-
-  if (!main_window) {
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
     main_window = SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
+
     if (!main_window) {
-      SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
-      main_window =
-          SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
-      if (!main_window) {
-        LOG("SDL_CreateWindow failed: %s\n", SDL_GetError());
-        return false;
-      }
+        SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
+        main_window = SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
+        if (!main_window) {
+            SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+            main_window = SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
+            if (!main_window) {
+                LOG("SDL_CreateWindow failed: %s\n", SDL_GetError());
+                return false;
+            }
+        }
     }
-  }
-  SDL_ClearError();
+    SDL_ClearError();
 
-  SDL_Surface * icon = IMG_Load("../res/icons/icon.png");
-  SDL_SetWindowIcon(main_window, icon);
+    SDL_Surface* icon = IMG_Load("../res/icons/icon.png");
+    SDL_SetWindowIcon(main_window, icon);
 
-  gl_context = SDL_GL_CreateContext(main_window);
+    gl_context = SDL_GL_CreateContext(main_window);
 
-  if (!gl_context) {
-    LOG("SDL_GL_CreateContext failed: %s\n", SDL_GetError());
-    return false;
-  }
+    if (!gl_context) {
+        LOG("SDL_GL_CreateContext failed: %s\n", SDL_GetError());
+        return false;
+    }
 
-  if (!gladLoadGL()) {
-    LOG("Something went wrong!\n");
-    return false;
-  }
-  LOG("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
+    if (!gladLoadGL()) {
+        LOG("Something went wrong!\n");
+        return false;
+    }
+    LOG("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
 
-  SDL_GL_MakeCurrent(main_window, gl_context);
+    SDL_GL_MakeCurrent(main_window, gl_context);
 
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_DEPTH_TEST);
-  glDepthFunc(GL_LEQUAL);
-  glDisable(GL_CULL_FACE);
-  // glEnable(GL_CULL_FACE);
-  glEnable(GL_STENCIL_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glDisable(GL_CULL_FACE);
+    // glEnable(GL_CULL_FACE);
+    glEnable(GL_STENCIL_TEST);
 
-  glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
+    glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 
-//   glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
-// #ifdef __PLATFORM_ANDROID__
-//   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
-// #endif
+    //   glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+    // #ifdef __PLATFORM_ANDROID__
+    //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
+    // #endif
 
 #ifndef __PLATFORM_ANDROID__
-  // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  // int max_attrs = 0;
-  // glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_attrs);
-  // LOG("%d\n", max_attrs);
+    // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    // int max_attrs = 0;
+    // glGetIntegerv(GL_MAX_UNIFORM_BLOCK_SIZE, &max_attrs);
+    // LOG("%d\n", max_attrs);
 
-  // LOG("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  // // glShadeModel(GL_SMOOTH);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  glFrontFace(GL_CCW);
+    // LOG("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    // // glShadeModel(GL_SMOOTH);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glFrontFace(GL_CCW);
 // glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 #endif
 
-  SDL_GL_GetDrawableSize(main_window, &w, &h);
-  glViewport(0, 0, w, h);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    SDL_GL_GetDrawableSize(main_window, &w, &h);
+    glViewport(0, 0, w, h);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  SDL_GL_SwapWindow(main_window);
+    SDL_GL_SwapWindow(main_window);
 
-  return true;
+    return true;
 }
 
-void RenderMgr::render_frame(float time_delta) {
-  SDL_GL_MakeCurrent(main_window, gl_context);
+void RenderMgr::render_frame(float time_delta)
+{
+    SDL_GL_MakeCurrent(main_window, gl_context);
 
-  int w, h;
-  SDL_GL_GetDrawableSize(main_window, &w, &h);
+    int w, h;
+    SDL_GL_GetDrawableSize(main_window, &w, &h);
 
-  glViewport(0, 0, w, h);
+    glViewport(0, 0, w, h);
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  Shader *s = ShaderMgr::ptr()->get_shader("simple");
-  s->bind();
+    Shader* s = ShaderMgr::ptr()->get_shader("simple");
+    s->bind();
 
-  float aspect = (float)w / (float)(h > 1 ? h : 1);
-  glm::mat4 mvp;
-  glm::mat4 model_m;
-  glm::mat4 proj_m = glm::perspective(45.0f, aspect, 1.0f, 1000.0f);
+    float aspect = (float)w / (float)(h > 1 ? h : 1);
+    glm::mat4 mvp;
+    glm::mat4 model_m;
+    glm::mat4 proj_m = glm::perspective(45.0f, aspect, 1.0f, 1000.0f);
 
-  CameraNode *camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
+    CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
-  glm::mat4 view_m = camera->get_view_matrix();
+    glm::mat4 view_m = camera->get_view_matrix();
 
-  glm::mat4 view_proj_m = proj_m * view_m;
+    glm::mat4 view_proj_m = proj_m * view_m;
 
-  for (auto element : ModelMgr::ptr()->models)
-  {
-    ModelNode *m = (ModelNode *) element.second;
-    model_m = m->get_model_matrix();
-    mvp = view_proj_m * model_m;
-    s->uniformMatrix4("mvp", mvp);
+    for (auto element : ModelMgr::ptr()->models) {
+        ModelNode* m = (ModelNode*)element.second;
+        model_m = m->get_model_matrix();
+        mvp = view_proj_m * model_m;
+        s->uniformMatrix4("mvp", mvp);
 
-    m->draw();
-  }
+        m->draw();
+    }
 
-  // Shader *ss = ShaderMgr::ptr()->get_shader("skinned");
-  // ss->bind();
-  
-  for (auto element : ModelMgr::ptr()->skinned_models)
-  {
-    SkinnedModelNode *m = (SkinnedModelNode *) element.second;
-    model_m = m->get_model_matrix();
-    mvp = view_proj_m * model_m;
-    // ss->uniformMatrix4("gWVP", mvp);
-    m->draw(mvp);
-  }
+    // Shader *ss = ShaderMgr::ptr()->get_shader("skinned");
+    // ss->bind();
 
-  SDL_GL_SwapWindow(main_window);
+    for (auto element : ModelMgr::ptr()->skinned_models) {
+        SkinnedModelNode* m = (SkinnedModelNode*)element.second;
+        model_m = m->get_model_matrix();
+        mvp = view_proj_m * model_m;
+        // ss->uniformMatrix4("gWVP", mvp);
+        m->draw(mvp);
+    }
 
-  GLuint err = glGetError();
-  if (err != 0) {
-    LOG("GL ERRORS HERE ================\n");
-    LOG("%d \n", err);
-    LOG("================\n");
-  }
+    SDL_GL_SwapWindow(main_window);
+
+    GLuint err = glGetError();
+    if (err != 0) {
+        LOG("GL ERRORS HERE ================\n");
+        LOG("%d \n", err);
+        LOG("================\n");
+    }
 }
 
-SDL_Window *RenderMgr::get_main_window() { return main_window; }
+SDL_Window* RenderMgr::get_main_window() { return main_window; }
 
-void RenderMgr::release() {
-  if (gl_context) {
-    SDL_GL_DeleteContext(gl_context);
-  }
+void RenderMgr::release()
+{
+    if (gl_context) {
+        SDL_GL_DeleteContext(gl_context);
+    }
 
-  if (main_window) {
-    SDL_DestroyWindow(main_window);
-  }
-  SDL_Quit();
+    if (main_window) {
+        SDL_DestroyWindow(main_window);
+    }
+    SDL_Quit();
 }

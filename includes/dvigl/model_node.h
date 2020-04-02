@@ -6,11 +6,11 @@ class Mesh;
 
 class ModelNode : public Node {
 public:
-  ModelNode(char *content, int content_size, std::string format, float scale);
-  ModelNode(int w, int h, std::string texture);
-  void draw();
-  void release();
+    ModelNode(char* content, int content_size, std::string format, float scale);
+    ModelNode(int w, int h, std::string texture);
+    void draw();
+    void release();
 
 private:
-  std::vector<Mesh *> meshes;
+    std::vector<Mesh*> meshes;
 };

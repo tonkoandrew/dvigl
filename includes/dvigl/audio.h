@@ -3,12 +3,12 @@
 
 class Audio {
 public:
-  Audio(std::string filename);
-  void release();
-  void play();
-  void pause();
-  void resume();
+    Audio(std::string filename);
+    void release();
+    void play();
+    void pause();
+    void resume();
 
 private:
-  Mix_Music *music = NULL;
+    Mix_Music* music = NULL;
 };

@@ -3,6 +3,6 @@
 
 class NetworkMgr : public Singleton<NetworkMgr> {
 public:
-  bool init();
-  void release();
+    bool init();
+    void release();
 };

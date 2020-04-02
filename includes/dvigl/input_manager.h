@@ -3,10 +3,10 @@
 
 class InputMgr : public Singleton<InputMgr> {
 public:
-  bool init();
-  void process_input(float time_delta);
-  void release();
+    bool init();
+    void process_input(float time_delta);
+    void release();
 
 private:
-  const Uint8 *keystates;
+    const Uint8* keystates;
 };

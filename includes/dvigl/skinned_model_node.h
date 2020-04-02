@@ -6,10 +6,10 @@ class SkinnedMesh;
 
 class SkinnedModelNode : public Node {
 public:
-  SkinnedModelNode(char *content, int content_size, std::string format, float scale);
-  void draw(glm::mat4 mvp);
-  void release();
+    SkinnedModelNode(char* content, int content_size, std::string format, float scale);
+    void draw(glm::mat4 mvp);
+    void release();
 
 private:
-  std::vector<SkinnedMesh *> meshes;
+    std::vector<SkinnedMesh*> meshes;
 };

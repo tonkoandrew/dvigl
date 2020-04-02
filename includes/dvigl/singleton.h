@@ -1,24 +1,28 @@
 #pragma once
 
-template <typename T> class Singleton {
+template <typename T>
+class Singleton {
 public:
-  Singleton() {
-    if (instance == 0) {
-      instance = (T *)this;
+    Singleton()
+    {
+        if (instance == 0) {
+            instance = (T*)this;
+        }
     }
-  }
-  virtual ~Singleton() { instance = 0; }
-  static T *ptr() { return instance; }
-  void Release() {
-    if (this) {
-      delete this;
-      instance = 0;
+    virtual ~Singleton() { instance = 0; }
+    static T* ptr() { return instance; }
+    void Release()
+    {
+        if (this) {
+            delete this;
+            instance = 0;
+        }
+        return;
     }
-    return;
-  }
 
 private:
-  static T *instance;
+    static T* instance;
 };
 
-template <typename T> T *Singleton<T>::instance = 0;
+template <typename T>
+T* Singleton<T>::instance = 0;

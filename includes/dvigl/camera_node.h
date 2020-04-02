@@ -4,5 +4,5 @@
 
 class CameraNode : public Node {
 public:
-  glm::mat4 get_view_matrix();
+    glm::mat4 get_view_matrix();
 };

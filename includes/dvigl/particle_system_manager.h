@@ -3,7 +3,7 @@
 
 class ParticleSystemMgr : public Singleton<ParticleSystemMgr> {
 public:
-  bool init();
-  void update(float time_delta);
-  void release();
+    bool init();
+    void update(float time_delta);
+    void release();
 };

@@ -3,7 +3,7 @@
 
 class MaterialMgr : public Singleton<MaterialMgr> {
 public:
-  bool init();
-  bool load_material(std::string name);
-  void release();
+    bool init();
+    bool load_material(std::string name);
+    void release();
 };

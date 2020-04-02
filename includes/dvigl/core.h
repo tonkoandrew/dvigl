@@ -3,17 +3,17 @@
 // Platform detection:
 
 #if defined(__ANDROID__) || defined(ANDROID)
-    #define __PLATFORM_ANDROID__
+#define __PLATFORM_ANDROID__
 #else
-    #if defined(_WIN32)
-        #define __PLATFORM_WINDOWS__
-    #else
-        #if defined(__APPLE__)
-            #define __PLATFORM_APPLE__
-        #else
-            #define __PLATFORM_LINUX__
-        #endif
-    #endif
+#if defined(_WIN32)
+#define __PLATFORM_WINDOWS__
+#else
+#if defined(__APPLE__)
+#define __PLATFORM_APPLE__
+#else
+#define __PLATFORM_LINUX__
+#endif
+#endif
 #endif
 
 #include <yaml-cpp/yaml.h>
@@ -56,10 +56,10 @@ typedef GLuint GLhandleARB;
 
 #if defined(__PLATFORM_WINDOWS__)
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_net.h>
+#include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_ttf.h>
 #endif
 
@@ -68,17 +68,17 @@ typedef GLuint GLhandleARB;
 #include <glm/gtc/constants.hpp> //glm::pi<float>()
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
-#include <glm/mat4x4.hpp>       // glm::mat4
-#include <glm/vec3.hpp>         // glm::vec3
-#include <glm/vec4.hpp>         // glm::vec4, glm::ivec4
+#include <glm/mat4x4.hpp> // glm::mat4
+#include <glm/vec3.hpp> // glm::vec3
+#include <glm/vec4.hpp> // glm::vec4, glm::ivec4
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/string_cast.hpp>  // glm::to_string
+#include <glm/gtx/string_cast.hpp> // glm::to_string
 
-#include <assimp/cexport.h>     // C exporter interface
-#include <assimp/cimport.h>     // C importer interface
+#include <assimp/cexport.h> // C exporter interface
+#include <assimp/cimport.h> // C importer interface
 #include <assimp/postprocess.h> // Post processing flags
-#include <assimp/scene.h>       // Output data structure
+#include <assimp/scene.h> // Output data structure
 
 // ---- include STL ----
 
@@ -89,11 +89,11 @@ typedef GLuint GLhandleARB;
 // #include <stack>
 // #include <queue>
 #include <cstdlib>
+#include <iostream>
 #include <list>
 #include <map>
 #include <string>
 #include <vector>
-#include <iostream>
 
 #include <assert.h>
 
@@ -104,7 +104,11 @@ typedef GLuint GLhandleARB;
 #define LOG(...) __android_log_print(ANDROID_LOG_DEBUG, "corelog", __VA_ARGS__)
 #else
 #include <cstdio>
-#define LOG(...) {printf(__VA_ARGS__); std::cout << std::flush;}
+#define LOG(...)                 \
+    {                            \
+        printf(__VA_ARGS__);     \
+        std::cout << std::flush; \
+    }
 #endif
 
 #define ZERO_MEM(a) memset(a, 0, sizeof(a))
@@ -122,11 +126,11 @@ typedef GLuint GLhandleARB;
 #define SRANDOM srandom(getpid())
 #endif
 
-#define SAFE_DELETE(p)                                                         \
-  if (p) {                                                                     \
-    delete p;                                                                  \
-    p = NULL;                                                                  \
-  }
+#define SAFE_DELETE(p) \
+    if (p) {           \
+        delete p;      \
+        p = NULL;      \
+    }
 
 #define GLCheckError() (glGetError() == GL_NO_ERROR)
 
