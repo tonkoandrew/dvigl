@@ -34,6 +34,7 @@ public:
 
 private:
 #define NUM_BONES_PER_VEREX 4
+  float TicksPerSecond;
 
   struct BoneInfo {
     glm::mat4 BoneOffset;
@@ -72,14 +73,14 @@ private:
                                  const string NodeName);
   void ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
                          const glm::mat4 &ParentTransform);
-  bool InitFromScene(const aiScene *pScene, const string &Filename);
+  bool InitFromScene(const aiScene *pScene);
   void InitMesh(GLuint MeshIndex, const aiMesh *paiMesh,
                 vector<glm::vec3> &Positions, vector<glm::vec3> &Normals,
                 vector<glm::vec2> &TexCoords, vector<VertexBoneData> &Bones,
                 vector<unsigned int> &Indices);
   void LoadBones(GLuint MeshIndex, const aiMesh *paiMesh,
                  vector<VertexBoneData> &Bones);
-  bool InitMaterials(const aiScene *pScene, const string &Filename);
+  bool InitMaterials(const aiScene *pScene);
 
 #define INVALID_MATERIAL 0xFFFFFFFF
 

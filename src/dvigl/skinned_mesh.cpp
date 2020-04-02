@@ -77,15 +77,17 @@ void SkinnedMesh::VertexBoneData::AddBoneData(GLuint BoneID, float Weight) {
   assert(0);
 }
 
-SkinnedMesh::SkinnedMesh(const aiScene *pScene) {
+SkinnedMesh::SkinnedMesh(const aiScene *scene) {
   m_VAO = 0;
   ZERO_MEM(m_Buffers);
   m_NumBones = 0;
-  m_pScene = pScene;
+  m_pScene = scene;
 
   // LOG("\n");
-  LOG("SkinnedMesh IMPORTED %d MESHES\n", pScene->mNumMeshes);
-  LOG("SkinnedMesh IMPORTED %d ANIMATIONS\n", pScene->mNumAnimations);
+  LOG("SkinnedMesh IMPORTED %d MESHES\n", scene->mNumMeshes);
+  LOG("SkinnedMesh IMPORTED %d ANIMATIONS\n", scene->mNumAnimations);
+
+  TicksPerSecond = (float)(m_pScene->mAnimations[0]->mTicksPerSecond != 0 ? m_pScene->mAnimations[0]->mTicksPerSecond : 25.0f);
 
   m_startTime = SDL_GetTicks();
   // Create the VAO
@@ -97,14 +99,15 @@ SkinnedMesh::SkinnedMesh(const aiScene *pScene) {
 
   bool Ret = false;
 
-  m_GlobalInverseTransform =
-    glm::inverse(aiMatrix4x4ToGlm(&(pScene->mRootNode->mTransformation)));
-  Ret = InitFromScene(pScene, "../res/models/samba_dancing.dae");
+  m_GlobalInverseTransform = glm::inverse(aiMatrix4x4ToGlm(&(scene->mRootNode->mTransformation)));
+  Ret = InitFromScene(scene);
 
   // Make sure the VAO is not changed from the outside
   glBindVertexArray(0);
 
   Shader *s = ShaderMgr::ptr()->get_shader("skinned");
+  s->bind();
+
   m_WVPLocation = s->get_uniform_location("gWVP");
   m_colorTextureLocation = s->get_uniform_location("gColorMap");
   if (m_WVPLocation == INVALID_UNIFORM_LOCATION ||
@@ -138,10 +141,10 @@ void SkinnedMesh::release() {
 }
 
 
-bool SkinnedMesh::InitFromScene(const aiScene *pScene, const string &Filename) {
-  m_Entries.resize(pScene->mNumMeshes);
-  m_Textures.resize(pScene->mNumMaterials);
-  m_NormalMaps.resize(pScene->mNumMaterials);
+bool SkinnedMesh::InitFromScene(const aiScene *scene) {
+  m_Entries.resize(scene->mNumMeshes);
+  m_Textures.resize(scene->mNumMaterials);
+  m_NormalMaps.resize(scene->mNumMaterials);
 
   vector<glm::vec3> Positions;
   vector<glm::vec3> Normals;
@@ -154,12 +157,12 @@ bool SkinnedMesh::InitFromScene(const aiScene *pScene, const string &Filename) {
 
   // Count the number of vertices and indices
   for (GLuint i = 0; i < m_Entries.size(); i++) {
-    m_Entries[i].MaterialIndex = pScene->mMeshes[i]->mMaterialIndex;
-    m_Entries[i].NumIndices = pScene->mMeshes[i]->mNumFaces * 3;
+    m_Entries[i].MaterialIndex = scene->mMeshes[i]->mMaterialIndex;
+    m_Entries[i].NumIndices = scene->mMeshes[i]->mNumFaces * 3;
     m_Entries[i].BaseVertex = NumVertices;
     m_Entries[i].BaseIndex = NumIndices;
 
-    NumVertices += pScene->mMeshes[i]->mNumVertices;
+    NumVertices += scene->mMeshes[i]->mNumVertices;
     NumIndices += m_Entries[i].NumIndices;
   }
 
@@ -173,11 +176,11 @@ bool SkinnedMesh::InitFromScene(const aiScene *pScene, const string &Filename) {
 
   // Initialize the meshes in the scene one by one
   for (GLuint i = 0; i < m_Entries.size(); i++) {
-    const aiMesh *paiMesh = pScene->mMeshes[i];
+    const aiMesh *paiMesh = scene->mMeshes[i];
     InitMesh(i, paiMesh, Positions, Normals, TexCoords, Bones, Indices);
   }
 
-  if (!InitMaterials(pScene, Filename)) {
+  if (!InitMaterials(scene)) {
     return false;
   }
 
@@ -280,28 +283,15 @@ void SkinnedMesh::LoadBones(GLuint MeshIndex, const aiMesh *pMesh,
   }
 }
 
-bool SkinnedMesh::InitMaterials(const aiScene *pScene, const string &Filename) {
-  // Extract the directory part from the file name
-  string::size_type SlashIndex = Filename.find_last_of("/");
-  string Dir;
-
-  // if (SlashIndex == string::npos) {
-  //     Dir = ".";
-  // }
-  // else if (SlashIndex == 0) {
-  //     Dir = "/";
-  // }
-  // else {
-  //     Dir = Filename.substr(0, SlashIndex);
-  // }
-  Dir = "../res/textures";
+bool SkinnedMesh::InitMaterials(const aiScene *scene) {
+  string Dir = "../res/textures";
   MaterialMgr::ptr()->load_material("../res/materials/elvis.yaml");
 
   bool Ret = true;
 
   // Initialize the materials
-  for (GLuint i = 0; i < pScene->mNumMaterials; i++) {
-    const aiMaterial *pMaterial = pScene->mMaterials[i];
+  for (GLuint i = 0; i < scene->mNumMaterials; i++) {
+    const aiMaterial *pMaterial = scene->mMaterials[i];
 
     m_Textures[i] = NULL;
     m_NormalMaps[i] = NULL;
@@ -525,7 +515,6 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
 
   glm::mat4 NodeTransformation(
       aiMatrix4x4ToGlm((aiMatrix4x4 *)&(pNode->mTransformation)));
-  // LOG("NodeTransformation = %s\n", glm::to_string(NodeTransformation).c_str());
 
   const aiNodeAnim *pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
@@ -535,15 +524,12 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
     glm::mat4 ScalingM =
         glm::scale(glm::mat4(1.0), glm::vec3(Scaling.x, Scaling.y, Scaling.z));
-    // LOG("ScalingM = %s\n", glm::to_string(ScalingM).c_str());
-    // LOG("%f %f %f\n", Scaling.x, Scaling.y, Scaling.z);
 
     // Interpolate rotation and generate rotation transformation matrix
     aiQuaternion RotationQ;
     CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
     aiMatrix3x3 rot = RotationQ.GetMatrix();
     glm::mat4 RotationM = aiMatrix3x3ToGlm(&rot);
-    // LOG("RotationM = %s\n", glm::to_string(RotationM).c_str());
 
     // Interpolate translation and generate translation transformation matrix
     aiVector3D Translation;
@@ -551,7 +537,6 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     glm::mat4 TranslationM = glm::translate(
         glm::mat4(1.0), glm::vec3(Translation.x, Translation.y, Translation.z));
 
-    // LOG("TranslationM = %s\n", glm::to_string(TranslationM).c_str());
     // Combine the above transformations
     NodeTransformation = TranslationM * RotationM * ScalingM;
   }
@@ -570,18 +555,12 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
   }
 }
 
-void SkinnedMesh::BoneTransform(float TimeInSeconds,
-                                vector<glm::mat4> &Transforms) {
-  glm::mat4 Identity = glm::mat4(1.0f);
-
-  float TicksPerSecond = (float)(m_pScene->mAnimations[0]->mTicksPerSecond != 0
-                                     ? m_pScene->mAnimations[0]->mTicksPerSecond
-                                     : 25.0f);
+void SkinnedMesh::BoneTransform(float TimeInSeconds, vector<glm::mat4> &Transforms)
+{
   float TimeInTicks = TimeInSeconds * TicksPerSecond;
-  float AnimationTime =
-      fmod(TimeInTicks, (float)m_pScene->mAnimations[0]->mDuration);
+  float AnimationTime = fmod(TimeInTicks, (float)m_pScene->mAnimations[0]->mDuration);
 
-  ReadNodeHeirarchy(AnimationTime, m_pScene->mRootNode, Identity);
+  ReadNodeHeirarchy(AnimationTime, m_pScene->mRootNode, glm::mat4(1.0f));
 
   Transforms.resize(m_NumBones);
 
@@ -590,8 +569,8 @@ void SkinnedMesh::BoneTransform(float TimeInSeconds,
   }
 }
 
-const aiNodeAnim *SkinnedMesh::FindNodeAnim(const aiAnimation *pAnimation,
-                                            const string NodeName) {
+const aiNodeAnim *SkinnedMesh::FindNodeAnim(const aiAnimation *pAnimation, const string NodeName)
+{
   for (GLuint i = 0; i < pAnimation->mNumChannels; i++) {
     const aiNodeAnim *pNodeAnim = pAnimation->mChannels[i];
 
