@@ -11,7 +11,7 @@ public:
 
     ~SkinnedMesh();
 
-    void draw(glm::mat4 mvp);
+    void draw();
 
     void BoneTransform(float TimeInSeconds, vector<glm::mat4>& Transforms);
 

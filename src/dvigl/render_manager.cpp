@@ -96,8 +96,8 @@ bool RenderMgr::init()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-    glDisable(GL_CULL_FACE);
-    // glEnable(GL_CULL_FACE);
+    // glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_STENCIL_TEST);
 
     glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
@@ -163,15 +163,15 @@ void RenderMgr::render_frame(float time_delta)
         m->draw();
     }
 
-    // Shader *ss = ShaderMgr::ptr()->get_shader("skinned");
-    // ss->bind();
+    s = ShaderMgr::ptr()->get_shader("skinned");
+    s->bind();
 
     for (auto element : ModelMgr::ptr()->skinned_models) {
         SkinnedModelNode* m = (SkinnedModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
-        // ss->uniformMatrix4("gWVP", mvp);
-        m->draw(mvp);
+        s->uniformMatrix4("mvp", mvp);
+        m->draw();
     }
 
     SDL_GL_SwapWindow(main_window);

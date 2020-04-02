@@ -349,7 +349,7 @@ float SkinnedMesh::GetRunningTime()
     return RunningTime;
 }
 
-void SkinnedMesh::draw(glm::mat4 mvp)
+void SkinnedMesh::draw()
 {
     vector<glm::mat4> Transforms;
 
@@ -363,7 +363,6 @@ void SkinnedMesh::draw(glm::mat4 mvp)
     s->bind();
     s->uniform1i("gColorMap", 0);
     s->uniform1i("gNormalMap", 1);
-    s->uniformMatrix4("gWVP", mvp);
     s->uniformMatrix4("gBones", &Transforms);
 
     glBindVertexArray(m_VAO);

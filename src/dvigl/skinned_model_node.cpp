@@ -27,11 +27,11 @@ SkinnedModelNode::SkinnedModelNode(char* content, int content_size, std::string 
     meshes[0] = new SkinnedMesh(scene);
 }
 
-void SkinnedModelNode::draw(glm::mat4 mvp)
+void SkinnedModelNode::draw()
 {
     for (unsigned int i = 0; i < meshes.size(); i++) {
         // meshes[i]->texture->bind(GL_TEXTURE0);
-        meshes[i]->draw(mvp);
+        meshes[i]->draw();
     }
 }
 
