@@ -65,12 +65,22 @@ GLhandleARB Shader::compile(GLenum type, char* content)
     return shaderID;
 }
 
-void Shader::bind() { glUseProgram(program_object); }
+void Shader::bind()
+{
+    glUseProgram(program_object);
+}
+
 void Shader::uniformMatrix4(std::string name, glm::mat4 value)
 {
     int location = get_uniform_location(name);
     glUniformMatrix4fv(location, 1 /*only setting 1 matrix*/,
         false /*transpose?*/, glm::value_ptr(value));
+}
+
+void Shader::uniformMatrix4(std::string name, std::vector<glm::mat4>* values)
+{
+    int location = get_uniform_location(name);
+    glUniformMatrix4fv(location, values->size(), false /*transpose?*/, (float*)values->data());
 }
 
 void Shader::uniformMatrix3(std::string name, glm::mat3 value)

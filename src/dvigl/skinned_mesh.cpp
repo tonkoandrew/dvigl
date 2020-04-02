@@ -111,18 +111,6 @@ SkinnedMesh::SkinnedMesh(const aiScene* scene)
 
     Shader* s = ShaderMgr::ptr()->get_shader("skinned");
     s->bind();
-
-    m_WVPLocation = s->get_uniform_location("gWVP");
-    m_colorTextureLocation = s->get_uniform_location("gColorMap");
-    if (m_WVPLocation == INVALID_UNIFORM_LOCATION || m_colorTextureLocation == INVALID_UNIFORM_LOCATION) {
-        Ret = false;
-    }
-
-    m_boneLocation = s->get_uniform_location("gBones");
-    if (m_boneLocation == INVALID_UNIFORM_LOCATION) {
-        Ret = false;
-        LOG("uniform location gBones is INVALID\n");
-    }
 }
 
 SkinnedMesh::~SkinnedMesh()
@@ -369,22 +357,11 @@ void SkinnedMesh::draw(glm::mat4 mvp)
 
     Shader* s = ShaderMgr::ptr()->get_shader("skinned");
     s->bind();
-
     s->uniform1i("gColorMap", 0);
-    // s->uniform1i("gColorMap", GL_TEXTURE0);
-
     s->uniform1i("gNormalMap", 1);
-    // s->uniform1i("gNormalMap", GL_TEXTURE1);
+    s->uniformMatrix4("gWVP", mvp);
+    s->uniformMatrix4("gBones", &Transforms);
 
-    // for(int i=0; i<Transforms.size(); i++){
-    //   glm::mat4 mat = Transforms[i];
-    //   LOG("Transforms %d = %s\n", i, glm::to_string(mat).c_str());
-    // }
-
-    glUniformMatrix4fv(
-        m_boneLocation, Transforms.size(), false, (float*)Transforms.data());
-
-    glUniformMatrix4fv(m_WVPLocation, 1, false, glm::value_ptr(mvp));
     glBindVertexArray(m_VAO);
 
     for (GLuint i = 0; i < m_Entries.size(); i++) {
@@ -554,8 +531,7 @@ void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime,
         // Interpolate translation and generate translation transformation matrix
         aiVector3D Translation;
         CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
-        glm::mat4 TranslationM = glm::translate(
-            glm::mat4(1.0), glm::vec3(Translation.x, Translation.y, Translation.z));
+        glm::mat4 TranslationM = glm::translate(glm::mat4(1.0), glm::vec3(Translation.x, Translation.y, Translation.z));
 
         // Combine the above transformations
         NodeTransformation = TranslationM * RotationM * ScalingM;

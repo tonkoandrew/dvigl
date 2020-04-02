@@ -6,6 +6,7 @@ public:
     bool compile_and_link(char* vs_content, char* fs_content);
     void bind();
     void uniformMatrix4(std::string name, glm::mat4 value);
+    void uniformMatrix4(std::string name, std::vector<glm::mat4>* values);
     void uniformMatrix3(std::string name, glm::mat3 value);
     void uniform1i(std::string name, int value);
     void uniform1f(std::string name, float value);
