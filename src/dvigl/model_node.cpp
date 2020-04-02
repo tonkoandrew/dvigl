@@ -102,6 +102,8 @@ aiReleasePropertyStore(store);
       }
     }
   }
+
+  aiReleaseImport(scene);
 }
 
 ModelNode::ModelNode(int w, int h, std::string texture) {

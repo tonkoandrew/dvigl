@@ -147,41 +147,33 @@ void RenderMgr::render_frame(float time_delta) {
   glm::mat4 model_m;
   glm::mat4 proj_m = glm::perspective(45.0f, aspect, 1.0f, 1000.0f);
 
-  Scene *current_scene = SceneMgr::ptr()->get_current_scene();
-  CameraNode *camera = current_scene->get_current_camera();
+  CameraNode *camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
   glm::mat4 view_m = camera->get_view_matrix();
 
   glm::mat4 view_proj_m = proj_m * view_m;
 
-  ModelNode *m = ModelMgr::ptr()->get_model("yoda");
+  for (auto element : ModelMgr::ptr()->models)
+  {
+    ModelNode *m = (ModelNode *) element.second;
+    model_m = m->get_model_matrix();
+    mvp = view_proj_m * model_m;
+    s->uniformMatrix4("mvp", mvp);
 
-  model_m = m->get_model_matrix();
-  mvp = view_proj_m * model_m;
-  s->uniformMatrix4("mvp", mvp);
-
-  m->draw();
-
-
-  m = ModelMgr::ptr()->get_model("plane");
-  model_m = m->get_model_matrix();
-  mvp = view_proj_m * model_m;
-  s->uniformMatrix4("mvp", mvp);
-  m->draw();
+    m->draw();
+  }
 
   // Shader *ss = ShaderMgr::ptr()->get_shader("skinned");
   // ss->bind();
-  SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
-  model_m = elvis->get_model_matrix();
-  mvp = view_proj_m * model_m;
-  // ss->uniformMatrix4("gWVP", mvp);
-  elvis->draw(mvp);
-
-  SkinnedModelNode *bob = ModelMgr::ptr()->get_skinned_model("bob");
-  model_m = bob->get_model_matrix();
-  mvp = view_proj_m * model_m;
-  // ss->uniformMatrix4("gWVP", mvp);
-  bob->draw(mvp);
+  
+  for (auto element : ModelMgr::ptr()->skinned_models)
+  {
+    SkinnedModelNode *m = (SkinnedModelNode *) element.second;
+    model_m = m->get_model_matrix();
+    mvp = view_proj_m * model_m;
+    // ss->uniformMatrix4("gWVP", mvp);
+    m->draw(mvp);
+  }
 
   SDL_GL_SwapWindow(main_window);
 

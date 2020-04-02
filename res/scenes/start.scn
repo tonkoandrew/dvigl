@@ -12,10 +12,64 @@ skinned_models:
   position: {x: -100.0, y: 0.0, z: 0.0}
   rotation: {x: -1.55, y: 3.14, z: 0.0}
   scale: 50.5
+- file: elvis.dae
+  format: collada
+  name: elvis2
+  position: {x: 100.0, y: 0.0, z: 0.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 50.5
+- file: elvis.dae
+  format: collada
+  name: elvis3
+  position: {x: -100.0, y: 0.0, z: 100.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 50.5
+- file: elvis.dae
+  format: collada
+  name: elvis4
+  position: {x: -100.0, y: 0.0, z: 200.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 50.5
+- file: elvis.dae
+  format: collada
+  name: elvis5
+  position: {x: -100.0, y: 0.0, z: 300.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 50.5
+- file: elvis.dae
+  format: collada
+  name: elvis6
+  position: {x: -100.0, y: 0.0, z: 400.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 50.5
+- file: bob.dae
+  format: collada
+  name: bob2
+  position: {x: 0.0, y: 0.0, z: 100.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 1.5
+- file: bob.dae
+  format: collada
+  name: bob3
+  position: {x: 0.0, y: 0.0, z: 200.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 1.5
+- file: bob.dae
+  format: collada
+  name: bob4
+  position: {x: 0.0, y: 0.0, z: 300.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 1.5
+- file: bob.dae
+  format: collada
+  name: bob5
+  position: {x: 0.0, y: 0.0, z: 400.0}
+  rotation: {x: -1.55, y: 3.14, z: 0.0}
+  scale: 1
 static_models:
 - file: bob.dae
   format: collada
   name: yoda
-  position: {x: 100.0, y: 0.0, z: 0.0}
+  position: {x: 100.0, y: 0.0, z: 100.0}
   rotation: {x: -1.55, y: -2.25, z: 0.0}
-  scale: 1.5
+  scale: 1

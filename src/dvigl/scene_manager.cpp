@@ -112,8 +112,7 @@ bool SceneMgr::load_scene(std::string file_name) {
   }
 
   // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
-TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
-
+  TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
 
   if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg"))
   {

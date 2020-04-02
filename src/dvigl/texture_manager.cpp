@@ -126,6 +126,8 @@ bool TextureMgr::load_texture(std::string name, std::string file_name) {
 
   Texture *texture = new Texture(converted);
   textures[name] = texture;
+  SDL_FreeSurface(converted);
+  SDL_FreeSurface(surf);
   return true;
 }
 

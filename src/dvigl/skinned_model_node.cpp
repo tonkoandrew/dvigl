@@ -26,6 +26,7 @@ aiReleasePropertyStore(store);
 
   meshes.resize(1);
   meshes[0] = new SkinnedMesh(scene);
+
 }
 
 
