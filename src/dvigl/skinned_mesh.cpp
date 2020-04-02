@@ -225,6 +225,10 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
         &Indices[0],
         GL_STATIC_DRAW);
 
+    for (GLuint i = 0; i < scene->mNumMeshes; i++) {
+        delete scene->mMeshes[i];
+    }
+
     return GLCheckError();
 }
 
@@ -503,9 +507,8 @@ void SkinnedMesh::CalcInterpolatedScaling(aiVector3D& Out,
     Out = Start + Factor * Delta;
 }
 
-void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime,
-    const aiNode* pNode,
-    const glm::mat4& ParentTransform)
+// recursive
+void SkinnedMesh::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const glm::mat4& ParentTransform)
 {
     string NodeName(pNode->mName.data);
 
@@ -563,8 +566,7 @@ void SkinnedMesh::BoneTransform(float TimeInSeconds, vector<glm::mat4>& Transfor
     }
 }
 
-const aiNodeAnim*
-SkinnedMesh::FindNodeAnim(const aiAnimation* pAnimation, const string NodeName)
+const aiNodeAnim* SkinnedMesh::FindNodeAnim(const aiAnimation* pAnimation, const string NodeName)
 {
     for (GLuint i = 0; i < pAnimation->mNumChannels; i++) {
         const aiNodeAnim* pNodeAnim = pAnimation->mChannels[i];
