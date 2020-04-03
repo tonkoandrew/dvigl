@@ -1,4 +1,4 @@
-#version 300 es
+#version 410 core
 
 // #ifdef GL_ES
 // // Set default precision to medium

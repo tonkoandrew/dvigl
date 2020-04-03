@@ -51,7 +51,7 @@ bool Application::init()
         return false;
     }
     LOG("done\n");
-
+   
     LOG("initializing ShaderMgr... ");
     if (!ShaderMgr::ptr()->init()) {
         LOG("failed\n");

@@ -28,23 +28,23 @@ bool MaterialMgr::load_material(std::string file_name)
     //    LOG("WTF???\n");
     // }
 
-    if (node["diffuse"]) {
-        LOG("DIFFUSE MAP: %s\n", node["diffuse"].as<std::string>().c_str());
-    }
+    // if (node["diffuse"]) {
+    //     LOG("DIFFUSE MAP: %s\n", node["diffuse"].as<std::string>().c_str());
+    // }
 
-    if (node["normal"]) {
-        LOG("NORMAL MAP: %s\n", node["normal"].as<std::string>().c_str());
-    }
+    // if (node["normal"]) {
+    //     LOG("NORMAL MAP: %s\n", node["normal"].as<std::string>().c_str());
+    // }
 
-    if (node["uv_params"]) {
-        if (node["uv_params"]["offset_x"]) {
+    // if (node["uv_params"]) {
+    //     if (node["uv_params"]["offset_x"]) {
 
-            LOG("offset_x: %f\n", node["uv_params"]["offset_x"].as<float>());
-        }
-        if (node["uv_params"]["offset_y"]) {
-            LOG("offset_y: %f\n", node["uv_params"]["offset_y"].as<float>());
-        }
-    }
+    //         LOG("offset_x: %f\n", node["uv_params"]["offset_x"].as<float>());
+    //     }
+    //     if (node["uv_params"]["offset_y"]) {
+    //         LOG("offset_y: %f\n", node["uv_params"]["offset_y"].as<float>());
+    //     }
+    // }
 
     // for (std::size_t i=0; i< node.size(); i++) {
     //   LOG("%s\n", node[i].as<int>());

@@ -15,6 +15,6 @@ public:
     void release();
 
 private:
-    GLhandleARB compile(GLenum type, char* content);
-    GLhandleARB program_object;
+    GLuint compile(GLenum type, char* content);
+    GLuint program_object;
 };

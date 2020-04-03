@@ -31,7 +31,7 @@ bool SceneMgr::load_scene(std::string file_name)
 
     char* content = FileSystemMgr::ptr()->get_content(file_name);
     YAML::Node node = YAML::Load(content);
-
+ 
     if (!ShaderMgr::ptr()->load_shader("simple", "../res/shaders/simple.vs",
             "../res/shaders/simple.fs")) {
         return false;

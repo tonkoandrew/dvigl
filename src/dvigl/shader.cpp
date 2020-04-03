@@ -2,8 +2,8 @@
 
 bool Shader::compile_and_link(char* vs_content, char* fs_content)
 {
-    GLhandleARB vs_ID;
-    GLhandleARB fs_ID;
+    GLuint vs_ID;
+    GLuint fs_ID;
     vs_ID = compile(GL_VERTEX_SHADER, vs_content);
     fs_ID = compile(GL_FRAGMENT_SHADER, fs_content);
     if ((!vs_ID) || (!fs_ID)) {
@@ -39,10 +39,10 @@ bool Shader::compile_and_link(char* vs_content, char* fs_content)
     return true;
 }
 
-GLhandleARB Shader::compile(GLenum type, char* content)
+GLuint Shader::compile(GLenum type, char* content)
 {
     GLint compiled;
-    GLhandleARB shaderID;
+    GLuint shaderID;
 
     shaderID = glCreateShader(type);
 

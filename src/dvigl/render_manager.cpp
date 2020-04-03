@@ -47,6 +47,13 @@ bool RenderMgr::init()
 
     std::string window_title = "Window title";
 
+#ifdef(__PLATFORM_APPLE__)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
+
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
     // int w = 320;
     // int h = 240;
@@ -91,7 +98,10 @@ bool RenderMgr::init()
 
     SDL_GL_MakeCurrent(main_window, gl_context);
 
-    glEnable(GL_TEXTURE_2D);
+    // glEnable(GL_TEXTURE_2D);
+
+
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
@@ -102,7 +112,7 @@ bool RenderMgr::init()
 
     glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 
-    //   glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+      // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
     // #ifdef __PLATFORM_ANDROID__
     //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
     // #endif
@@ -125,14 +135,12 @@ bool RenderMgr::init()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     SDL_GL_SwapWindow(main_window);
-
     return true;
 }
 
 void RenderMgr::render_frame(float time_delta)
 {
     SDL_GL_MakeCurrent(main_window, gl_context);
-
     int w, h;
     SDL_GL_GetDrawableSize(main_window, &w, &h);
 
@@ -142,11 +150,13 @@ void RenderMgr::render_frame(float time_delta)
 
     Shader* s = ShaderMgr::ptr()->get_shader("simple");
     s->bind();
+    s->uniform1i("tex", 0);
+
 
     float aspect = (float)w / (float)(h > 1 ? h : 1);
     glm::mat4 mvp;
     glm::mat4 model_m;
-    glm::mat4 proj_m = glm::perspective(45.0f, aspect, 1.0f, 1000.0f);
+    glm::mat4 proj_m = glm::perspective(45.0f, aspect, 1.0f, 10000.0f);
 
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
