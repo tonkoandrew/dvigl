@@ -102,7 +102,7 @@ private:
 
     vector<MeshEntry> m_Entries;
     vector<Texture*> m_Textures;
-    vector<Texture*> m_NormalMaps;
+    // vector<Texture*> m_NormalMaps;
 
     map<string, GLuint> m_BoneMapping; // maps a bone name to its index
     GLuint m_NumBones;

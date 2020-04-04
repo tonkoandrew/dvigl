@@ -138,7 +138,7 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
 {
     m_Entries.resize(scene->mNumMeshes);
     m_Textures.resize(scene->mNumMaterials);
-    m_NormalMaps.resize(scene->mNumMaterials);
+    // m_NormalMaps.resize(scene->mNumMaterials);
 
     vector<glm::vec3> Positions;
     vector<glm::vec3> Normals;
@@ -305,7 +305,7 @@ bool SkinnedMesh::InitMaterials(const aiScene* scene)
         const aiMaterial* pMaterial = scene->mMaterials[i];
 
         m_Textures[i] = NULL;
-        m_NormalMaps[i] = NULL;
+        // m_NormalMaps[i] = NULL;
 
         if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
             aiString Path;
@@ -329,13 +329,13 @@ bool SkinnedMesh::InitMaterials(const aiScene* scene)
 
                 m_Textures[i] = TextureMgr::ptr()->get_texture(FullPath);
 
-                FullPath = Dir + "/" + "FatElvis_normal.jpg";
-                // m_Textures[i] = new TempTexture(GL_TEXTURE_2D, FullPath.c_str());
-                if (!TextureMgr::ptr()->load_texture(FullPath, FullPath)) {
-                    LOG("FAILED TO LOAD Texture");
-                    return false;
-                }
-                m_NormalMaps[i] = TextureMgr::ptr()->get_texture(FullPath);
+                // FullPath = Dir + "/" + "FatElvis_normal.jpg";
+                // // m_Textures[i] = new TempTexture(GL_TEXTURE_2D, FullPath.c_str());
+                // if (!TextureMgr::ptr()->load_texture(FullPath, FullPath)) {
+                //     LOG("FAILED TO LOAD Texture");
+                //     return false;
+                // }
+                // m_NormalMaps[i] = TextureMgr::ptr()->get_texture(FullPath);
             }
         }
     }
@@ -362,7 +362,7 @@ void SkinnedMesh::draw()
     Shader* s = ShaderMgr::ptr()->get_shader("skinned");
     s->bind();
     s->uniform1i("gColorMap", 0);
-    s->uniform1i("gNormalMap", 1);
+    // s->uniform1i("gNormalMap", 1);
     s->uniformMatrix4("gBones", &Transforms);
 
     glBindVertexArray(m_VAO);
@@ -376,9 +376,9 @@ void SkinnedMesh::draw()
             m_Textures[MaterialIndex]->bind(GL_TEXTURE0);
         }
 
-        if (m_NormalMaps[MaterialIndex]) {
-            m_NormalMaps[MaterialIndex]->bind(GL_TEXTURE1);
-        }
+        // if (m_NormalMaps[MaterialIndex]) {
+        //     m_NormalMaps[MaterialIndex]->bind(GL_TEXTURE1);
+        // }
 
         // LOG("%s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 

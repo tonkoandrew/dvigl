@@ -60,16 +60,16 @@ skinned_models:
 #   position: {x: 0.0, y: 0.0, z: 300.0}
 #   rotation: {x: -1.55, y: 3.14, z: 0.0}
 #   scale: 1.5
-- file: bob.dae
-  format: collada
-  name: bob5
-  position: {x: 0.0, y: 0.0, z: 400.0}
-  rotation: {x: -1.55, y: 3.14, z: 0.0}
-  scale: 1
 static_models:
-- file: bob.dae
+- file: tree.dae
   format: collada
-  name: yoda
-  position: {x: 100.0, y: 0.0, z: 100.0}
-  rotation: {x: -1.55, y: -2.25, z: 0.0}
-  scale: 1
+  name: tree
+  position: {x: 100.0, y: 0.0, z: 0.0}
+  rotation: {x: 0, y: 0, z: 0.0}
+  scale: 30.5
+- file: skinned_tree.dae
+  format: collada
+  name: tree2
+  position: {x: -100.0, y: 0.0, z: 100.0}
+  rotation: {x: -1.55, y: 0, z: 0.0}
+  scale: 0.1

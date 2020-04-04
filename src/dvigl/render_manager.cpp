@@ -50,9 +50,8 @@ bool RenderMgr::init()
 #if defined(__PLATFORM_APPLE__)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-    // SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 #endif
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
     // int w = 320;
@@ -90,26 +89,25 @@ bool RenderMgr::init()
         return false;
     }
 
-    if (!gladLoadGL()) {
-        LOG("Something went wrong!\n");
+    if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
+        LOG("Failed to initialize the OpenGL context.\n");
         return false;
     }
-    LOG("OpenGL %d.%d\n", GLVersion.major, GLVersion.minor);
+
+    LOG("rendering context: OpenGL %d.%d Core profile\n", GLVersion.major, GLVersion.minor);
 
     SDL_GL_MakeCurrent(main_window, gl_context);
 
-    // glEnable(GL_TEXTURE_2D);
-
-
-
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    // glDisable(GL_CULL_FACE);
     glEnable(GL_CULL_FACE);
     glEnable(GL_STENCIL_TEST);
+    glEnable(GL_POLYGON_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
 
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthFunc(GL_LEQUAL);
+ 
     glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 
       // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
@@ -140,29 +138,35 @@ bool RenderMgr::init()
 
 void RenderMgr::render_frame(float time_delta)
 {
-    SDL_GL_MakeCurrent(main_window, gl_context);
     int w, h;
+    Shader* s;
+    glm::mat4 model_m;
+    glm::mat4 view_m;
+    glm::mat4 proj_m;
+    glm::mat4 mvp;
+    glm::mat4 view_proj_m;
+
+    SDL_GL_MakeCurrent(main_window, gl_context);
     SDL_GL_GetDrawableSize(main_window, &w, &h);
 
     glViewport(0, 0, w, h);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Shader* s = ShaderMgr::ptr()->get_shader("simple");
-    s->bind();
-    s->uniform1i("tex", 0);
-
-
     float aspect = (float)w / (float)(h > 1 ? h : 1);
-    glm::mat4 mvp;
-    glm::mat4 model_m;
-    glm::mat4 proj_m = glm::perspective(45.0f, aspect, 1.0f, 10000.0f);
+
+    proj_m = glm::perspective(45.0f, aspect, 1.0f, 10000.0f);
 
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
-    glm::mat4 view_m = camera->get_view_matrix();
+    view_m = camera->get_view_matrix();
 
-    glm::mat4 view_proj_m = proj_m * view_m;
+    view_proj_m = proj_m * view_m;
+
+
+    s = ShaderMgr::ptr()->get_shader("simple");
+    s->bind();
+    s->uniform1i("tex", 0);
 
     for (auto element : ModelMgr::ptr()->models) {
         ModelNode* m = (ModelNode*)element.second;
@@ -172,6 +176,7 @@ void RenderMgr::render_frame(float time_delta)
 
         m->draw();
     }
+
 
     s = ShaderMgr::ptr()->get_shader("skinned");
     s->bind();
@@ -183,6 +188,7 @@ void RenderMgr::render_frame(float time_delta)
         s->uniformMatrix4("mvp", mvp);
         m->draw();
     }
+
 
     SDL_GL_SwapWindow(main_window);
 
