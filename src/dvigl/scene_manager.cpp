@@ -46,6 +46,17 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
+    // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
+    TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
+
+    if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg")) {
+        return false;
+    }
+    ModelNode* plane = ModelMgr::ptr()->get_model("plane");
+    plane->set_rotation(glm::vec3(3.14 / 2, 0.0, 0.0));
+    plane->set_position(glm::vec3(-100.0f, 0.0, -50.0));
+
+
     if (node["static_models"]) {
         if (node["static_models"].Type() != YAML::NodeType::Sequence) {
             LOG("static_models should be list of objects\n");
@@ -106,16 +117,6 @@ bool SceneMgr::load_scene(std::string file_name)
             m->set_rotation(rotation);
         }
     }
-
-    // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
-    TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
-
-    if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg")) {
-        return false;
-    }
-    ModelNode* plane = ModelMgr::ptr()->get_model("plane");
-    plane->set_rotation(glm::vec3(3.14 / 2, 0.0, 0.0));
-    plane->set_position(glm::vec3(-100.0f, 0.0, -50.0));
 
     current_scene->get_current_camera()->move_back(200.0f);
     current_scene->get_current_camera()->move_up(80.0f);

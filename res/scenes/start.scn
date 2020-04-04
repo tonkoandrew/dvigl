@@ -67,9 +67,53 @@ static_models:
   position: {x: 100.0, y: 0.0, z: 0.0}
   rotation: {x: 0, y: 0, z: 0.0}
   scale: 30.5
+
 - file: skinned_tree.dae
   format: collada
   name: tree2
   position: {x: -100.0, y: 0.0, z: 100.0}
   rotation: {x: -1.55, y: 0, z: 0.0}
   scale: 0.1
+
+- file: grass.dae
+  format: collada
+  name: grass
+  position: {x: 50.0, y: 0.0, z: 100.0}
+  rotation: {x: 0, y: 0, z: 0.0}
+  scale: 20.0
+
+- file: grass.dae
+  format: collada
+  name: grass2
+  position: {x: 0.0, y: 0.0, z: 100.0}
+  rotation: {x: 0, y: 1.0, z: 0}
+  scale: 20.0
+
+- file: grass.dae
+  format: collada
+  name: grass3
+  position: {x: -50.0, y: 0.0, z: 100.0}
+  rotation: {x: 0, y: 1.5, z: 0}
+  scale: 20.0
+
+
+- file: grass.dae
+  format: collada
+  name: grass4
+  position: {x: 50.0, y: 0.0, z: -50.0}
+  rotation: {x: 0, y: 0, z: 0.0}
+  scale: 20.0
+
+- file: grass.dae
+  format: collada
+  name: grass5
+  position: {x: 0.0, y: 0.0, z: -50.0}
+  rotation: {x: 0, y: 1.0, z: 0}
+  scale: 20.0
+
+- file: grass.dae
+  format: collada
+  name: grass6
+  position: {x: -50.0, y: 0.0, z: -50.0}
+  rotation: {x: 0, y: 1.5, z: 0}
+  scale: 20.0

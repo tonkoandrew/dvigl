@@ -100,10 +100,12 @@ bool RenderMgr::init()
 
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_POLYGON_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
+
+    // glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LEQUAL);
