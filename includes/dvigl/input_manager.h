@@ -1,7 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
-class InputMgr : public Singleton<InputMgr> {
+class InputMgr : public Singleton<InputMgr>
+{
 public:
     bool init();
     void process_input(float time_delta);

@@ -3,7 +3,8 @@
 
 class Scene;
 
-class SceneMgr : public Singleton<SceneMgr> {
+class SceneMgr : public Singleton<SceneMgr>
+{
 public:
     bool init();
     bool load_scene(std::string file_name);

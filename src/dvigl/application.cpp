@@ -22,14 +22,16 @@ bool Application::init()
 
     int result = SDL_Init(SDL_INIT_EVERYTHING);
 
-    if (result) {
+    if (result)
+    {
         LOG("SDL_Init failed: %s\n", SDL_GetError());
         error_code = 1;
         return false;
     }
 
     LOG("initializing FileSystemMgr... ");
-    if (!FileSystemMgr::ptr()->init()) {
+    if (!FileSystemMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 3;
         return false;
@@ -37,7 +39,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing InputMgr... ");
-    if (!InputMgr::ptr()->init()) {
+    if (!InputMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 5;
         return false;
@@ -45,15 +48,17 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing RenderMgr... ");
-    if (!RenderMgr::ptr()->init()) {
+    if (!RenderMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 6;
         return false;
     }
     LOG("done\n");
-   
+
     LOG("initializing ShaderMgr... ");
-    if (!ShaderMgr::ptr()->init()) {
+    if (!ShaderMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 16;
         return false;
@@ -61,7 +66,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing TextureMgr... ");
-    if (!TextureMgr::ptr()->init()) {
+    if (!TextureMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 14;
         return false;
@@ -69,7 +75,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing MaterialMgr... ");
-    if (!MaterialMgr::ptr()->init()) {
+    if (!MaterialMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 15;
         return false;
@@ -77,7 +84,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing AudioMgr... ");
-    if (!AudioMgr::ptr()->init()) {
+    if (!AudioMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 11;
         return false;
@@ -85,7 +93,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing VideoMgr... ");
-    if (!VideoMgr::ptr()->init()) {
+    if (!VideoMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 15;
         return false;
@@ -93,7 +102,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing FontMgr... ");
-    if (!FontMgr::ptr()->init()) {
+    if (!FontMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 13;
         return false;
@@ -101,7 +111,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing ParticleSystemMgr... ");
-    if (!ParticleSystemMgr::ptr()->init()) {
+    if (!ParticleSystemMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 13;
         return false;
@@ -109,7 +120,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing PhysicsMgr... ");
-    if (!PhysicsMgr::ptr()->init()) {
+    if (!PhysicsMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 13;
         return false;
@@ -117,7 +129,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing NetworkMgr... ");
-    if (!NetworkMgr::ptr()->init()) {
+    if (!NetworkMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 10;
         return false;
@@ -125,7 +138,8 @@ bool Application::init()
     LOG("done\n");
 
     LOG("initializing ModelMgr... ");
-    if (!ModelMgr::ptr()->init()) {
+    if (!ModelMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 10;
         return false;
@@ -134,14 +148,16 @@ bool Application::init()
 
     // =============================
     LOG("initializing SceneMgr... ");
-    if (!SceneMgr::ptr()->init()) {
+    if (!SceneMgr::ptr()->init())
+    {
         LOG("failed\n");
         error_code = 9;
         return false;
     }
     LOG("done\n");
 
-    if (!SceneMgr::ptr()->load_scene("../res/scenes/start.scn")) {
+    if (!SceneMgr::ptr()->load_scene("../res/scenes/start.scn"))
+    {
         LOG("failed to load scene\n");
         error_code = 16;
         return false;
@@ -158,11 +174,14 @@ bool Application::main_loop()
     Uint32 current_tick = SDL_GetTicks();
     Uint32 prev_tick = current_tick;
 
-    while (!quit) {
+    while (!quit)
+    {
         // exit();
 
-        while (SDL_PollEvent(&event) != 0) {
-            if (event.type == SDL_QUIT) {
+        while (SDL_PollEvent(&event) != 0)
+        {
+            if (event.type == SDL_QUIT)
+            {
                 quit = true;
             }
         }
@@ -180,7 +199,8 @@ bool Application::main_loop()
 
         /* 16ms each frame for ~60fps */
         int delay = 16.6f - time_delta;
-        if (delay < 0) {
+        if (delay < 0)
+        {
             delay = 0;
         }
 

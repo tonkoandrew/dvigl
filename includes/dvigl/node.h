@@ -3,7 +3,8 @@
 
 class CameraNode;
 
-class Node {
+class Node
+{
 public:
     Node();
     glm::vec3 get_position();

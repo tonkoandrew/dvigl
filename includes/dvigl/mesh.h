@@ -3,7 +3,8 @@
 
 class Texture;
 
-class Mesh {
+class Mesh
+{
 public:
     Mesh();
     Mesh(int w, int h);

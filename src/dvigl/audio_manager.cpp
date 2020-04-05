@@ -5,12 +5,14 @@ AudioMgr gAudioMgr;
 
 bool AudioMgr::init()
 {
-    if (Mix_Init(MIX_INIT_OGG) == -1) {
+    if (Mix_Init(MIX_INIT_OGG) == -1)
+    {
         LOG("Mix init error: %s\n", Mix_GetError());
         return false;
     }
 
-    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
+    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
+    {
         return false;
     }
     SDL_ClearError();
@@ -27,7 +29,8 @@ void AudioMgr::release()
 bool AudioMgr::load_audio(std::string name, std::string filename)
 {
     Audio* a = new Audio(filename);
-    if (!a) {
+    if (!a)
+    {
         return false;
     }
     audios[name] = a;
@@ -37,7 +40,8 @@ bool AudioMgr::load_audio(std::string name, std::string filename)
 Audio* AudioMgr::get_audio(std::string name)
 {
     auto it = audios.find(name);
-    if (it != audios.end()) {
+    if (it != audios.end())
+    {
         return it->second;
     }
 

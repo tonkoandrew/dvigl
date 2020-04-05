@@ -5,7 +5,8 @@ using namespace std;
 
 class Texture;
 
-class SkinnedMesh {
+class SkinnedMesh
+{
 public:
     SkinnedMesh(const aiScene* pScene);
 
@@ -25,7 +26,8 @@ private:
 #define NUM_BONES_PER_VEREX 4
     float TicksPerSecond;
 
-    struct BoneInfo {
+    struct BoneInfo
+    {
         glm::mat4 BoneOffset;
         glm::mat4 FinalTransformation;
 
@@ -36,7 +38,8 @@ private:
         }
     };
 
-    struct VertexBoneData {
+    struct VertexBoneData
+    {
         GLuint IDs[NUM_BONES_PER_VEREX];
         float Weights[NUM_BONES_PER_VEREX];
 
@@ -60,20 +63,15 @@ private:
     const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const string NodeName);
     void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const glm::mat4& ParentTransform);
     bool InitFromScene(const aiScene* pScene);
-    void InitMesh(
-        GLuint MeshIndex,
-        const aiMesh* paiMesh,
-        vector<glm::vec3>& Positions,
-        vector<glm::vec3>& Normals,
-        vector<glm::vec2>& TexCoords,
-        vector<VertexBoneData>& Bones,
-        vector<unsigned int>& Indices);
+    void InitMesh(GLuint MeshIndex, const aiMesh* paiMesh, vector<glm::vec3>& Positions, vector<glm::vec3>& Normals,
+        vector<glm::vec2>& TexCoords, vector<VertexBoneData>& Bones, vector<unsigned int>& Indices);
     void LoadBones(GLuint MeshIndex, const aiMesh* paiMesh, vector<VertexBoneData>& Bones);
     bool InitMaterials(const aiScene* pScene);
 
 #define INVALID_MATERIAL 0xFFFFFFFF
 
-    enum VB_TYPES {
+    enum VB_TYPES
+    {
         INDEX_BUFFER,
         POS_VB,
         NORMAL_VB,
@@ -85,7 +83,8 @@ private:
     GLuint m_VAO;
     GLuint m_Buffers[NUM_VBs];
 
-    struct MeshEntry {
+    struct MeshEntry
+    {
         MeshEntry()
         {
             NumIndices = 0;

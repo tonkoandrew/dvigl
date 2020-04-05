@@ -4,7 +4,8 @@
 
 class SkinnedMesh;
 
-class SkinnedModelNode : public Node {
+class SkinnedModelNode : public Node
+{
 public:
     SkinnedModelNode(char* content, int content_size, std::string format, float scale);
     void draw();

@@ -47,10 +47,10 @@ typedef GLuint GLhandleARB;
 
 #if defined(__PLATFORM_APPLE__)
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_net.h>
+#include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_ttf.h>
 #endif
 
@@ -104,10 +104,10 @@ typedef GLuint GLhandleARB;
 #define LOG(...) __android_log_print(ANDROID_LOG_DEBUG, "corelog", __VA_ARGS__)
 #else
 #include <cstdio>
-#define LOG(...)                 \
-    {                            \
-        printf(__VA_ARGS__);     \
-        std::cout << std::flush; \
+#define LOG(...)                                                                                                       \
+    {                                                                                                                  \
+        printf(__VA_ARGS__);                                                                                           \
+        std::cout << std::flush;                                                                                       \
     }
 #endif
 
@@ -126,10 +126,11 @@ typedef GLuint GLhandleARB;
 #define SRANDOM srandom(getpid())
 #endif
 
-#define SAFE_DELETE(p) \
-    if (p) {           \
-        delete p;      \
-        p = NULL;      \
+#define SAFE_DELETE(p)                                                                                                 \
+    if (p)                                                                                                             \
+    {                                                                                                                  \
+        delete p;                                                                                                      \
+        p = NULL;                                                                                                      \
     }
 
 #define GLCheckError() (glGetError() == GL_NO_ERROR)

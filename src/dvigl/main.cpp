@@ -6,7 +6,8 @@
 extern "C" int dvigl_init()
 {
     Application* app = Application::ptr();
-    if (app->init()) {
+    if (app->init())
+    {
         return 0;
     }
     return app->get_error_code();
@@ -15,7 +16,8 @@ extern "C" int dvigl_init()
 extern "C" int dvigl_main()
 {
     Application* app = Application::ptr();
-    if (app->main_loop()) {
+    if (app->main_loop())
+    {
         app->release();
         return 0;
     }

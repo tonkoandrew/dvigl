@@ -7,7 +7,8 @@ bool TextureMgr::init()
 {
 #ifndef __PLATFORM_ANDROID__
     int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_TIF;
-    if (!(IMG_Init(imgFlags) & imgFlags)) {
+    if (!(IMG_Init(imgFlags) & imgFlags))
+    {
         LOG("SDL_image error: %s\n", IMG_GetError());
         return false;
     }
@@ -18,7 +19,8 @@ bool TextureMgr::init()
 Texture* TextureMgr::get_texture(std::string name)
 {
     auto it = textures.find(name);
-    if (it != textures.end()) {
+    if (it != textures.end())
+    {
         return it->second;
     }
 
@@ -28,7 +30,8 @@ Texture* TextureMgr::get_texture(std::string name)
 
 bool TextureMgr::add_texture(std::string name, SDL_Surface* surf)
 {
-    if (!surf) {
+    if (!surf)
+    {
         LOG("TextureMgr::add_texture(\"%s\") failed: surf is NULL\n", name.c_str());
         return false;
     }
@@ -68,7 +71,8 @@ bool TextureMgr::add_texture(std::string name, SDL_Surface* surf)
 
     converted = SDL_ConvertSurface(surf, &RGBAFormat, SDL_SWSURFACE);
 
-    if (!converted) {
+    if (!converted)
+    {
         LOG("SDL_ConvertSurface error: %s\n", SDL_GetError());
         return false;
     }
@@ -83,7 +87,8 @@ bool TextureMgr::load_texture(std::string name, std::string file_name)
 
     LOG("Loading texture %s\n", file_name.c_str());
     SDL_Surface* surf = IMG_Load(file_name.c_str());
-    if (!surf) {
+    if (!surf)
+    {
         LOG("IMG_Load error: %s\n", IMG_GetError());
         return false;
     }
@@ -123,7 +128,8 @@ bool TextureMgr::load_texture(std::string name, std::string file_name)
 
     converted = SDL_ConvertSurface(surf, &RGBAFormat, SDL_SWSURFACE);
 
-    if (!converted) {
+    if (!converted)
+    {
         LOG("SDL_ConvertSurface error: %s\n", SDL_GetError());
         return false;
     }

@@ -3,7 +3,8 @@
 
 class Texture;
 
-class TextureMgr : public Singleton<TextureMgr> {
+class TextureMgr : public Singleton<TextureMgr>
+{
 public:
     bool init();
     Texture* get_texture(std::string name);

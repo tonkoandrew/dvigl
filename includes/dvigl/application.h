@@ -1,7 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
-class Application : public Singleton<Application> {
+class Application : public Singleton<Application>
+{
 public:
     bool init();
     bool main_loop();

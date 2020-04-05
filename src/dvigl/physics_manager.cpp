@@ -20,8 +20,7 @@ bool PhysicsMgr::init()
     /// the default constraint solver. For parallel processing you can use a
     /// different solver (see Extras/BulletMultiThreaded)
     solver = new btSequentialImpulseConstraintSolver;
-    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache,
-        solver, collisionConfiguration);
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
     dynamicsWorld->setGravity(btVector3(0.0f, -9.8f, 0.0f));
 
     btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(250.), btScalar(50.), btScalar(50.)));
@@ -43,8 +42,7 @@ bool PhysicsMgr::init()
     // using motionstate is optional, it provides interpolation capabilities, and
     // only synchronizes 'active' objects
     btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-    btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState,
-        groundShape, localInertia);
+    btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
 
     rbInfo.m_restitution = 1.0f;
     rbInfo.m_friction = 0.01f;
@@ -82,8 +80,7 @@ bool PhysicsMgr::init()
         // using motionstate is recommended, it provides interpolation capabilities,
         // and only synchronizes 'active' objects
         btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState,
-            colShape, localInertia);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 
         rbInfo.m_restitution = 1.0f;
         rbInfo.m_friction = 0.01f;
@@ -116,9 +113,12 @@ void PhysicsMgr::update(float time_delta)
 
     btTransform trans;
 
-    if (body && body->getMotionState()) {
+    if (body && body->getMotionState())
+    {
         body->getMotionState()->getWorldTransform(trans);
-    } else {
+    }
+    else
+    {
         trans = obj->getWorldTransform();
     }
 

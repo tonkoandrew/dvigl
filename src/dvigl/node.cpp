@@ -39,7 +39,8 @@ glm::mat3 get_rotation_matrix(glm::vec3 V, float fAngle)
     x = V.x;
     y = V.y;
     z = V.z;
-    if (x == 0.0f && y == 0.0f && z == 0.0f) {
+    if (x == 0.0f && y == 0.0f && z == 0.0f)
+    {
         return result;
     }
     vecLength = glm::length(V);

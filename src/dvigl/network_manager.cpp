@@ -4,7 +4,8 @@ NetworkMgr gNetworkMgr;
 
 bool NetworkMgr::init()
 {
-    if (SDLNet_Init() != 0) {
+    if (SDLNet_Init() != 0)
+    {
         LOG("SDLNet_Init: %s\n", SDLNet_GetError());
         return false;
     }

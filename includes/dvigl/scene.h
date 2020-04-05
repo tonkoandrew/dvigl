@@ -3,7 +3,8 @@
 
 class CameraNode;
 
-class Scene {
+class Scene
+{
 public:
     Scene();
     CameraNode* get_current_camera(void);

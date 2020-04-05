@@ -1,7 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
-class FileSystemMgr : public Singleton<FileSystemMgr> {
+class FileSystemMgr : public Singleton<FileSystemMgr>
+{
 public:
     bool init();
     void release();

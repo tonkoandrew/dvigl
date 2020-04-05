@@ -1,7 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
-class Font {
+class Font
+{
 public:
     Font(std::string filename, int size);
     ~Font();

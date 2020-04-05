@@ -2,7 +2,8 @@
 #include "btBulletDynamicsCommon.h"
 #include <dvigl/core.h>
 
-class PhysicsMgr : public Singleton<PhysicsMgr> {
+class PhysicsMgr : public Singleton<PhysicsMgr>
+{
 public:
     bool init();
     void update(float time_delta);

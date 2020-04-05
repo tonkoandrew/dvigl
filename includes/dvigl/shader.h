@@ -1,7 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
-class Shader {
+class Shader
+{
 public:
     bool compile_and_link(char* vs_content, char* fs_content);
     void bind();

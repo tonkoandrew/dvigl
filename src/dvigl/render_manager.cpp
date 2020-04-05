@@ -31,7 +31,8 @@ bool RenderMgr::init()
     // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);  // Couldn't find
     // matching GLX visual on Intel video
 
-    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+    int flags = SDL_WINDOW_SHOWN
+        | SDL_WINDOW_OPENGL
         // | SDL_WINDOW_ALLOW_HIGHDPI
         // | SDL_WINDOW_MOUSE_FOCUS
         // | SDL_WINDOW_INPUT_GRABBED
@@ -65,13 +66,16 @@ bool RenderMgr::init()
 
     main_window = SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
 
-    if (!main_window) {
+    if (!main_window)
+    {
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 1);
         main_window = SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
-        if (!main_window) {
+        if (!main_window)
+        {
             SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
             main_window = SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
-            if (!main_window) {
+            if (!main_window)
+            {
                 LOG("SDL_CreateWindow failed: %s\n", SDL_GetError());
                 return false;
             }
@@ -84,17 +88,25 @@ bool RenderMgr::init()
 
     gl_context = SDL_GL_CreateContext(main_window);
 
-    if (!gl_context) {
+    if (!gl_context)
+    {
         LOG("SDL_GL_CreateContext failed: %s\n", SDL_GetError());
         return false;
     }
 
-    if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
+    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+    {
         LOG("Failed to initialize the OpenGL context.\n");
         return false;
     }
 
     LOG("rendering context: OpenGL %d.%d Core profile\n", GLVersion.major, GLVersion.minor);
+
+    if (!GLAD_GL_ARB_texture_multisample)
+    {
+        LOG("GL_ARB_texture_multisample is not supported\n");
+        return false;
+    }
 
     SDL_GL_MakeCurrent(main_window, gl_context);
 
@@ -109,10 +121,10 @@ bool RenderMgr::init()
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LEQUAL);
- 
+
     glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 
-      // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+    // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
     // #ifdef __PLATFORM_ANDROID__
     //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
     // #endif
@@ -165,12 +177,12 @@ void RenderMgr::render_frame(float time_delta)
 
     view_proj_m = proj_m * view_m;
 
-
     s = ShaderMgr::ptr()->get_shader("simple");
     s->bind();
     s->uniform1i("tex", 0);
 
-    for (auto element : ModelMgr::ptr()->models) {
+    for (auto element : ModelMgr::ptr()->models)
+    {
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
@@ -179,11 +191,11 @@ void RenderMgr::render_frame(float time_delta)
         m->draw();
     }
 
-
     s = ShaderMgr::ptr()->get_shader("skinned");
     s->bind();
 
-    for (auto element : ModelMgr::ptr()->skinned_models) {
+    for (auto element : ModelMgr::ptr()->skinned_models)
+    {
         SkinnedModelNode* m = (SkinnedModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
@@ -191,11 +203,11 @@ void RenderMgr::render_frame(float time_delta)
         m->draw();
     }
 
-
     SDL_GL_SwapWindow(main_window);
 
     GLuint err = glGetError();
-    if (err != 0) {
+    if (err != 0)
+    {
         LOG("GL ERRORS HERE ================\n");
         LOG("%d \n", err);
         LOG("================\n");
@@ -206,11 +218,13 @@ SDL_Window* RenderMgr::get_main_window() { return main_window; }
 
 void RenderMgr::release()
 {
-    if (gl_context) {
+    if (gl_context)
+    {
         SDL_GL_DeleteContext(gl_context);
     }
 
-    if (main_window) {
+    if (main_window)
+    {
         SDL_DestroyWindow(main_window);
     }
     SDL_Quit();

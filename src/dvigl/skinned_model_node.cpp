@@ -7,18 +7,24 @@ SkinnedModelNode::SkinnedModelNode(char* content, int content_size, std::string 
 {
     const struct aiScene* scene;
 
-    int flags = aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_LimitBoneWeights | aiProcess_FindInvalidData | aiProcess_SplitByBoneCount | aiProcess_FlipUVs |
-        // aiProcess_ConvertToLeftHanded |
-        aiProcess_CalcTangentSpace | aiProcess_RemoveRedundantMaterials |
-
-        aiProcess_JoinIdenticalVertices | aiProcess_GlobalScale | 0;
+    int flags = aiProcess_SplitLargeMeshes | aiProcess_LimitBoneWeights | aiProcess_SplitByBoneCount
+        | aiProcess_GenSmoothNormals | aiProcess_SortByPType | aiProcess_CalcTangentSpace
+        | aiProcess_RemoveRedundantMaterials | aiProcess_TransformUVCoords | aiProcess_ValidateDataStructure
+        | aiProcess_ImproveCacheLocality | aiProcess_FindInvalidData | aiProcess_FindDegenerates
+        | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_Triangulate | aiProcess_FlipUVs
+        | aiProcess_ConvertToLeftHanded | aiProcess_JoinIdenticalVertices | aiProcess_GlobalScale | 0;
 
     aiPropertyStore* store = aiCreatePropertyStore();
     aiSetImportPropertyFloat(store, AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, scale);
+
+    int import_components = aiComponent_CAMERAS | aiComponent_LIGHTS | aiComponent_MATERIALS | aiComponent_COLORS;
+    aiSetImportPropertyInteger(store, AI_CONFIG_PP_RVC_FLAGS, import_components);
+
     scene = aiImportFileFromMemoryWithProperties(content, content_size, flags, format.c_str(), store);
     aiReleasePropertyStore(store);
 
-    if (!scene) {
+    if (!scene)
+    {
         LOG("ERROR LOADING MODEL\n");
         return;
     }
@@ -29,14 +35,16 @@ SkinnedModelNode::SkinnedModelNode(char* content, int content_size, std::string 
 
 void SkinnedModelNode::draw()
 {
-    for (unsigned int i = 0; i < meshes.size(); i++) {
+    for (unsigned int i = 0; i < meshes.size(); i++)
+    {
         meshes[i]->draw();
     }
 }
 
 void SkinnedModelNode::release()
 {
-    for (unsigned int i = 0; i < meshes.size(); i++) {
+    for (unsigned int i = 0; i < meshes.size(); i++)
+    {
         meshes[i]->release();
     }
 }

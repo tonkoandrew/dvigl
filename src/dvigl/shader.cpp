@@ -6,7 +6,8 @@ bool Shader::compile_and_link(char* vs_content, char* fs_content)
     GLuint fs_ID;
     vs_ID = compile(GL_VERTEX_SHADER, vs_content);
     fs_ID = compile(GL_FRAGMENT_SHADER, fs_content);
-    if ((!vs_ID) || (!fs_ID)) {
+    if ((!vs_ID) || (!fs_ID))
+    {
         return false;
     }
 
@@ -23,10 +24,12 @@ bool Shader::compile_and_link(char* vs_content, char* fs_content)
 
     GLint linked = 0;
     glGetProgramiv(program_object, GL_LINK_STATUS, &linked);
-    if (!linked) {
+    if (!linked)
+    {
         GLint infoLen = 0;
         glGetProgramiv(program_object, GL_INFO_LOG_LENGTH, &infoLen);
-        if (infoLen > 0) {
+        if (infoLen > 0)
+        {
             char* infoLog = (char*)malloc(sizeof(char) * infoLen);
             infoLog[infoLen - 1] = '\0';
             glGetProgramInfoLog(program_object, infoLen, NULL, infoLog);
@@ -50,10 +53,12 @@ GLuint Shader::compile(GLenum type, char* content)
     glCompileShader(shaderID);
     glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compiled);
 
-    if (!compiled) {
+    if (!compiled)
+    {
         GLint infoLen = 0;
         glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLen);
-        if (infoLen > 0) {
+        if (infoLen > 0)
+        {
             char* infoLog = (char*)malloc(sizeof(char) * infoLen);
             glGetShaderInfoLog(shaderID, infoLen, NULL, infoLog);
             LOG("Error on compiling shader:\n%s\n", infoLog);
@@ -65,16 +70,12 @@ GLuint Shader::compile(GLenum type, char* content)
     return shaderID;
 }
 
-void Shader::bind()
-{
-    glUseProgram(program_object);
-}
+void Shader::bind() { glUseProgram(program_object); }
 
 void Shader::uniformMatrix4(std::string name, glm::mat4 value)
 {
     int location = get_uniform_location(name);
-    glUniformMatrix4fv(location, 1 /*only setting 1 matrix*/,
-        false /*transpose?*/, glm::value_ptr(value));
+    glUniformMatrix4fv(location, 1 /*only setting 1 matrix*/, false /*transpose?*/, glm::value_ptr(value));
 }
 
 void Shader::uniformMatrix4(std::string name, std::vector<glm::mat4>* values)
@@ -86,8 +87,7 @@ void Shader::uniformMatrix4(std::string name, std::vector<glm::mat4>* values)
 void Shader::uniformMatrix3(std::string name, glm::mat3 value)
 {
     int location = get_uniform_location(name);
-    glUniformMatrix3fv(location, 1 /*only setting 1 matrix*/,
-        false /*transpose?*/, glm::value_ptr(value));
+    glUniformMatrix3fv(location, 1 /*only setting 1 matrix*/, false /*transpose?*/, glm::value_ptr(value));
 }
 
 void Shader::uniform1i(std::string name, int value)
@@ -111,7 +111,8 @@ void Shader::uniform3f(std::string name, glm::vec3 value)
 GLint Shader::get_uniform_location(std::string name)
 {
     GLint location = glGetUniformLocation(program_object, name.c_str());
-    if (location == INVALID_UNIFORM_LOCATION) {
+    if (location == INVALID_UNIFORM_LOCATION)
+    {
         LOG("Warning! Unable to get the location of uniform '%s'\n", name.c_str());
     }
     return location;

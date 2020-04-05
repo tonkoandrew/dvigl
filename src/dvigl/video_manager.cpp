@@ -6,7 +6,8 @@ VideoMgr gVideoMgr;
 
 // ffmpeg -i path/to/eagames.mp4 -codec:v libtheora -qscale:v 7 -codec:a libvorbis -qscale:a 5 ../res/videos/video.ogv
 
-typedef struct AudioQueue {
+typedef struct AudioQueue
+{
     const THEORAPLAY_AudioPacket* audio;
     int offset;
     struct AudioQueue* next;
@@ -19,7 +20,8 @@ static void SDLCALL audio_callback(void* userdata, Uint8* stream, int len)
 {
     Sint16* dst = (Sint16*)stream;
 
-    while (audio_queue && (len > 0)) {
+    while (audio_queue && (len > 0))
+    {
         volatile AudioQueue* item = audio_queue;
         AudioQueue* next = item->next;
         const int channels = item->audio->channels;
@@ -31,7 +33,8 @@ static void SDLCALL audio_callback(void* userdata, Uint8* stream, int len)
         if (cpy > (len / sizeof(Sint16)))
             cpy = len / sizeof(Sint16);
 
-        for (i = 0; i < cpy; i++) {
+        for (i = 0; i < cpy; i++)
+        {
             const float val = *(src++);
             if (val < -1.0f)
                 *(dst++) = -32768;
@@ -44,7 +47,8 @@ static void SDLCALL audio_callback(void* userdata, Uint8* stream, int len)
         item->offset += (cpy / channels);
         len -= cpy * sizeof(Sint16);
 
-        if (item->offset >= item->audio->frames) {
+        if (item->offset >= item->audio->frames)
+        {
             THEORAPLAY_freeAudio(item->audio);
             SDL_free((void*)item);
             audio_queue = next;
@@ -61,7 +65,8 @@ static void SDLCALL audio_callback(void* userdata, Uint8* stream, int len)
 static void queue_audio(const THEORAPLAY_AudioPacket* audio)
 {
     AudioQueue* item = (AudioQueue*)SDL_malloc(sizeof(AudioQueue));
-    if (!item) {
+    if (!item)
+    {
         THEORAPLAY_freeAudio(audio);
         return;
     }
@@ -84,7 +89,8 @@ bool VideoMgr::load_video(std::string fname)
 
     decoder = THEORAPLAY_startDecodeFile(fname.c_str(), 30, THEORAPLAY_VIDFMT_IYUV);
 
-    while (!audio || !video) {
+    while (!audio || !video)
+    {
         if (!audio)
             audio = THEORAPLAY_getAudio(decoder);
         if (!video)
@@ -102,7 +108,8 @@ bool VideoMgr::load_video(std::string fname)
 
     renderer = SDL_CreateRenderer(screen, -1, 0);
 
-    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, video->width, video->height);
+    texture
+        = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, video->width, video->height);
 
     initfailed = quit = (!screen || !texture);
 
@@ -114,7 +121,8 @@ bool VideoMgr::load_video(std::string fname)
     spec.callback = audio_callback;
     initfailed = quit = (initfailed || (SDL_OpenAudio(&spec, NULL) != 0));
 
-    while (audio) {
+    while (audio)
+    {
         queue_audio(audio);
         audio = THEORAPLAY_getAudio(decoder);
     }
@@ -128,16 +136,20 @@ bool VideoMgr::load_video(std::string fname)
 
 void VideoMgr::update(float time_delta)
 {
-    while (!quit && THEORAPLAY_isDecoding(decoder)) {
+    while (!quit && THEORAPLAY_isDecoding(decoder))
+    {
         const Uint32 now = SDL_GetTicks() - baseticks;
 
         if (!video)
             video = THEORAPLAY_getVideo(decoder);
 
-        if (video && (video->playms <= now)) {
-            if (framems && ((now - video->playms) >= framems)) {
+        if (video && (video->playms <= now))
+        {
+            if (framems && ((now - video->playms) >= framems))
+            {
                 const THEORAPLAY_VideoFrame* last = video;
-                while ((video = THEORAPLAY_getVideo(decoder)) != NULL) {
+                while ((video = THEORAPLAY_getVideo(decoder)) != NULL)
+                {
                     THEORAPLAY_freeVideo(last);
                     last = video;
                     if ((now - video->playms) < framems)
@@ -157,17 +169,20 @@ void VideoMgr::update(float time_delta)
             Uint8* dst = (Uint8*)pixels;
             int i;
 
-            //memcpy(pixels, video->pixels, video->height * pitch);
+            // memcpy(pixels, video->pixels, video->height * pitch);
 
-            for (i = 0; i < h; i++, y += w, dst += pitch) {
+            for (i = 0; i < h; i++, y += w, dst += pitch)
+            {
                 memcpy(dst, y, w);
             }
 
-            for (i = 0; i < h / 2; i++, u += w / 2, dst += pitch / 2) {
+            for (i = 0; i < h / 2; i++, u += w / 2, dst += pitch / 2)
+            {
                 memcpy(dst, u, w / 2);
             }
 
-            for (i = 0; i < h / 2; i++, v += w / 2, dst += pitch / 2) {
+            for (i = 0; i < h / 2; i++, v += w / 2, dst += pitch / 2)
+            {
                 memcpy(dst, v, w / 2);
             }
 
@@ -175,7 +190,9 @@ void VideoMgr::update(float time_delta)
 
             THEORAPLAY_freeVideo(video);
             video = NULL;
-        } else {
+        }
+        else
+        {
             SDL_Delay(10);
         }
 
@@ -192,7 +209,8 @@ bool VideoMgr::init() { return true; }
 
 void VideoMgr::release()
 {
-    while (!quit) {
+    while (!quit)
+    {
         SDL_LockAudio();
         quit = (audio_queue == NULL);
         SDL_UnlockAudio();
@@ -200,9 +218,12 @@ void VideoMgr::release()
             SDL_Delay(100);
     }
 
-    if (initfailed) {
+    if (initfailed)
+    {
         LOG("Initialization failed!\n");
-    } else if (THEORAPLAY_decodingError(decoder)) {
+    }
+    else if (THEORAPLAY_decodingError(decoder))
+    {
         LOG("There was an error decoding this file!\n");
     }
 

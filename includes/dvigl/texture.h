@@ -1,7 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
-class Texture {
+class Texture
+{
 public:
     Texture(SDL_Surface* surf);
     void bind(GLint id);

@@ -4,7 +4,8 @@
 class ModelNode;
 class SkinnedModelNode;
 
-class ModelMgr : public Singleton<ModelMgr> {
+class ModelMgr : public Singleton<ModelMgr>
+{
 public:
     bool init();
     ModelNode* get_model(std::string name);

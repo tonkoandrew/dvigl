@@ -1,11 +1,12 @@
 #pragma once
 
-template <typename T>
-class Singleton {
+template <typename T> class Singleton
+{
 public:
     Singleton()
     {
-        if (instance == 0) {
+        if (instance == 0)
+        {
             instance = (T*)this;
         }
     }
@@ -13,7 +14,8 @@ public:
     static T* ptr() { return instance; }
     void Release()
     {
-        if (this) {
+        if (this)
+        {
             delete this;
             instance = 0;
         }
@@ -24,5 +26,4 @@ private:
     static T* instance;
 };
 
-template <typename T>
-T* Singleton<T>::instance = 0;
+template <typename T> T* Singleton<T>::instance = 0;

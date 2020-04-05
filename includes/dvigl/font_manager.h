@@ -3,7 +3,8 @@
 
 class Font;
 
-class FontMgr : public Singleton<FontMgr> {
+class FontMgr : public Singleton<FontMgr>
+{
 public:
     bool init();
     Font* get_font(std::string name);

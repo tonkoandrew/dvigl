@@ -1,7 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
-class RenderMgr : public Singleton<RenderMgr> {
+class RenderMgr : public Singleton<RenderMgr>
+{
 public:
     bool init();
     void render_frame(float time_delta);

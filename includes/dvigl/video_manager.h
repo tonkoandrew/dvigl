@@ -3,7 +3,8 @@
 
 #include <theoraplay/theoraplay.h>
 
-class VideoMgr : public Singleton<VideoMgr> {
+class VideoMgr : public Singleton<VideoMgr>
+{
 public:
     int quit = 0;
     THEORAPLAY_Decoder* decoder = NULL;

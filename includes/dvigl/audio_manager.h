@@ -3,7 +3,8 @@
 
 class Audio;
 
-class AudioMgr : public Singleton<AudioMgr> {
+class AudioMgr : public Singleton<AudioMgr>
+{
 public:
     bool init();
     bool load_audio(std::string name, std::string filename);

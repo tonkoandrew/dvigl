@@ -1,7 +1,8 @@
 #pragma once
 #include <dvigl/core.h>
 
-class Audio {
+class Audio
+{
 public:
     Audio(std::string filename);
     void release();

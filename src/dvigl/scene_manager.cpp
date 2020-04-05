@@ -31,39 +31,43 @@ bool SceneMgr::load_scene(std::string file_name)
 
     char* content = FileSystemMgr::ptr()->get_content(file_name);
     YAML::Node node = YAML::Load(content);
- 
-    if (!ShaderMgr::ptr()->load_shader("simple", "../res/shaders/simple.vs",
-            "../res/shaders/simple.fs")) {
+
+    if (!ShaderMgr::ptr()->load_shader("simple", "../res/shaders/simple.vs", "../res/shaders/simple.fs"))
+    {
         return false;
     }
 
-    if (!ShaderMgr::ptr()->load_shader("skinned", "../res/shaders/skinned.vs",
-            "../res/shaders/skinned.fs")) {
+    if (!ShaderMgr::ptr()->load_shader("skinned", "../res/shaders/skinned.vs", "../res/shaders/skinned.fs"))
+    {
         return false;
     }
 
-    if (!FontMgr::ptr()->load_font("FreeSans_150", "../res/fonts/Magician.ttf", 150)) {
+    if (!FontMgr::ptr()->load_font("FreeSans_150", "../res/fonts/Magician.ttf", 150))
+    {
         return false;
     }
 
     // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
     TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
 
-    if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg")) {
+    if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg"))
+    {
         return false;
     }
     ModelNode* plane = ModelMgr::ptr()->get_model("plane");
     plane->set_rotation(glm::vec3(3.14 / 2, 0.0, 0.0));
     plane->set_position(glm::vec3(-100.0f, 0.0, -50.0));
 
-
-    if (node["static_models"]) {
-        if (node["static_models"].Type() != YAML::NodeType::Sequence) {
+    if (node["static_models"])
+    {
+        if (node["static_models"].Type() != YAML::NodeType::Sequence)
+        {
             LOG("static_models should be list of objects\n");
             return false;
         }
 
-        for (std::size_t i = 0; i < node["static_models"].size(); i++) {
+        for (std::size_t i = 0; i < node["static_models"].size(); i++)
+        {
             YAML::Node model = node["static_models"][i];
             assert(model.Type() == YAML::NodeType::Map);
             assert(model["file"].Type() == YAML::NodeType::Scalar);
@@ -72,15 +76,18 @@ bool SceneMgr::load_scene(std::string file_name)
             std::string format = model["format"].as<std::string>();
             float scale = model["scale"].as<float>();
 
-            if (!ModelMgr::ptr()->load_model(name, fname, format, scale)) {
+            if (!ModelMgr::ptr()->load_model(name, fname, format, scale))
+            {
                 return false;
             }
 
             YAML::Node pos_node = model["position"];
-            glm::vec3 position = glm::vec3(pos_node["x"].as<float>(), pos_node["y"].as<float>(), pos_node["z"].as<float>());
+            glm::vec3 position
+                = glm::vec3(pos_node["x"].as<float>(), pos_node["y"].as<float>(), pos_node["z"].as<float>());
 
             YAML::Node rot_node = model["rotation"];
-            glm::vec3 rotation = glm::vec3(rot_node["x"].as<float>(), rot_node["y"].as<float>(), rot_node["z"].as<float>());
+            glm::vec3 rotation
+                = glm::vec3(rot_node["x"].as<float>(), rot_node["y"].as<float>(), rot_node["z"].as<float>());
 
             ModelNode* m = ModelMgr::ptr()->get_model(name);
             m->set_position(position);
@@ -88,13 +95,16 @@ bool SceneMgr::load_scene(std::string file_name)
         }
     }
 
-    if (node["skinned_models"]) {
-        if (node["skinned_models"].Type() != YAML::NodeType::Sequence) {
+    if (node["skinned_models"])
+    {
+        if (node["skinned_models"].Type() != YAML::NodeType::Sequence)
+        {
             LOG("skinned_models should be list of objects\n");
             return false;
         }
 
-        for (std::size_t i = 0; i < node["skinned_models"].size(); i++) {
+        for (std::size_t i = 0; i < node["skinned_models"].size(); i++)
+        {
             YAML::Node model = node["skinned_models"][i];
             assert(model.Type() == YAML::NodeType::Map);
             assert(model["file"].Type() == YAML::NodeType::Scalar);
@@ -103,14 +113,17 @@ bool SceneMgr::load_scene(std::string file_name)
             std::string format = model["format"].as<std::string>();
             float scale = model["scale"].as<float>();
 
-            if (!ModelMgr::ptr()->load_skinned_model(name, fname, format, scale)) {
+            if (!ModelMgr::ptr()->load_skinned_model(name, fname, format, scale))
+            {
                 return false;
             }
             YAML::Node pos_node = model["position"];
-            glm::vec3 position = glm::vec3(pos_node["x"].as<float>(), pos_node["y"].as<float>(), pos_node["z"].as<float>());
+            glm::vec3 position
+                = glm::vec3(pos_node["x"].as<float>(), pos_node["y"].as<float>(), pos_node["z"].as<float>());
 
             YAML::Node rot_node = model["rotation"];
-            glm::vec3 rotation = glm::vec3(rot_node["x"].as<float>(), rot_node["y"].as<float>(), rot_node["z"].as<float>());
+            glm::vec3 rotation
+                = glm::vec3(rot_node["x"].as<float>(), rot_node["y"].as<float>(), rot_node["z"].as<float>());
 
             SkinnedModelNode* m = ModelMgr::ptr()->get_skinned_model(name);
             m->set_position(position);
@@ -132,15 +145,9 @@ bool SceneMgr::load_scene(std::string file_name)
     return true;
 }
 
-void SceneMgr::update(float time_delta)
-{
-    SkinnedModelNode* elvis = ModelMgr::ptr()->get_skinned_model("elvis");
-}
+void SceneMgr::update(float time_delta) { SkinnedModelNode* elvis = ModelMgr::ptr()->get_skinned_model("elvis"); }
 
-Scene* SceneMgr::get_current_scene()
-{
-    return current_scene;
-}
+Scene* SceneMgr::get_current_scene() { return current_scene; }
 
 void SceneMgr::release()
 {
