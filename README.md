@@ -14,7 +14,8 @@ And then use cmake to build
 
 mkdir -p build; cd build
 
-cmake ..
+# in windows I use CMAKE_GENERATOR="MinGW Makefiles" cmake .. -Wno-dev
+cmake .. -Wno-dev
 
 make -j 8
 
