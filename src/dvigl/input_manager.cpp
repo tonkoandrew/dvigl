@@ -20,54 +20,48 @@ void InputMgr::process_input(float time_delta)
 
     CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
-    static float angle = 0;
-    static float dist = 0;
+float movement_speed = 0.5f;
+float rotation_speed = 0.002f;
+
     if (keystates[SDL_SCANCODE_W])
     {
-        cam->move_forward(0.1f * time_delta);
-        dist -= 0.01 * time_delta;
+        cam->move_forward(movement_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_S])
     {
-        cam->move_back(0.1f * time_delta);
-
-        dist += 0.01 * time_delta;
+        cam->move_back(movement_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_Z])
     {
-        cam->move_left(0.1f * time_delta);
+        cam->move_left(movement_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_C])
     {
-        cam->move_right(0.1f * time_delta);
+        cam->move_right(movement_speed* time_delta);
     }
 
     if (keystates[SDL_SCANCODE_F])
     {
-        cam->move_down(0.1f * time_delta);
+        cam->move_down(movement_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_R])
     {
-        cam->move_up(0.1f * time_delta);
+        cam->move_up(movement_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_A])
     {
-        cam->yaw(0.001f * time_delta);
-        angle += 0.1 * time_delta;
+        cam->yaw(rotation_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_D])
     {
-        cam->yaw(-0.001f * time_delta);
-        angle -= 0.1 * time_delta;
+        cam->yaw(-rotation_speed * time_delta);
     }
-
-    Mix_SetPosition(MIX_CHANNEL_POST, angle, dist);
 }
 
 void InputMgr::release() {}

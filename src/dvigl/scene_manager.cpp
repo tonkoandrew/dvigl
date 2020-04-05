@@ -47,7 +47,6 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
-    // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
     TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
 
     if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg"))
@@ -141,6 +140,8 @@ bool SceneMgr::load_scene(std::string file_name)
     // }
 
     // AudioMgr::ptr()->get_audio("elvis")->play();
+
+    // VideoMgr::ptr()->load_video("../res/videos/video.ogv");
 
     return true;
 }
