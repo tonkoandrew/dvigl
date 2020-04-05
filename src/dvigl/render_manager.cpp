@@ -28,8 +28,6 @@ bool RenderMgr::init()
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
-    // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);  // Couldn't find
-    // matching GLX visual on Intel video
 
     int flags = SDL_WINDOW_SHOWN
         | SDL_WINDOW_OPENGL
@@ -105,6 +103,12 @@ bool RenderMgr::init()
     if (!GLAD_GL_ARB_texture_multisample)
     {
         LOG("GL_ARB_texture_multisample is not supported\n");
+        return false;
+    }
+
+    if (!GLAD_GL_ARB_draw_elements_base_vertex)
+    {
+        LOG("GL_ARB_draw_elements_base_vertex is not supported\n");
         return false;
     }
 
