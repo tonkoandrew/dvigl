@@ -21,8 +21,9 @@ layout (location = 2) out vec4 gAlbedoSpec;
 void main()
 {
     vec4 color = texture(tex, v_texcoord);
-    // if(color.a < 0.1)
-    //  discard;
-    gAlbedoSpec = color;
-    // FragColor = vec4((1.0-v_normal)*0.5, 1.0);
+ 
+    gPosition = v_pos.xyz;
+    gNormal = normalize(v_normal);
+    gAlbedoSpec.rgb = color.rgb;
+    gAlbedoSpec.a = 1.0;
 }

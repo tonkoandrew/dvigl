@@ -6,8 +6,10 @@ layout (location = 2) in vec3 Normal;
 layout (location = 3) in ivec4 BoneIDs;
 layout (location = 4) in vec4 Weights;
 
-out vec2 TexCoord0;
-out vec3 Normal0;
+
+out vec2 v_texcoord;
+out vec3 v_normal;
+out vec4 v_pos;
 
 const int MAX_BONES = 100;
 
@@ -23,6 +25,8 @@ void main()
 
     vec4 PosL    = BoneTransform * vec4(Position, 1.0);
     gl_Position  = mvp * PosL;
-    TexCoord0    = TexCoord;
+    v_texcoord    = TexCoord;
     vec4 NormalL = BoneTransform * vec4(Normal, 0.0);
+    v_normal = NormalL.xyz;
+    v_pos = mvp * PosL;
 }

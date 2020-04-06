@@ -15,13 +15,13 @@ layout (location = 3) in vec2 attr_texcoord;
 
 out vec2 v_texcoord;
 out vec3 v_normal;
-out vec4 pos;
+out vec4 v_pos;
 
 uniform mat4 mvp;
 
 void main()
 {
-  pos = attr_pos;
+  v_pos = attr_pos;
   v_texcoord = attr_texcoord;
   v_normal = attr_normal;
   gl_Position = mvp * attr_pos;

@@ -23,4 +23,8 @@ private:
     GLuint quadVAO = 0;
     GLuint quadVBO;
     GLuint rboDepth;
+
+    const unsigned int NR_LIGHTS = 32;
+    std::vector<glm::vec3> lightPositions;
+    std::vector<glm::vec3> lightColors;
 };

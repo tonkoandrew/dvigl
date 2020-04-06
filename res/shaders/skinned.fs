@@ -7,12 +7,10 @@ precision mediump float;
 #endif
 
 
-in vec2 TexCoord0;
+in vec2 v_texcoord;
+in vec3 v_normal;
+in vec4 v_pos;
 
-struct VSOutput
-{
-    vec2 TexCoord;                                                            
-};
 
 uniform sampler2D gColorMap;        
 
@@ -24,8 +22,10 @@ layout (location = 2) out vec4 gAlbedoSpec;
 
 void main()
 {                                    
-    VSOutput In;
-    In.TexCoord = TexCoord0;
-    // FragColor = texture(gColorMap, In.TexCoord.xy);
-    gAlbedoSpec = texture(gColorMap, In.TexCoord.xy);
+    vec4 color = texture(gColorMap, v_texcoord);
+
+    gPosition = v_pos.xyz;
+    gNormal = normalize(v_normal);
+    gAlbedoSpec.rgb = color.rgb;
+    gAlbedoSpec.a = color.a;
 }
