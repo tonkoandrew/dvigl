@@ -66,7 +66,8 @@ void InputMgr::process_input(float time_delta)
         cam->yaw(-rotation_speed * time_delta);
     }
 
-    Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
+    // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
+    Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
 
     if (keystates[SDL_SCANCODE_UP])
     {
@@ -95,6 +96,14 @@ void InputMgr::process_input(float time_delta)
     if (keystates[SDL_SCANCODE_G])
     {
         model->roll(-rotation_speed * time_delta);
+    }
+    if (keystates[SDL_SCANCODE_Y])
+    {
+        model->position.y += movement_speed * time_delta;
+    }
+    if (keystates[SDL_SCANCODE_H])
+    {
+        model->position.y -= movement_speed * time_delta;
     }
 }
 

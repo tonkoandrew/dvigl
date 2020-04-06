@@ -23,8 +23,8 @@ void main()
     vec4 normal = texture(normalMap, v_texcoord);
  
     gPosition = v_pos.xyz;
-    gNormal = normalize(normal.rgb);
-    // gNormal = normalize(v_normal);
+    // gNormal = normalize(normal.rgb);
+    gNormal = normalize(v_normal);
     gAlbedoSpec.rgb = color.rgb;
     gAlbedoSpec.a = 1.0;
 }
