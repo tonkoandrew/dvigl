@@ -60,20 +60,20 @@ skinned_models:
 #   position: {x: 0.0, y: 0.0, z: 300.0}
 #   rotation: {x: -1.55, y: 3.14, z: 0.0}
 #   scale: 1.5
-static_models:
-- file: tree.dae
-  format: collada
-  name: tree
-  position: {x: 100.0, y: 0.0, z: 0.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 30.5
+# static_models:
+# - file: tree.dae
+#   format: collada
+#   name: tree
+#   position: {x: 100.0, y: 0.0, z: 0.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 30.5
 
-- file: skinned_tree.dae
-  format: collada
-  name: tree2
-  position: {x: -100.0, y: 0.0, z: 100.0}
-  rotation: {x: 1.55, y: 0, z: 0.0}
-  scale: 0.1
+# - file: skinned_tree.dae
+#   format: collada
+#   name: tree2
+#   position: {x: -100.0, y: 0.0, z: 100.0}
+#   rotation: {x: 1.55, y: 0, z: 0.0}
+#   scale: 0.1
 
 # - file: grass.dae
 #   format: collada

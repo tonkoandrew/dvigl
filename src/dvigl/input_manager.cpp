@@ -20,8 +20,8 @@ void InputMgr::process_input(float time_delta)
 
     CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
-float movement_speed = 0.5f;
-float rotation_speed = 0.002f;
+    float movement_speed = 0.5f;
+    float rotation_speed = 0.002f;
 
     if (keystates[SDL_SCANCODE_W])
     {
@@ -40,7 +40,7 @@ float rotation_speed = 0.002f;
 
     if (keystates[SDL_SCANCODE_C])
     {
-        cam->move_right(movement_speed* time_delta);
+        cam->move_right(movement_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_F])

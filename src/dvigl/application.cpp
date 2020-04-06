@@ -184,6 +184,15 @@ bool Application::main_loop()
             {
                 quit = true;
             }
+            if (event.type == SDL_WINDOWEVENT)
+            {
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+                {
+                    int new_w = event.window.data1;
+                    int new_h = event.window.data2;
+                    RenderMgr::ptr()->resize_buffers(new_w, new_h);
+                }
+            }
         }
         prev_tick = current_tick;
         current_tick = SDL_GetTicks();
