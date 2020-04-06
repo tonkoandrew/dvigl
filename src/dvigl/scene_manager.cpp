@@ -151,7 +151,10 @@ bool SceneMgr::load_scene(std::string file_name)
     return true;
 }
 
-void SceneMgr::update(float time_delta) { SkinnedModelNode* elvis = ModelMgr::ptr()->get_skinned_model("elvis"); }
+void SceneMgr::update(float time_delta)
+{
+
+}
 
 Scene* SceneMgr::get_current_scene() { return current_scene; }
 

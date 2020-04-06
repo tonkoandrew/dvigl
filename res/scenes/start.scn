@@ -1,17 +1,17 @@
 name: start
-skinned_models:
-- file: bob.dae
-  format: collada
-  name: bob
-  position: {x: 0.0, y: 0.0, z: 0.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 1.5
-- file: elvis.dae
-  format: collada
-  name: elvis
-  position: {x: -100.0, y: 0.0, z: 0.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 50.5
+# skinned_models:
+# - file: bob.dae
+#   format: collada
+#   name: bob
+#   position: {x: 0.0, y: 0.0, z: 0.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 1.5
+# - file: elvis.dae
+#   format: collada
+#   name: elvis
+#   position: {x: -100.0, y: 0.0, z: 0.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 50.5
 # - file: elvis.dae
 #   format: collada
 #   name: elvis2
