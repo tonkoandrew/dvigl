@@ -8,7 +8,7 @@ public:
     void render_frame(float time_delta);
     SDL_Window* get_main_window();
     void release();
-    void resize_buffers(int new_w, int new_h);
+    void resize_buffers(int new_w, int new_h, bool initialize);
 
 private:
     void lighting_pass(float time_delta);
@@ -24,7 +24,7 @@ private:
     GLuint quadVBO;
     GLuint rboDepth;
 
-    const unsigned int NR_LIGHTS = 32;
+    const unsigned int NR_LIGHTS = 64;
     std::vector<glm::vec3> lightPositions;
     std::vector<glm::vec3> lightColors;
 };

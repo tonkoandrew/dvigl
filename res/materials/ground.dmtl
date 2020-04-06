@@ -1,0 +1,6 @@
+shader: 'simple'
+diffuse: 'ground_albedo.jpg'
+normal: 'ground_normal.jpg'
+uv_params:
+  offset_x: 0.5
+  offset_y: 0.5

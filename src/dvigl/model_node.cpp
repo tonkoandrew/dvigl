@@ -1,3 +1,5 @@
+#include <dvigl/material.h>
+#include <dvigl/material_manager.h>
 #include <dvigl/mesh.h>
 #include <dvigl/model_node.h>
 #include <dvigl/texture.h>
@@ -67,7 +69,7 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
         // LOG("MATERIAL INDEX: %d\n", scene->mMeshes[m]->mMaterialIndex);
     }
 
-    std::string Dir = "../res/textures";
+    std::string Dir = "../res/materials";
 
     for (unsigned int i = 0; i < scene->mNumMaterials; i++)
     {
@@ -90,7 +92,7 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
 
                 // LOG("Texture %d = %s\n", i, FullPath.c_str());
 
-                if (!TextureMgr::ptr()->load_texture(FullPath, FullPath))
+                if (!MaterialMgr::ptr()->load_material(FullPath, FullPath))
                 {
                     LOG("FAILED TO LOAD Texture");
                     return;
@@ -100,7 +102,7 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
                 {
                     if (i == meshes[m]->mat_idx)
                     {
-                        meshes[m]->texture = TextureMgr::ptr()->get_texture(FullPath);
+                        meshes[m]->material = MaterialMgr::ptr()->get_material(FullPath);
                     }
                 }
             }
@@ -110,18 +112,18 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
     aiReleaseImport(scene);
 }
 
-ModelNode::ModelNode(int w, int h, std::string texture)
+ModelNode::ModelNode(int w, int h, std::string material)
 {
     meshes.resize(1);
     meshes[0] = new Mesh(w, h);
-    meshes[0]->texture = TextureMgr::ptr()->get_texture(texture);
+    meshes[0]->material = MaterialMgr::ptr()->get_material(material);
 }
 
 void ModelNode::draw()
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        meshes[i]->texture->bind(GL_TEXTURE0);
+        meshes[i]->material->bind();
         meshes[i]->draw();
     }
 }

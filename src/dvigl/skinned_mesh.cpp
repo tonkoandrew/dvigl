@@ -1,14 +1,9 @@
-#include <dvigl/skinned_mesh.h>
-#include <dvigl/texture.h>
-#include <dvigl/texture_manager.h>
-
+#include <dvigl/material.h>
 #include <dvigl/material_manager.h>
+#include <dvigl/skinned_mesh.h>
+
 #include <dvigl/shader.h>
 #include <dvigl/shader_manager.h>
-
-#ifndef WIN32
-#include <sys/time.h>
-#endif
 
 #define POSITION_LOCATION 0
 #define TEX_COORD_LOCATION 1
@@ -93,6 +88,7 @@ SkinnedMesh::SkinnedMesh(const aiScene* scene)
 
     TicksPerSecond
         = (float)(m_pScene->mAnimations[0]->mTicksPerSecond != 0 ? m_pScene->mAnimations[0]->mTicksPerSecond : 25.0f);
+    // TicksPerSecond /= 5.0f;
 
     m_startTime = SDL_GetTicks();
     // Create the VAO
@@ -118,9 +114,9 @@ SkinnedMesh::~SkinnedMesh() { release(); }
 
 void SkinnedMesh::release()
 {
-    for (GLuint i = 0; i < m_Textures.size(); i++)
+    for (GLuint i = 0; i < materials.size(); i++)
     {
-        SAFE_DELETE(m_Textures[i]);
+        SAFE_DELETE(materials[i]);
     }
 
     if (m_Buffers[0] != 0)
@@ -138,7 +134,7 @@ void SkinnedMesh::release()
 bool SkinnedMesh::InitFromScene(const aiScene* scene)
 {
     m_Entries.resize(scene->mNumMeshes);
-    m_Textures.resize(scene->mNumMaterials);
+    materials.resize(scene->mNumMaterials);
     // m_NormalMaps.resize(scene->mNumMaterials);
 
     vector<glm::vec3> Positions;
@@ -279,8 +275,7 @@ void SkinnedMesh::LoadBones(GLuint MeshIndex, const aiMesh* pMesh, vector<Vertex
 
 bool SkinnedMesh::InitMaterials(const aiScene* scene)
 {
-    string Dir = "../res/textures";
-    MaterialMgr::ptr()->load_material("../res/materials/elvis.yaml");
+    string Dir = "../res/materials";
 
     bool Ret = true;
 
@@ -289,7 +284,7 @@ bool SkinnedMesh::InitMaterials(const aiScene* scene)
     {
         const aiMaterial* pMaterial = scene->mMaterials[i];
 
-        m_Textures[i] = NULL;
+        materials[i] = NULL;
         // m_NormalMaps[i] = NULL;
 
         if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
@@ -307,22 +302,13 @@ bool SkinnedMesh::InitMaterials(const aiScene* scene)
 
                 string FullPath = Dir + "/" + p;
 
-                // m_Textures[i] = new TempTexture(GL_TEXTURE_2D, FullPath.c_str());
-                if (!TextureMgr::ptr()->load_texture(FullPath, FullPath))
+                if (!MaterialMgr::ptr()->load_material(FullPath, FullPath))
                 {
                     LOG("FAILED TO LOAD Texture");
                     return false;
                 }
 
-                m_Textures[i] = TextureMgr::ptr()->get_texture(FullPath);
-
-                // FullPath = Dir + "/" + "FatElvis_normal.jpg";
-                // // m_Textures[i] = new TempTexture(GL_TEXTURE_2D, FullPath.c_str());
-                // if (!TextureMgr::ptr()->load_texture(FullPath, FullPath)) {
-                //     LOG("FAILED TO LOAD Texture");
-                //     return false;
-                // }
-                // m_NormalMaps[i] = TextureMgr::ptr()->get_texture(FullPath);
+                materials[i] = MaterialMgr::ptr()->get_material(FullPath);
             }
         }
     }
@@ -348,7 +334,8 @@ void SkinnedMesh::draw()
 
     Shader* s = ShaderMgr::ptr()->get_shader("skinned");
     s->bind();
-    s->uniform1i("gColorMap", 0);
+    s->uniform1i("albedoMap", 0);
+    s->uniform1i("normalMap", 1);
     // s->uniform1i("gNormalMap", 1);
     s->uniformMatrix4("gBones", &Transforms);
 
@@ -358,21 +345,12 @@ void SkinnedMesh::draw()
     {
         const GLuint MaterialIndex = m_Entries[i].MaterialIndex;
 
-        assert(MaterialIndex < m_Textures.size());
+        assert(MaterialIndex < materials.size());
 
-        if (m_Textures[MaterialIndex])
+        if (materials[MaterialIndex])
         {
-            m_Textures[MaterialIndex]->bind(GL_TEXTURE0);
+            materials[MaterialIndex]->bind();
         }
-
-        // if (m_NormalMaps[MaterialIndex]) {
-        //     m_NormalMaps[MaterialIndex]->bind(GL_TEXTURE1);
-        // }
-
-        // LOG("%s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-
-        // if(GLAD_GL_ARB_draw_elements_base_vertex)
-        //   LOG("ARB_draw_elements_base_vertex\n");
 
         glDrawElementsBaseVertex(GL_TRIANGLES, m_Entries[i].NumIndices, GL_UNSIGNED_INT,
             (void*)(sizeof(GLuint) * m_Entries[i].BaseIndex), m_Entries[i].BaseVertex);

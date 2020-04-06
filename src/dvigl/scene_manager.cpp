@@ -15,6 +15,8 @@
 #include <dvigl/file_system_manager.h>
 #include <dvigl/video_manager.h>
 
+#include <dvigl/material_manager.h>
+
 SceneMgr gSceneMgr;
 
 bool SceneMgr::init()
@@ -52,9 +54,9 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
-    TextureMgr::ptr()->load_texture("../res/textures/dirt_seamless.jpg", "../res/textures/dirt_seamless.jpg");
+    MaterialMgr::ptr()->load_material("../res/materials/ground.dmtl", "../res/materials/ground.dmtl");
 
-    if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/textures/dirt_seamless.jpg"))
+    if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/materials/ground.dmtl"))
     {
         return false;
     }
@@ -151,10 +153,7 @@ bool SceneMgr::load_scene(std::string file_name)
     return true;
 }
 
-void SceneMgr::update(float time_delta)
-{
-
-}
+void SceneMgr::update(float time_delta) {}
 
 Scene* SceneMgr::get_current_scene() { return current_scene; }
 

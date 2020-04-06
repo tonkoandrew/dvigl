@@ -190,7 +190,7 @@ bool Application::main_loop()
                 {
                     int new_w = event.window.data1;
                     int new_h = event.window.data2;
-                    RenderMgr::ptr()->resize_buffers(new_w, new_h);
+                    RenderMgr::ptr()->resize_buffers(new_w, new_h, false);
                 }
             }
         }

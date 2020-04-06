@@ -15,7 +15,7 @@ struct Light {
     float Quadratic;
     float Radius;
 };
-const int NR_LIGHTS = 32;
+const int NR_LIGHTS = 64;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos;
 
@@ -28,7 +28,7 @@ void main()
     float Specular = texture(gAlbedoSpec, TexCoords).a;
     
     // then calculate lighting as usual
-    vec3 lighting  = Diffuse * 0.7; // hard-coded ambient component
+    vec3 lighting  = Diffuse * 0.5; // hard-coded ambient component
     vec3 viewDir  = normalize(viewPos - FragPos);
     for(int i = 0; i < NR_LIGHTS; ++i)
     {
@@ -41,7 +41,7 @@ void main()
             vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lights[i].Color;
             // specular
             vec3 halfwayDir = normalize(lightDir + viewDir);  
-            float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
+            float spec = pow(max(dot(Normal, halfwayDir), 0.0), 32.0);
             vec3 specular = lights[i].Color * spec * Specular;
             // attenuation
             float attenuation = 1.0 / (1.0 + lights[i].Linear * distance + lights[i].Quadratic * distance * distance);
@@ -50,6 +50,12 @@ void main()
             lighting += diffuse + specular;
         }
     }    
+    // FragColor = vec4(lighting, Specular)*0.5 +  vec4(Normal, 1.0)*0.5;
     FragColor = vec4(lighting, Specular);
+    // FragColor = vec4(Normal*0.333 + FragPos*0.333 + Diffuse*0.333, 1.0);
+
     // FragColor = vec4(Normal, 1.0);
+    // FragColor = vec4(FragPos, 1.0);
+    // FragColor = vec4(Diffuse, 1.0);
+
 }

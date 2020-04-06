@@ -168,19 +168,19 @@
   </library_lights>
   <library_images>
     <image id="guard1_body_tga" name="guard1_body_tga">
-      <init_from>guard1_body.tga</init_from>
+      <init_from>bob_body.dmtl</init_from>
     </image>
     <image id="guard1_face_tga" name="guard1_face_tga">
-      <init_from>guard1_face.tga</init_from>
+      <init_from>bob_face.dmtl</init_from>
     </image>
     <image id="guard1_helmet_tga" name="guard1_helmet_tga">
-      <init_from>guard1_helmet.tga</init_from>
+      <init_from>bob_helmet.dmtl</init_from>
     </image>
     <image id="iron_grill_tga" name="iron_grill_tga">
-      <init_from>iron_grill.tga</init_from>
+      <init_from>bob_iron_grill.dmtl</init_from>
     </image>
     <image id="round_grill_tga" name="round_grill_tga">
-      <init_from>round_grill.tga</init_from>
+      <init_from>bob_round_grill.dmtl</init_from>
     </image>
   </library_images>
   <library_effects>

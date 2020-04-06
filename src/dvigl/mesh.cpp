@@ -57,7 +57,35 @@ Mesh::Mesh(int w, int h)
     textureCoord_data[10] = 1;
     textureCoord_data[11] = 1;
 
+    normal_data[0] = 0;
+    normal_data[1] = 1;
+    normal_data[2] = 0;
+
+    normal_data[3] = 0;
+    normal_data[4] = 1;
+    normal_data[5] = 0;
+
+    normal_data[6] = 0;
+    normal_data[7] = 1;
+    normal_data[8] = 0;
+
+    normal_data[9] = 0;
+    normal_data[10] = 1;
+    normal_data[11] = 0;
+
+    normal_data[12] = 0;
+    normal_data[13] = 1;
+    normal_data[14] = 0;
+
+    normal_data[15] = 0;
+    normal_data[16] = 1;
+    normal_data[17] = 0;
+
     genVAO();
+    free(vertex_data);
+    free(normal_data);
+    free(tangent_data);
+    free(textureCoord_data);
 }
 
 Mesh::Mesh(struct aiMesh* mesh)
@@ -134,6 +162,10 @@ Mesh::Mesh(struct aiMesh* mesh)
         }
     }
     genVAO();
+    free(vertex_data);
+    free(normal_data);
+    free(tangent_data);
+    free(textureCoord_data);
 }
 
 void Mesh::genVAO()

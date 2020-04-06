@@ -1,0 +1,6 @@
+shader: 'skinned'
+diffuse: 'round_grill.tga'
+normal: 'FatElvis_normal.jpg'
+uv_params:
+  offset_x: 0.5
+  offset_y: 0.5

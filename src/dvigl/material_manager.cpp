@@ -1,15 +1,18 @@
 #include <dvigl/file_system_manager.h>
+#include <dvigl/material.h>
 #include <dvigl/material_manager.h>
+#include <dvigl/texture_manager.h>
 
 MaterialMgr gMaterialMgr;
 
 bool MaterialMgr::init() { return true; }
+
 void MaterialMgr::release()
 {
     // release materials
 }
 
-bool MaterialMgr::load_material(std::string file_name)
+bool MaterialMgr::load_material(std::string name, std::string file_name)
 {
     LOG("LOADING MATERIAL: %s\n", file_name.c_str());
 
@@ -28,13 +31,19 @@ bool MaterialMgr::load_material(std::string file_name)
     //    LOG("WTF???\n");
     // }
 
-    // if (node["diffuse"]) {
-    //     LOG("DIFFUSE MAP: %s\n", node["diffuse"].as<std::string>().c_str());
-    // }
+    std::string diffuse_map;
+    std::string normal_map;
+    if (node["diffuse"])
+    {
+        diffuse_map = "../res/textures/" + node["diffuse"].as<std::string>();
+        TextureMgr::ptr()->load_texture(diffuse_map, diffuse_map);
+    }
 
-    // if (node["normal"]) {
-    //     LOG("NORMAL MAP: %s\n", node["normal"].as<std::string>().c_str());
-    // }
+    if (node["normal"])
+    {
+        normal_map = "../res/textures/" + node["normal"].as<std::string>();
+        TextureMgr::ptr()->load_texture(normal_map, normal_map);
+    }
 
     // if (node["uv_params"]) {
     //     if (node["uv_params"]["offset_x"]) {
@@ -49,5 +58,20 @@ bool MaterialMgr::load_material(std::string file_name)
     // for (std::size_t i=0; i< node.size(); i++) {
     //   LOG("%s\n", node[i].as<int>());
     // }
+    Texture* diffuse_tex = TextureMgr::ptr()->get_texture(diffuse_map);
+    Texture* normal_tex = TextureMgr::ptr()->get_texture(normal_map);
+    materials[name] = new Material(diffuse_tex, normal_tex);
     return true;
+}
+
+Material* MaterialMgr::get_material(std::string name)
+{
+    auto it = materials.find(name);
+    if (it != materials.end())
+    {
+        return it->second;
+    }
+
+    LOG("Material %s not found\n", name.c_str());
+    return NULL;
 }

@@ -17,12 +17,18 @@ out vec2 v_texcoord;
 out vec3 v_normal;
 out vec4 v_pos;
 
-uniform mat4 mvp;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
-  v_pos = attr_pos;
-  v_texcoord = attr_texcoord;
-  v_normal = attr_normal;
-  gl_Position = mvp * attr_pos;
+	vec4 worldPos = model * attr_pos;
+
+    v_pos = worldPos;
+    v_texcoord = attr_texcoord;
+
+    mat3 normalMatrix = transpose(inverse(mat3(model)));
+    v_normal = normalMatrix * attr_normal;
+    gl_Position = projection * view * worldPos;
 }

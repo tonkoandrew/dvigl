@@ -3,7 +3,7 @@
 
 using namespace std;
 
-class Texture;
+class Material;
 
 class SkinnedMesh
 {
@@ -100,8 +100,7 @@ private:
     };
 
     vector<MeshEntry> m_Entries;
-    vector<Texture*> m_Textures;
-    // vector<Texture*> m_NormalMaps;
+    vector<Material*> materials;
 
     map<string, GLuint> m_BoneMapping; // maps a bone name to its index
     GLuint m_NumBones;

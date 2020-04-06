@@ -5,6 +5,9 @@
 #include <dvigl/scene.h>
 #include <dvigl/scene_manager.h>
 
+#include <dvigl/model_manager.h>
+#include <dvigl/skinned_model_node.h>
+
 InputMgr gInputMgr;
 
 bool InputMgr::init() { return true; }
@@ -20,7 +23,7 @@ void InputMgr::process_input(float time_delta)
 
     CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
-    float movement_speed = 0.5f;
+    float movement_speed = 0.05f;
     float rotation_speed = 0.002f;
 
     if (keystates[SDL_SCANCODE_W])
@@ -61,6 +64,37 @@ void InputMgr::process_input(float time_delta)
     if (keystates[SDL_SCANCODE_D])
     {
         cam->yaw(-rotation_speed * time_delta);
+    }
+
+    Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
+
+    if (keystates[SDL_SCANCODE_UP])
+    {
+        model->position.z += movement_speed * time_delta;
+        // model->move_up(movement_speed * time_delta);
+    }
+    if (keystates[SDL_SCANCODE_DOWN])
+    {
+        model->position.z -= movement_speed * time_delta;
+        // model->move_down(movement_speed * time_delta);
+    }
+    if (keystates[SDL_SCANCODE_LEFT])
+    {
+        model->position.x += movement_speed * time_delta;
+        // model->move_left(movement_speed * time_delta);
+    }
+    if (keystates[SDL_SCANCODE_RIGHT])
+    {
+        model->position.x -= movement_speed * time_delta;
+        // model->move_right(movement_speed * time_delta);
+    }
+    if (keystates[SDL_SCANCODE_T])
+    {
+        model->roll(rotation_speed * time_delta);
+    }
+    if (keystates[SDL_SCANCODE_G])
+    {
+        model->roll(-rotation_speed * time_delta);
     }
 }
 

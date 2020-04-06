@@ -29,7 +29,8 @@ bool RenderMgr::init()
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
 
-    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+    int flags = SDL_WINDOW_SHOWN
+        | SDL_WINDOW_OPENGL
         // | SDL_WINDOW_ALLOW_HIGHDPI
         // | SDL_WINDOW_MOUSE_FOCUS
         // | SDL_WINDOW_INPUT_GRABBED
@@ -103,7 +104,7 @@ bool RenderMgr::init()
 
     SDL_GL_MakeCurrent(main_window, gl_context);
 
-    glEnable(GL_BLEND);
+    glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_POLYGON_SMOOTH);
@@ -117,10 +118,10 @@ bool RenderMgr::init()
 
     glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 
-// glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
-// #ifdef __PLATFORM_ANDROID__
-//   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
-// #endif
+    // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+    // #ifdef __PLATFORM_ANDROID__
+    //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
+    // #endif
 
 #if !defined(__PLATFORM_ANDROID__)
     // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -142,54 +143,19 @@ bool RenderMgr::init()
 
     SDL_GL_SwapWindow(main_window);
 
-    glGenFramebuffers(1, &gBuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+    resize_buffers(w, h, true);
 
-    // - position color buffer
-    glGenTextures(1, &gPosition);
-    glBindTexture(GL_TEXTURE_2D, gPosition);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
-
-    // - normal color buffer
-    glGenTextures(1, &gNormal);
-    glBindTexture(GL_TEXTURE_2D, gNormal);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
-
-    // - color + specular color buffer
-    glGenTextures(1, &gAlbedoSpec);
-    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
-
-    // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
-    GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-    glDrawBuffers(3, attachments);
-    glGenRenderbuffers(1, &rboDepth);
-    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-    // finally check if framebuffer is complete
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    {
-        LOG("Framebuffer not complete!\n");
-    }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+    float a = 300.0f;
+    float b = a / 2.0f;
     for (unsigned int i = 0; i < NR_LIGHTS; i++)
     {
         // calculate slightly random offsets
-        float xPos = ((rand() % 100) / 100.0) * 200.0 - 100.0;
-        float yPos = ((rand() % 100) / 100.0) * 200.0 - 100.0;
-        float zPos = ((rand() % 100) / 100.0) * 200.0 - 100.0;
-        LOG("%f, %f, %f\n", xPos, yPos, zPos);
+        float xPos = ((rand() % 100) / 100.0) * a - b;
+
+        float yPos = ((rand() % 100) / 100.0) * a - b;
+        yPos = (yPos / 20.0f) + 40.0f;
+        // float yPos = 10.0f;
+        float zPos = ((rand() % 100) / 100.0) * a - b;
         lightPositions.push_back(glm::vec3(xPos, yPos, zPos));
         // also calculate random color
         float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
@@ -202,7 +168,7 @@ bool RenderMgr::init()
 
 void RenderMgr::geometry_pass(float time_delta, float aspect)
 {
-    glEnable(GL_BLEND);
+    glDisable(GL_BLEND);
 
     Shader* s;
     glm::mat4 model_m;
@@ -211,7 +177,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     glm::mat4 mvp;
     glm::mat4 view_proj_m;
 
-    proj_m = glm::perspective(45.0f, aspect, 1.0f, 10000.0f);
+    proj_m = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
 
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
@@ -221,14 +187,17 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     s = ShaderMgr::ptr()->get_shader("simple");
     s->bind();
-    s->uniform1i("tex", 0);
+    s->uniform1i("albedoMap", 0);
+    s->uniform1i("normalMap", 1);
 
     for (auto element : ModelMgr::ptr()->models)
     {
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
-        s->uniformMatrix4("mvp", mvp);
+        s->uniformMatrix4("model", model_m);
+        s->uniformMatrix4("view", view_m);
+        s->uniformMatrix4("projection", proj_m);
 
         m->draw();
     }
@@ -241,7 +210,9 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         SkinnedModelNode* m = (SkinnedModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
-        s->uniformMatrix4("mvp", mvp);
+        s->uniformMatrix4("model", model_m);
+        s->uniformMatrix4("view", view_m);
+        s->uniformMatrix4("projection", proj_m);
         m->draw();
     }
 }
@@ -251,27 +222,26 @@ void RenderMgr::lighting_pass(float time_delta)
     Shader* s;
     s = ShaderMgr::ptr()->get_shader("lighting");
     s->bind();
-    s->uniform1i("gPosition", 0);
-    s->uniform1i("gNormal", 1);
-    s->uniform1i("gAlbedoSpec", 2);
 
     // send light relevant uniforms
     for (unsigned int i = 0; i < lightPositions.size(); i++)
     {
         s->uniform3f("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
         s->uniform3f("lights[" + std::to_string(i) + "].Color", lightColors[i]);
+
         // update attenuation parameters and calculate radius
-        const float constant
-            = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
-        const float linear = 0.7;
-        const float quadratic = 1.8;
+        const float constant = 1.0;
+        const float linear = 0.005f;
+        const float quadratic = 0.008f;
+        const float coeff = 1000.0f;
+
         s->uniform1f("lights[" + std::to_string(i) + "].Linear", linear);
         s->uniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
-        // then calculate radius of light volume/sphere
+        // // then calculate radius of light volume/sphere
         const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].r, lightColors[i].g), lightColors[i].b);
-        float radius
-            = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness)))
+        float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (coeff)*maxBrightness)))
             / (2.0f * quadratic);
+        // LOG("radius = %f\n", radius);
         s->uniform1f("lights[" + std::to_string(i) + "].Radius", radius);
     }
 
@@ -279,11 +249,17 @@ void RenderMgr::lighting_pass(float time_delta)
     s->uniform3f("viewPos", camera->position);
 
     glActiveTexture(GL_TEXTURE0);
+    s->uniform1i("gPosition", 0);
     glBindTexture(GL_TEXTURE_2D, gPosition);
+
     glActiveTexture(GL_TEXTURE1);
+    s->uniform1i("gNormal", 1);
     glBindTexture(GL_TEXTURE_2D, gNormal);
+
     glActiveTexture(GL_TEXTURE2);
+    s->uniform1i("gAlbedoSpec", 2);
     glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+
     render_quad();
 }
 
@@ -321,14 +297,30 @@ void RenderMgr::render_frame(float time_delta)
 
 void RenderMgr::render_quad()
 {
-    glDisable(GL_BLEND);
-
     if (quadVAO == 0)
     {
         float quadVertices[] = {
             // positions        // texture Coords
-            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-            0.0f, 1.0f, 0.0f,
+            -1.0f,
+            1.0f,
+            0.0f,
+            0.0f,
+            1.0f,
+            -1.0f,
+            -1.0f,
+            0.0f,
+            0.0f,
+            0.0f,
+            1.0f,
+            1.0f,
+            0.0f,
+            1.0f,
+            1.0f,
+            1.0f,
+            -1.0f,
+            0.0f,
+            1.0f,
+            0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);
@@ -346,13 +338,17 @@ void RenderMgr::render_quad()
     glBindVertexArray(0);
 }
 
-void RenderMgr::resize_buffers(int w, int h)
+void RenderMgr::resize_buffers(int w, int h, bool initialize)
 {
-    // glGenFramebuffers(1, &gBuffer);
+    if (initialize)
+        glGenFramebuffers(1, &gBuffer);
+
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 
     // - position color buffer
-    // glGenTextures(1, &gPosition);
+
+    if (initialize)
+        glGenTextures(1, &gPosition);
     glBindTexture(GL_TEXTURE_2D, gPosition);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -360,7 +356,8 @@ void RenderMgr::resize_buffers(int w, int h)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
 
     // - normal color buffer
-    // glGenTextures(1, &gNormal);
+    if (initialize)
+        glGenTextures(1, &gNormal);
     glBindTexture(GL_TEXTURE_2D, gNormal);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -368,7 +365,8 @@ void RenderMgr::resize_buffers(int w, int h)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
 
     // - color + specular color buffer
-    // glGenTextures(1, &gAlbedoSpec);
+    if (initialize)
+        glGenTextures(1, &gAlbedoSpec);
     glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -378,7 +376,7 @@ void RenderMgr::resize_buffers(int w, int h)
     // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
     GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
     glDrawBuffers(3, attachments);
-    // glGenRenderbuffers(1, &rboDepth);
+    glGenRenderbuffers(1, &rboDepth);
     glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);

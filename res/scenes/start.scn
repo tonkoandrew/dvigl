@@ -1,11 +1,11 @@
 name: start
-# skinned_models:
-# - file: bob.dae
-#   format: collada
-#   name: bob
-#   position: {x: 0.0, y: 0.0, z: 0.0}
-#   rotation: {x: 0, y: 0, z: 0.0}
-#   scale: 1.5
+skinned_models:
+- file: elvis.dae
+  format: collada
+  name: elvis
+  position: {x: 0.0, y: 0.0, z: 0.0}
+  rotation: {x: 0, y: 0, z: 0.0}
+  scale: 30.0
 # - file: elvis.dae
 #   format: collada
 #   name: elvis
@@ -60,7 +60,19 @@ name: start
 #   position: {x: 0.0, y: 0.0, z: 300.0}
 #   rotation: {x: -1.55, y: 3.14, z: 0.0}
 #   scale: 1.5
-# static_models:
+static_models:
+# - file: elvis.dae
+#   format: collada
+#   name: elvis
+#   position: {x: -100.0, y: 0.0, z: 0.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 0.3
+- file: bob.dae
+  format: collada
+  name: bob
+  position: {x: 100.0, y: 0.0, z: 0.0}
+  rotation: {x: 1.55, y: 0, z: 0.0}
+  scale: 1.0
 # - file: tree.dae
 #   format: collada
 #   name: tree
