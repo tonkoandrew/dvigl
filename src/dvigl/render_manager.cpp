@@ -231,8 +231,8 @@ void RenderMgr::lighting_pass(float time_delta)
 
         // update attenuation parameters and calculate radius
         const float constant = 1.0;
-        const float linear = 0.005f;
-        const float quadratic = 0.002f;
+        const float linear = 0.001f;
+        const float quadratic = 0.001f;
         const float coeff = 200.0f;
 
         s->uniform1f("lights[" + std::to_string(i) + "].Linear", linear);

@@ -5,61 +5,37 @@ skinned_models:
   name: elvis
   position: {x: 0.0, y: 0.0, z: 0.0}
   rotation: {x: 0, y: 0, z: 0.0}
-  scale: 30.0
-# - file: elvis.dae
-#   format: collada
-#   name: elvis
-#   position: {x: -100.0, y: 0.0, z: 0.0}
-#   rotation: {x: 0, y: 0, z: 0.0}
-#   scale: 50.5
-# - file: elvis.dae
-#   format: collada
-#   name: elvis2
-#   position: {x: 100.0, y: 0.0, z: 0.0}
-#   rotation: {x: -1.55, y: 3.14, z: 0.0}
-#   scale: 50.5
-# - file: elvis.dae
-#   format: collada
-#   name: elvis3
-#   position: {x: -100.0, y: 0.0, z: 100.0}
-#   rotation: {x: -1.55, y: 3.14, z: 0.0}
-#   scale: 50.5
-# - file: elvis.dae
-#   format: collada
-#   name: elvis4
-#   position: {x: -100.0, y: 0.0, z: 200.0}
-#   rotation: {x: -1.55, y: 3.14, z: 0.0}
-#   scale: 50.5
-# - file: elvis.dae
-#   format: collada
-#   name: elvis5
-#   position: {x: -100.0, y: 0.0, z: 300.0}
-#   rotation: {x: -1.55, y: 3.14, z: 0.0}
-#   scale: 50.5
-# - file: elvis.dae
-#   format: collada
-#   name: elvis6
-#   position: {x: -100.0, y: 0.0, z: 400.0}
-#   rotation: {x: -1.55, y: 3.14, z: 0.0}
-#   scale: 50.5
-# - file: bob.dae
-#   format: collada
-#   name: bob2
-#   position: {x: 0.0, y: 0.0, z: 100.0}
-#   rotation: {x: -1.55, y: 3.14, z: 0.0}
-#   scale: 1.5
-# - file: bob.dae
-#   format: collada
-#   name: bob3
-#   position: {x: 0.0, y: 0.0, z: 200.0}
-#   rotation: {x: -1.55, y: 3.14, z: 0.0}
-#   scale: 1.5
-# - file: bob.dae
-#   format: collada
-#   name: bob4
-#   position: {x: 0.0, y: 0.0, z: 300.0}
-#   rotation: {x: -1.55, y: 3.14, z: 0.0}
-#   scale: 1.5
+  scale: 50.0
+- file: elvis.dae
+  format: collada
+  name: elvis2
+  position: {x: -100.0, y: 0.0, z: 0.0}
+  rotation: {x: 0, y: 0, z: 0.0}
+  scale: 50.0
+- file: elvis.dae
+  format: collada
+  name: elvis3
+  position: {x: 100.0, y: 0.0, z: 0.0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: 50.0
+- file: bob.dae
+  format: collada
+  name: bob
+  position: {x: 100.0, y: 0.0, z: -100.0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: 1.5
+- file: bob.dae
+  format: collada
+  name: bob2
+  position: {x: 0.0, y: 0.0, z: -100.0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: 1.5
+- file: bob.dae
+  format: collada
+  name: bob3
+  position: {x: -100.0, y: 0.0, z: -100.0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: 1.5
 static_models:
 # - file: elvis.dae
 #   format: collada
@@ -67,12 +43,12 @@ static_models:
 #   position: {x: -100.0, y: 0.0, z: 0.0}
 #   rotation: {x: 0, y: 0, z: 0.0}
 #   scale: 0.3
-- file: bob.dae
-  format: collada
-  name: bob
-  position: {x: 100.0, y: 0.0, z: 0.0}
-  rotation: {x: -1.55, y: 0, z: 0.0}
-  scale: 1.0
+# - file: bob.dae
+#   format: collada
+#   name: bob
+#   position: {x: 100.0, y: 0.0, z: 0.0}
+#   rotation: {x: -1.55, y: 0, z: 0.0}
+#   scale: 1.0
 - file: plane.dae
   format: collada
   name: plane
