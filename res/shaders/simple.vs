@@ -16,6 +16,7 @@ layout (location = 3) in vec2 attr_texcoord;
 out vec2 v_texcoord;
 out vec3 v_normal;
 out vec4 v_pos;
+out mat3 TBN;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -30,5 +31,12 @@ void main()
 
     mat3 normalMatrix = transpose(inverse(mat3(model)));
     v_normal = normalMatrix * attr_normal;
+
     gl_Position = projection * view * worldPos;
+
+    vec3 N = v_normal;
+    vec3 T = normalMatrix * attr_tangent;
+    vec3 B = cross(N, T);
+
+    TBN = transpose(mat3(T, B, N));
 }

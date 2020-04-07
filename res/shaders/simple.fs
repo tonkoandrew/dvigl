@@ -12,6 +12,7 @@ uniform sampler2D albedoMap;
 in vec2 v_texcoord;
 in vec3 v_normal;
 in vec4 v_pos;
+in mat3 TBN;
 
 layout (location = 0) out vec3 gPosition;
 layout (location = 1) out vec3 gNormal;
@@ -20,11 +21,13 @@ layout (location = 2) out vec4 gAlbedoSpec;
 void main()
 {
     vec4 color = texture(albedoMap, v_texcoord);
-    vec4 normal = texture(normalMap, v_texcoord);
+    vec3 normal = texture(normalMap, v_texcoord).rgb;
+    normal = normalize(normal * 2.0 - 1.0);
+    normal = normalize(TBN * normal); 
  
     gPosition = v_pos.xyz;
-    // gNormal = normalize(normal.rgb);
-    gNormal = normalize(v_normal);
+    // gNormal = normalize(normal.rgb);// * 2.0 - 1.0);
+    gNormal = normal;//normalize(v_normal);// * 2.0 - 1.0);
     gAlbedoSpec.rgb = color.rgb;
     gAlbedoSpec.a = 1.0;
 }

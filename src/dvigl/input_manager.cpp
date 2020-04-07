@@ -68,6 +68,7 @@ void InputMgr::process_input(float time_delta)
 
     // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
     Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
+    // Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
 
     if (keystates[SDL_SCANCODE_UP])
     {
@@ -81,21 +82,20 @@ void InputMgr::process_input(float time_delta)
     }
     if (keystates[SDL_SCANCODE_LEFT])
     {
-        model->position.x += movement_speed * time_delta;
+        model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
         // model->move_left(movement_speed * time_delta);
     }
     if (keystates[SDL_SCANCODE_RIGHT])
     {
-        model->position.x -= movement_speed * time_delta;
-        // model->move_right(movement_speed * time_delta);
+        model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
     }
     if (keystates[SDL_SCANCODE_T])
     {
-        model->roll(rotation_speed * time_delta);
+        model->rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), rotation_speed * time_delta);
     }
     if (keystates[SDL_SCANCODE_G])
     {
-        model->roll(-rotation_speed * time_delta);
+        model->rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), -rotation_speed * time_delta);
     }
     if (keystates[SDL_SCANCODE_Y])
     {

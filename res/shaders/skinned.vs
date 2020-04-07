@@ -3,13 +3,13 @@
 layout (location = 0) in vec3 attr_pos;
 layout (location = 1) in vec2 attr_texcoord;
 layout (location = 2) in vec3 attr_normal;
-layout (location = 3) in ivec4 BoneIDs;
-layout (location = 4) in vec4 Weights;
-
+layout (location = 3) in vec3 attr_tangent;
+layout (location = 4) in ivec4 BoneIDs;
+layout (location = 5) in vec4 Weights;
 
 out vec2 v_texcoord;
-out vec3 v_normal;
 out vec4 v_pos;
+out mat3 TBN;
 
 const int MAX_BONES = 100;
 
@@ -37,8 +37,13 @@ void main()
     v_texcoord   = attr_texcoord;
 
     vec4 NormalL = BoneTransform * vec4(attr_normal, 0.0);
+    vec4 TangentL = BoneTransform * vec4(attr_tangent, 0.0);
 
     mat3 normalMatrix = transpose(inverse(mat3(model)));
-    v_normal = normalMatrix * NormalL.rgb;
 
+    vec3 N = normalMatrix * NormalL.rgb;
+    vec3 T = normalMatrix * TangentL.rgb;
+    vec3 B = cross(N, T);
+
+    TBN = transpose(mat3(T, B, N));
 }

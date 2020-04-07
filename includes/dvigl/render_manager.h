@@ -13,7 +13,9 @@ public:
 private:
     void lighting_pass(float time_delta);
     void geometry_pass(float time_delta, float aspect);
+    void forward_pass(float aspect);
     void render_quad();
+    void render_cube();
 
     SDL_Window* main_window;
     SDL_GLContext gl_context;
@@ -22,9 +24,13 @@ private:
 
     GLuint quadVAO = 0;
     GLuint quadVBO;
+
+    GLuint cubeVAO = 0;
+    GLuint cubeVBO = 0;
+
     GLuint rboDepth;
 
-    const unsigned int NR_LIGHTS = 64;
+    const GLuint NR_LIGHTS = 16;
     std::vector<glm::vec3> lightPositions;
     std::vector<glm::vec3> lightColors;
 };

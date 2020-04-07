@@ -49,6 +49,11 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
+    if (!ShaderMgr::ptr()->load_shader("forward", "../res/shaders/forward.vs", "../res/shaders/forward.fs"))
+    {
+        return false;
+    }
+
     if (!FontMgr::ptr()->load_font("FreeSans_150", "../res/fonts/Magician.ttf", 150))
     {
         return false;
@@ -56,7 +61,7 @@ bool SceneMgr::load_scene(std::string file_name)
 
     MaterialMgr::ptr()->load_material("../res/materials/ground.dmtl", "../res/materials/ground.dmtl");
 
-    if (!ModelMgr::ptr()->generate_plane_model("plane", 200, 200, "../res/materials/ground.dmtl"))
+    if (!ModelMgr::ptr()->generate_plane_model("plane", 300, 300, "../res/materials/ground.dmtl"))
     {
         return false;
     }

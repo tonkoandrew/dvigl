@@ -8,8 +8,9 @@
 #define POSITION_LOCATION 0
 #define TEX_COORD_LOCATION 1
 #define NORMAL_LOCATION 2
-#define BONE_ID_LOCATION 3
-#define BONE_WEIGHT_LOCATION 4
+#define TANGENT_LOCATION 3
+#define BONE_ID_LOCATION 4
+#define BONE_WEIGHT_LOCATION 5
 
 inline glm::mat4 aiMatrix4x4ToGlm(aiMatrix4x4* from)
 {
@@ -139,6 +140,7 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
 
     vector<glm::vec3> Positions;
     vector<glm::vec3> Normals;
+    vector<glm::vec3> Tangents;
     vector<glm::vec2> TexCoords;
     vector<VertexBoneData> Bones;
     vector<GLuint> Indices;
@@ -161,6 +163,7 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
     // Reserve space in the vectors for the vertex attributes and indices
     Positions.reserve(NumVertices);
     Normals.reserve(NumVertices);
+    Tangents.reserve(NumVertices);
     TexCoords.reserve(NumVertices);
     Bones.resize(NumVertices);
     Indices.reserve(NumIndices);
@@ -170,7 +173,7 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
     for (GLuint i = 0; i < m_Entries.size(); i++)
     {
         const aiMesh* paiMesh = scene->mMeshes[i];
-        InitMesh(i, paiMesh, Positions, Normals, TexCoords, Bones, Indices);
+        InitMesh(i, paiMesh, Positions, Normals, Tangents, TexCoords, Bones, Indices);
     }
 
     if (!InitMaterials(scene))
@@ -194,6 +197,11 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
     glEnableVertexAttribArray(NORMAL_LOCATION);
     glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
+    glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[TANGENT_VB]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Tangents[0]) * Tangents.size(), &Tangents[0], GL_STATIC_DRAW);
+    glEnableVertexAttribArray(TANGENT_LOCATION);
+    glVertexAttribPointer(TANGENT_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
     glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[BONE_VB]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Bones[0]) * Bones.size(), &Bones[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(BONE_ID_LOCATION);
@@ -209,11 +217,19 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
         delete scene->mMeshes[i];
     }
 
+    Positions.clear();
+    Normals.clear();
+    Tangents.clear();
+    TexCoords.clear();
+    Bones.clear();
+    Indices.clear();
+
     return GLCheckError();
 }
 
 void SkinnedMesh::InitMesh(GLuint MeshIndex, const aiMesh* paiMesh, vector<glm::vec3>& Positions,
-    vector<glm::vec3>& Normals, vector<glm::vec2>& TexCoords, vector<VertexBoneData>& Bones, vector<GLuint>& Indices)
+    vector<glm::vec3>& Normals, vector<glm::vec3>& Tangents, vector<glm::vec2>& TexCoords,
+    vector<VertexBoneData>& Bones, vector<GLuint>& Indices)
 {
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -223,10 +239,12 @@ void SkinnedMesh::InitMesh(GLuint MeshIndex, const aiMesh* paiMesh, vector<glm::
         const aiVector3D* pPos = &(paiMesh->mVertices[i]);
         const aiVector3D* pNormal = &(paiMesh->mNormals[i]);
         const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(0) ? &(paiMesh->mTextureCoords[0][i]) : &Zero3D;
+        const aiVector3D* pTangent = paiMesh->HasTangentsAndBitangents() ? &(paiMesh->mTangents[i]) : &Zero3D;
 
         Positions.push_back(glm::vec3(pPos->x, pPos->y, pPos->z));
         Normals.push_back(glm::vec3(pNormal->x, pNormal->y, pNormal->z));
         TexCoords.push_back(glm::vec2(pTexCoord->x, pTexCoord->y));
+        Tangents.push_back(glm::vec3(pTangent->x, pTangent->y, pTangent->z));
     }
 
     LoadBones(MeshIndex, paiMesh, Bones);

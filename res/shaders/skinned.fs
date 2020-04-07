@@ -8,8 +8,8 @@ precision mediump float;
 
 
 in vec2 v_texcoord;
-in vec3 v_normal;
 in vec4 v_pos;
+in mat3 TBN;
 
 
 uniform sampler2D normalMap;
@@ -24,12 +24,11 @@ layout (location = 2) out vec4 gAlbedoSpec;
 void main()
 {
     vec4 color = texture(albedoMap, v_texcoord);
-    vec4 normal = texture(normalMap, v_texcoord);
-
     gPosition = v_pos.xyz;
-    // gNormal = normalize(normal.rgb);
-    gNormal = normalize(v_normal);
+    vec3 normal = texture(normalMap, v_texcoord).rgb;
+    normal = normalize(normal * 2.0 - 1.0);
+    gNormal = normalize(TBN * normal); 
 
     gAlbedoSpec.rgb = color.rgb;
-    gAlbedoSpec.a = color.a;
+    gAlbedoSpec.a = 0.5;
 }

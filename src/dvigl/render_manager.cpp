@@ -29,8 +29,7 @@ bool RenderMgr::init()
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
 
-    int flags = SDL_WINDOW_SHOWN
-        | SDL_WINDOW_OPENGL
+    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
         // | SDL_WINDOW_ALLOW_HIGHDPI
         // | SDL_WINDOW_MOUSE_FOCUS
         // | SDL_WINDOW_INPUT_GRABBED
@@ -110,18 +109,18 @@ bool RenderMgr::init()
     glEnable(GL_POLYGON_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 
-    // glEnable(GL_CULL_FACE);
-    glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
+    // glDisable(GL_CULL_FACE);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LEQUAL);
 
     glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 
-    // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
-    // #ifdef __PLATFORM_ANDROID__
-    //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
-    // #endif
+// glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+// #ifdef __PLATFORM_ANDROID__
+//   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
+// #endif
 
 #if !defined(__PLATFORM_ANDROID__)
     // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -152,10 +151,11 @@ bool RenderMgr::init()
         // calculate slightly random offsets
         float xPos = ((rand() % 100) / 100.0) * a - b;
 
-        float yPos = ((rand() % 100) / 100.0) * a - b;
-        yPos = (yPos / 20.0f) + 40.0f;
-        // float yPos = 10.0f;
+        // float yPos = ((rand() % 100) / 100.0) * a - b;
+        // yPos = (yPos / 2.0f) + 20.0f;
+        float yPos = ((rand() % 100) / 100.0) * a / 3;
         float zPos = ((rand() % 100) / 100.0) * a - b;
+
         lightPositions.push_back(glm::vec3(xPos, yPos, zPos));
         // also calculate random color
         float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
@@ -232,8 +232,8 @@ void RenderMgr::lighting_pass(float time_delta)
         // update attenuation parameters and calculate radius
         const float constant = 1.0;
         const float linear = 0.005f;
-        const float quadratic = 0.008f;
-        const float coeff = 1000.0f;
+        const float quadratic = 0.002f;
+        const float coeff = 200.0f;
 
         s->uniform1f("lights[" + std::to_string(i) + "].Linear", linear);
         s->uniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
@@ -263,10 +263,42 @@ void RenderMgr::lighting_pass(float time_delta)
     render_quad();
 }
 
+void RenderMgr::forward_pass(float aspect)
+{
+
+    Shader* s;
+
+    glm::mat4 model_m;
+    glm::mat4 view_m;
+    glm::mat4 proj_m;
+    // glm::mat4 mvp;
+    // glm::mat4 view_proj_m;
+
+    proj_m = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
+    CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
+    view_m = camera->get_view_matrix();
+    // view_proj_m = proj_m * view_m;
+
+    s = ShaderMgr::ptr()->get_shader("forward");
+    s->bind();
+    s->uniformMatrix4("view", view_m);
+    s->uniformMatrix4("projection", proj_m);
+
+    for (unsigned int i = 0; i < lightPositions.size(); i++)
+    {
+        model_m = glm::mat4(1.0f);
+        model_m = glm::translate(model_m, lightPositions[i]);
+        model_m = glm::scale(model_m, glm::vec3(0.5f));
+        s->uniformMatrix4("model", model_m);
+        s->uniform3f("lightColor", lightColors[i]);
+        render_cube();
+    }
+}
+
 void RenderMgr::render_frame(float time_delta)
 {
     int w, h;
-
+    glGetError();
     SDL_GL_MakeCurrent(main_window, gl_context);
     SDL_GL_GetDrawableSize(main_window, &w, &h);
     float aspect = (float)w / (float)(h > 1 ? h : 1);
@@ -284,7 +316,20 @@ void RenderMgr::render_frame(float time_delta)
 
     lighting_pass(time_delta);
 
-    SDL_GL_SwapWindow(main_window);
+    // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
+    // ----------------------------------------------------------------------------------
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+    // blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and
+    // default framebuffer have to match.
+    // the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours
+    // you'll likely have to write to the
+    // depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the
+    // FBO's internal format).
+    glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    forward_pass(aspect);
 
     GLuint err = glGetError();
     if (err != 0)
@@ -293,6 +338,7 @@ void RenderMgr::render_frame(float time_delta)
         LOG("%d \n", err);
         LOG("================\n");
     }
+    SDL_GL_SwapWindow(main_window);
 }
 
 void RenderMgr::render_quad()
@@ -301,26 +347,8 @@ void RenderMgr::render_quad()
     {
         float quadVertices[] = {
             // positions        // texture Coords
-            -1.0f,
-            1.0f,
-            0.0f,
-            0.0f,
-            1.0f,
-            -1.0f,
-            -1.0f,
-            0.0f,
-            0.0f,
-            0.0f,
-            1.0f,
-            1.0f,
-            0.0f,
-            1.0f,
-            1.0f,
-            1.0f,
-            -1.0f,
-            0.0f,
-            1.0f,
-            0.0f,
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f,
+            0.0f, 1.0f, 0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);
@@ -335,6 +363,77 @@ void RenderMgr::render_quad()
     }
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+}
+
+void RenderMgr::render_cube()
+{
+    // initialize (if necessary)
+    if (cubeVAO == 0)
+    {
+        float vertices[] = {
+            // back face
+            -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+            1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, // top-right
+            1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, // bottom-right
+            1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, // top-right
+            -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+            -1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, // top-left
+            // front face
+            -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
+            1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom-right
+            1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top-right
+            1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top-right
+            -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top-left
+            -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
+            // left face
+            -1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-right
+            -1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-left
+            -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
+            -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
+            -1.0f, -1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-right
+            -1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-right
+            // right face
+            1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-left
+            1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
+            1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-right
+            1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
+            1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-left
+            1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-left
+            // bottom face
+            -1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, // top-right
+            1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, // top-left
+            1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, // bottom-left
+            1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, // bottom-left
+            -1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom-right
+            -1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, // top-right
+            // top face
+            -1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
+            1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+            1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
+            1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+            -1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // top-left
+            -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f // bottom-left
+        };
+        glGenVertexArrays(1, &cubeVAO);
+        glGenBuffers(1, &cubeVBO);
+        // fill buffer
+        glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        // link vertex attributes
+        glBindVertexArray(cubeVAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+    // render Cube
+    glBindVertexArray(cubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
 }
 

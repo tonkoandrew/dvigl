@@ -81,6 +81,30 @@ Mesh::Mesh(int w, int h)
     normal_data[16] = 1;
     normal_data[17] = 0;
 
+    tangent_data[0] = 1;
+    tangent_data[1] = 0;
+    tangent_data[2] = 0;
+
+    tangent_data[3] = 1;
+    tangent_data[4] = 0;
+    tangent_data[5] = 0;
+
+    tangent_data[6] = 1;
+    tangent_data[7] = 0;
+    tangent_data[8] = 0;
+
+    tangent_data[9] = 1;
+    tangent_data[10] = 0;
+    tangent_data[11] = 0;
+
+    tangent_data[12] = 1;
+    tangent_data[13] = 0;
+    tangent_data[14] = 0;
+
+    tangent_data[15] = 1;
+    tangent_data[16] = 0;
+    tangent_data[17] = 0;
+
     genVAO();
     free(vertex_data);
     free(normal_data);
