@@ -3,7 +3,7 @@
 
 Node::Node()
 {
-    forward = glm::vec3(0.0f, 0.0f, 1.0f);
+    forward = glm::vec3(0.0f, 0.0f, -1.0f);
     up = glm::vec3(0.0f, 1.0f, 0.0f);
     left = glm::cross(up, forward);
     position = glm::vec3(0.0f, 0.0f, 0.0f);

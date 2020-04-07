@@ -71,8 +71,14 @@ static_models:
   format: collada
   name: bob
   position: {x: 100.0, y: 0.0, z: 0.0}
-  rotation: {x: 1.55, y: 0, z: 0.0}
+  rotation: {x: -1.55, y: 0, z: 0.0}
   scale: 1.0
+- file: plane.dae
+  format: collada
+  name: plane
+  position: {x: 0.0, y: 0.0, z: 0.0}
+  rotation: {x: -1.55, y: 0, z: 0}
+  scale: 100.0
 # - file: tree.dae
 #   format: collada
 #   name: tree

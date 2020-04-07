@@ -59,15 +59,15 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
-    MaterialMgr::ptr()->load_material("../res/materials/ground.dmtl", "../res/materials/ground.dmtl");
+    // MaterialMgr::ptr()->load_material("../res/materials/ground.dmtl", "../res/materials/ground.dmtl");
 
-    if (!ModelMgr::ptr()->generate_plane_model("plane", 300, 300, "../res/materials/ground.dmtl"))
-    {
-        return false;
-    }
-    ModelNode* plane = ModelMgr::ptr()->get_model("plane");
-    plane->set_rotation(glm::vec3(3.14 / 2, 0.0, 0.0));
-    plane->set_position(glm::vec3(-100.0f, 0.0, -50.0));
+    // if (!ModelMgr::ptr()->generate_plane_model("plane", 300, 300, "../res/materials/ground.dmtl"))
+    // {
+    //     return false;
+    // }
+    // ModelNode* plane = ModelMgr::ptr()->get_model("plane");
+    // plane->set_rotation(glm::vec3(3.14 / 2, 0.0, 0.0));
+    // plane->set_position(glm::vec3(-100.0f, 0.0, -50.0));
 
     if (node["static_models"])
     {

@@ -15,7 +15,7 @@ struct Light {
     float Quadratic;
     float Radius;
 };
-const int NR_LIGHTS = 16;
+const int NR_LIGHTS = 10;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos;
 
@@ -37,7 +37,7 @@ void main()
         if(distance < lights[i].Radius)
         {
             // diffuse
-            vec3 lightDir = normalize(lights[i].Position - FragPos)*-1.0;
+            vec3 lightDir = normalize(lights[i].Position - FragPos);
             vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lights[i].Color;
             // specular
             vec3 halfwayDir = normalize(lightDir + viewDir);  

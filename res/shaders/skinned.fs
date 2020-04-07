@@ -30,5 +30,5 @@ void main()
     gNormal = normalize(TBN * normal); 
 
     gAlbedoSpec.rgb = color.rgb;
-    gAlbedoSpec.a = 0.5;
+    gAlbedoSpec.a = 0.9;
 }

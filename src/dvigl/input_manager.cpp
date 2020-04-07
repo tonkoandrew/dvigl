@@ -67,8 +67,8 @@ void InputMgr::process_input(float time_delta)
     }
 
     // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
-    Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
-    // Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
+    // Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
+    Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
 
     if (keystates[SDL_SCANCODE_UP])
     {

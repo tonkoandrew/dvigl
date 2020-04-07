@@ -29,5 +29,5 @@ void main()
     // gNormal = normalize(normal.rgb);// * 2.0 - 1.0);
     gNormal = normal;//normalize(v_normal);// * 2.0 - 1.0);
     gAlbedoSpec.rgb = color.rgb;
-    gAlbedoSpec.a = 1.0;
+    gAlbedoSpec.a = 0.2;
 }
