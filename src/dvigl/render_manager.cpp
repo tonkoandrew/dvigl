@@ -145,7 +145,7 @@ bool RenderMgr::init()
 
     resize_buffers(w, h, true);
 
-    float a = 600.0f;
+    float a = 200.0f;
     float b = a / 2.0f;
     for (unsigned int i = 0; i < NR_LIGHTS; i++)
     {
