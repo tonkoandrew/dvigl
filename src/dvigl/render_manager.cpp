@@ -145,7 +145,7 @@ bool RenderMgr::init()
 
     resize_buffers(w, h, true);
 
-    float a = 200.0f;
+    float a = 300.0f;
     float b = a / 2.0f;
     for (unsigned int i = 0; i < NR_LIGHTS; i++)
     {
@@ -228,11 +228,10 @@ void RenderMgr::lighting_pass(float time_delta)
         s->uniform3f("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
         s->uniform3f("lights[" + std::to_string(i) + "].Color", lightColors[i]);
 
-        // update attenuation parameters and calculate radius
+        // update attenuation parameters
         const float constant = 1.0;
         const float linear = 0.7f;
         const float quadratic = 1.8f;
-        // const float coeff = 40.0f;
 
         s->uniform1f("lights[" + std::to_string(i) + "].Linear", linear);
         s->uniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
