@@ -9,6 +9,7 @@ public:
     SDL_Window* get_main_window();
     void release();
     void resize_buffers(int new_w, int new_h, bool initialize);
+    int visualize_normals = 0;
 
 private:
     void lighting_pass(float time_delta);
@@ -30,7 +31,7 @@ private:
 
     GLuint rboDepth;
 
-    const GLuint NR_LIGHTS = 40;
+    const GLuint NR_LIGHTS = 200;
     std::vector<glm::vec3> lightPositions;
     std::vector<glm::vec3> lightColors;
 };

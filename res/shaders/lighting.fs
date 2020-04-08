@@ -15,9 +15,11 @@ struct Light {
     float Quadratic;
     float Radius;
 };
-const int NR_LIGHTS = 40;
+const int NR_LIGHTS = 200;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos;
+
+uniform int visualize_normals;
 
 void main()
 {             
@@ -54,7 +56,9 @@ void main()
     FragColor = vec4(lighting, Specular);
     // FragColor = vec4(Normal*0.333 + FragPos*0.333 + Diffuse*0.333, 1.0);
 
-    // FragColor = vec4(Normal, 1.0);
+if (visualize_normals > 0){
+    FragColor = vec4((Normal * 0.5 + 0.5), 1.0);
+}
     // FragColor = vec4(FragPos, 1.0);
     // FragColor = vec4(Diffuse, 1.0);
 

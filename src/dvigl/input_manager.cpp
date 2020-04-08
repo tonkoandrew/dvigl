@@ -8,6 +8,8 @@
 #include <dvigl/model_manager.h>
 #include <dvigl/skinned_model_node.h>
 
+#include <dvigl/render_manager.h>
+
 InputMgr gInputMgr;
 
 bool InputMgr::init() { return true; }
@@ -104,6 +106,22 @@ void InputMgr::process_input(float time_delta)
     if (keystates[SDL_SCANCODE_H])
     {
         model->position.y -= movement_speed * time_delta;
+    }
+    if (keystates[SDL_SCANCODE_U])
+    {
+        model->position.x += movement_speed * time_delta;
+    }
+    if (keystates[SDL_SCANCODE_J])
+    {
+        model->position.x -= movement_speed * time_delta;
+    }
+
+
+    if (keystates[SDL_SCANCODE_N])
+    {
+        RenderMgr::ptr()->visualize_normals = 1;
+    } else {
+        RenderMgr::ptr()->visualize_normals = 0;
     }
 }
 

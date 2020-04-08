@@ -144,7 +144,7 @@ bool RenderMgr::init()
 
     resize_buffers(w, h, true);
 
-    float a = 300.0f;
+    float a = 600.0f;
     float b = a / 2.0f;
     for (unsigned int i = 0; i < NR_LIGHTS; i++)
     {
@@ -222,6 +222,7 @@ void RenderMgr::lighting_pass(float time_delta)
     Shader* s;
     s = ShaderMgr::ptr()->get_shader("lighting");
     s->bind();
+    s->uniform1i("visualize_normals", visualize_normals);
 
     // send light relevant uniforms
     for (unsigned int i = 0; i < lightPositions.size(); i++)
