@@ -29,7 +29,8 @@ bool RenderMgr::init()
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
 
-    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+    int flags = SDL_WINDOW_SHOWN
+        | SDL_WINDOW_OPENGL
         // | SDL_WINDOW_ALLOW_HIGHDPI
         // | SDL_WINDOW_MOUSE_FOCUS
         // | SDL_WINDOW_INPUT_GRABBED
@@ -117,10 +118,10 @@ bool RenderMgr::init()
 
     glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 
-// glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
-// #ifdef __PLATFORM_ANDROID__
-//   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
-// #endif
+    // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+    // #ifdef __PLATFORM_ANDROID__
+    //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
+    // #endif
 
 #if !defined(__PLATFORM_ANDROID__)
     // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -174,8 +175,8 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     glm::mat4 model_m;
     glm::mat4 view_m;
     glm::mat4 proj_m;
-    glm::mat4 mvp;
     glm::mat4 view_proj_m;
+    glm::mat4 mvp;
 
     proj_m = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
 
@@ -196,9 +197,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
         s->uniformMatrix4("model", model_m);
-        s->uniformMatrix4("view", view_m);
-        s->uniformMatrix4("projection", proj_m);
-
+        s->uniformMatrix4("mvp", mvp);
         m->draw();
     }
 
@@ -211,8 +210,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
         s->uniformMatrix4("model", model_m);
-        s->uniformMatrix4("view", view_m);
-        s->uniformMatrix4("projection", proj_m);
+        s->uniformMatrix4("mvp", mvp);
         m->draw();
     }
 }
@@ -232,18 +230,18 @@ void RenderMgr::lighting_pass(float time_delta)
 
         // update attenuation parameters and calculate radius
         const float constant = 1.0;
-        const float linear = 0.001f;
-        const float quadratic = 0.001f;
-        const float coeff = 200.0f;
+        const float linear = 0.7f;
+        const float quadratic = 1.8f;
+        // const float coeff = 40.0f;
 
         s->uniform1f("lights[" + std::to_string(i) + "].Linear", linear);
         s->uniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
         // // then calculate radius of light volume/sphere
-        const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].r, lightColors[i].g), lightColors[i].b);
-        float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (coeff)*maxBrightness)))
-            / (2.0f * quadratic);
+        // const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].r, lightColors[i].g), lightColors[i].b);
+        // float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (coeff)*maxBrightness)))
+            // / (2.0f * quadratic);
         // LOG("radius = %f\n", radius);
-        s->uniform1f("lights[" + std::to_string(i) + "].Radius", radius);
+        // s->uniform1f("lights[" + std::to_string(i) + "].Radius", radius);
     }
 
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
@@ -272,25 +270,25 @@ void RenderMgr::forward_pass(float aspect)
     glm::mat4 model_m;
     glm::mat4 view_m;
     glm::mat4 proj_m;
-    // glm::mat4 mvp;
-    // glm::mat4 view_proj_m;
+    glm::mat4 mvp;
+    glm::mat4 view_proj_m;
 
     proj_m = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
     view_m = camera->get_view_matrix();
-    // view_proj_m = proj_m * view_m;
+    view_proj_m = proj_m * view_m;
 
     s = ShaderMgr::ptr()->get_shader("forward");
     s->bind();
-    s->uniformMatrix4("view", view_m);
-    s->uniformMatrix4("projection", proj_m);
 
     for (unsigned int i = 0; i < lightPositions.size(); i++)
     {
         model_m = glm::mat4(1.0f);
         model_m = glm::translate(model_m, lightPositions[i]);
         model_m = glm::scale(model_m, glm::vec3(0.5f));
-        s->uniformMatrix4("model", model_m);
+
+        mvp = view_proj_m * model_m;
+        s->uniformMatrix4("mvp", mvp);
         s->uniform3f("lightColor", lightColors[i]);
         render_cube();
     }
@@ -348,8 +346,26 @@ void RenderMgr::render_quad()
     {
         float quadVertices[] = {
             // positions        // texture Coords
-            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-            0.0f, 1.0f, 0.0f,
+            -1.0f,
+            1.0f,
+            0.0f,
+            0.0f,
+            1.0f,
+            -1.0f,
+            -1.0f,
+            0.0f,
+            0.0f,
+            0.0f,
+            1.0f,
+            1.0f,
+            0.0f,
+            1.0f,
+            1.0f,
+            1.0f,
+            -1.0f,
+            0.0f,
+            1.0f,
+            0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);

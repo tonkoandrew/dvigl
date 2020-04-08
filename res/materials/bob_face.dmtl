@@ -1,6 +1,6 @@
 shader: 'skinned'
 diffuse: 'guard1_face.tga'
-normal: 'FatElvis_normal.jpg'
+normal: 'normal.jpg'
 uv_params:
   offset_x: 0.5
   offset_y: 0.5

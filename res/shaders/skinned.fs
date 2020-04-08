@@ -6,29 +6,34 @@ precision mediump int;
 precision mediump float;
 #endif
 
-
 in vec2 v_texcoord;
+in vec3 v_normal;
+in vec3 v_tangent;
 in vec4 v_pos;
-in mat3 TBN;
-
 
 uniform sampler2D normalMap;
 uniform sampler2D albedoMap;
 
 // out vec4 FragColor;
 
-layout (location = 0) out vec3 gPosition;
-layout (location = 1) out vec3 gNormal;
-layout (location = 2) out vec4 gAlbedoSpec;
+layout(location = 0) out vec3 out_position;
+layout(location = 1) out vec3 out_normal;
+layout(location = 2) out vec4 out_albedoSpec;
 
 void main()
 {
     vec4 color = texture(albedoMap, v_texcoord);
-    gPosition = v_pos.xyz;
-    vec3 normal = texture(normalMap, v_texcoord).rgb;
-    normal = normalize(normal * 2.0 - 1.0);
-    gNormal = normalize(TBN * normal); 
+    out_position = v_pos.xyz;
 
-    gAlbedoSpec.rgb = color.rgb;
-    gAlbedoSpec.a = 0.3;
+    vec3 Normal = normalize(v_normal);
+    vec3 Tangent = normalize(v_tangent);
+    Tangent = normalize(Tangent - dot(Tangent, Normal) * Normal);
+    vec3 Bitangent = cross(Tangent, Normal);
+    vec3 BumpMapNormal = texture(normalMap, v_texcoord).xyz;
+    BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);
+    mat3 TBN = mat3(Tangent, Bitangent, Normal);
+    out_normal = normalize(TBN * BumpMapNormal);
+
+    out_albedoSpec.rgb = color.rgb;
+    out_albedoSpec.a = 1.0;
 }

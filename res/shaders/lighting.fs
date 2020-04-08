@@ -7,59 +7,58 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 
-struct Light {
+struct Light
+{
     vec3 Position;
     vec3 Color;
-    
+
     float Linear;
     float Quadratic;
-    float Radius;
 };
-const int NR_LIGHTS = 200;
+const int NR_LIGHTS = 201;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos;
 
 uniform int visualize_normals;
 
 void main()
-{             
+{
+    float distance_multiplier = 0.03;
     // retrieve data from gbuffer
     vec3 FragPos = texture(gPosition, TexCoords).rgb;
     vec3 Normal = texture(gNormal, TexCoords).rgb;
     vec3 Diffuse = texture(gAlbedoSpec, TexCoords).rgb;
     float Specular = texture(gAlbedoSpec, TexCoords).a;
-    
+
     // then calculate lighting as usual
-    vec3 lighting  = Diffuse * (vec3(0.5, 0.5, 0.4)*0.2); // hard-coded ambient component
-    vec3 viewDir  = normalize(viewPos - FragPos);
-    for(int i = 0; i < NR_LIGHTS; ++i)
+
+    vec3 lighting = Diffuse * 0.1; // hard-coded ambient component
+    vec3 viewDir = normalize(viewPos - FragPos);
+    for (int i = 0; i < NR_LIGHTS; ++i)
     {
-        // calculate distance between light source and current fragment
-        float distance = length(lights[i].Position - FragPos);
-        if(distance < lights[i].Radius)
-        {
-            // diffuse
+        // // calculate distance between light source and current fragment
+            float distance = length(lights[i].Position - FragPos) * distance_multiplier;
+
             vec3 lightDir = normalize(lights[i].Position - FragPos);
             vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lights[i].Color;
             // specular
-            vec3 halfwayDir = normalize(lightDir + viewDir);  
-            float spec = pow(max(dot(Normal, halfwayDir), 0.0), 120.0);
+            vec3 halfwayDir = normalize(lightDir + viewDir);
+            float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
             vec3 specular = lights[i].Color * spec * Specular;
             // attenuation
             float attenuation = 1.0 / (1.0 + lights[i].Linear * distance + lights[i].Quadratic * distance * distance);
             diffuse *= attenuation;
             specular *= attenuation;
             lighting += diffuse + specular;
-        }
-    }    
+    }
     // FragColor = vec4(lighting, Specular)*0.5 +  vec4(Normal, 1.0)*0.5;
     FragColor = vec4(lighting, Specular);
     // FragColor = vec4(Normal*0.333 + FragPos*0.333 + Diffuse*0.333, 1.0);
 
-if (visualize_normals > 0){
-    FragColor = vec4((Normal * 0.5 + 0.5), 1.0);
-}
+    if (visualize_normals > 0)
+    {
+        FragColor = vec4((Normal * 0.5 + 0.5), 1.0);
+    }
     // FragColor = vec4(FragPos, 1.0);
     // FragColor = vec4(Diffuse, 1.0);
-
 }

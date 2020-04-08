@@ -53,7 +53,37 @@ static_models:
   format: collada
   name: plane
   position: {x: 0.0, y: 0.0, z: 0.0}
-  rotation: {x: -1.55, y: 0, z: 0}
+  rotation: {x: -1.5707963267948966, y: 0, z: 0}
+  scale: 100.0
+- file: plane.dae
+  format: collada
+  name: plane2
+  position: {x: 200.0, y: 0.0, z: 0.0}
+  rotation: {x: -1.5707963267948966, y: 0, z: 0}
+  scale: 100.0
+- file: plane.dae
+  format: collada
+  name: plane3
+  position: {x: -200.0, y: 0.0, z: 0.0}
+  rotation: {x: -1.5707963267948966, y: 0, z: 0}
+  scale: 100.0
+- file: plane.dae
+  format: collada
+  name: plane4
+  position: {x: 0.0, y: 0.0, z: -200.0}
+  rotation: {x: -1.5707963267948966, y: 0, z: 0}
+  scale: 100.0
+- file: plane.dae
+  format: collada
+  name: plane5
+  position: {x: 200.0, y: 0.0, z: -200.0}
+  rotation: {x: -1.5707963267948966, y: 0, z: 0}
+  scale: 100.0
+- file: plane.dae
+  format: collada
+  name: plane6
+  position: {x: -200.0, y: 0.0, z: -200.0}
+  rotation: {x: -1.5707963267948966, y: 0, z: 0}
   scale: 100.0
 # - file: tree.dae
 #   format: collada

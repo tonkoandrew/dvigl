@@ -7,36 +7,28 @@
 // // precision mediump vec2;
 // #endif
 
-layout (location = 0) in vec4 attr_pos;
-layout (location = 1) in vec3 attr_normal;
-layout (location = 2) in vec3 attr_tangent;
-layout (location = 3) in vec2 attr_texcoord;
-
+layout(location = 0) in vec4 attr_pos;
+layout(location = 1) in vec3 attr_normal;
+layout(location = 2) in vec3 attr_tangent;
+layout(location = 3) in vec2 attr_texcoord;
 
 out vec2 v_texcoord;
-out vec3 v_normal;
 out vec4 v_pos;
-out mat3 TBN;
 
+out vec3 v_normal;
+out vec3 v_tangent;
+
+uniform mat4 mvp;
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+// uniform mat4 view;
+// uniform mat4 projection;
 
 void main()
 {
-	vec4 worldPos = model * attr_pos;
-
-    v_pos = worldPos;
     v_texcoord = attr_texcoord;
+    v_pos = model * attr_pos;
+    v_normal = (mvp * vec4(attr_normal, 0.0)).xyz;
+    v_tangent = (mvp * vec4(attr_tangent, 0.0)).xyz;
 
-    mat3 normalMatrix = transpose(inverse(mat3(model)));
-    v_normal = normalMatrix * attr_normal;
-
-    gl_Position = projection * view * worldPos;
-
-    vec3 N = v_normal;
-    vec3 T = normalMatrix * attr_tangent;
-    vec3 B = cross(N, T);
-
-    TBN = transpose(mat3(T, B, N));
+    gl_Position = mvp * attr_pos;
 }
