@@ -79,8 +79,8 @@ void main()
 
     if (visualize_normals > 0)
     {
-        // FragColor = vec4((Normal * 0.5 + 0.5), 1.0);
-        FragColor = vec4(FragPos/100.0, 1.0);
+        FragColor = vec4((Normal * 0.5 + 0.5), 1.0);
+        // FragColor = vec4(FragPos, 1.0);
         // FragColor = vec4(Diffuse, 1.0);
     }
 }

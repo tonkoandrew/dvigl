@@ -196,8 +196,10 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
+        glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
         s->uniformMatrix4("model", model_m);
         s->uniformMatrix4("mvp", mvp);
+        s->uniformMatrix3("normal_matrix", normalMatrix);
         m->draw();
     }
 

@@ -54,6 +54,7 @@ in vec4 v_pos;
 uniform sampler2D normalMap;
 uniform sampler2D albedoMap;
 
+uniform mat3 normal_matrix;
 // out vec4 FragColor;
 
 layout(location = 0) out vec3 out_position;
