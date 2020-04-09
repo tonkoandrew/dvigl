@@ -106,9 +106,6 @@ SkinnedMesh::SkinnedMesh(const aiScene* scene)
 
     // Make sure the VAO is not changed from the outside
     glBindVertexArray(0);
-
-    Shader* s = ShaderMgr::ptr()->get_shader("skinned");
-    s->bind();
 }
 
 SkinnedMesh::~SkinnedMesh() { release(); }
@@ -350,7 +347,7 @@ void SkinnedMesh::draw()
 
     BoneTransform(RunningTime, Transforms);
 
-    Shader* s = ShaderMgr::ptr()->get_shader("skinned");
+    Shader* s = ShaderMgr::ptr()->get_shader("skinned_geometry");
     s->bind();
     s->uniform1i("albedoMap", 0);
     s->uniform1i("normalMap", 1);

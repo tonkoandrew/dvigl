@@ -12,5 +12,5 @@ public:
     void release();
 
 private:
-    std::map<std::string, Font*> fonts;
+    std::unordered_map<std::string, Font*> fonts;
 };

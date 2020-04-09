@@ -14,5 +14,5 @@ public:
 
 private:
     int volume;
-    std::map<std::string, Audio*> audios;
+    std::unordered_map<std::string, Audio*> audios;
 };

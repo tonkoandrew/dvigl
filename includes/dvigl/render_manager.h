@@ -12,8 +12,8 @@ public:
     int visualize_normals = 0;
 
 private:
-    void lighting_pass(float time_delta);
     void geometry_pass(float time_delta, float aspect);
+    void deferred_pass(float time_delta);
     void forward_pass(float aspect);
     void render_quad();
     void render_cube();

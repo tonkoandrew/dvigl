@@ -13,5 +13,5 @@ public:
     void release();
 
 private:
-    std::map<std::string, Texture*> textures;
+    std::unordered_map<std::string, Texture*> textures;
 };

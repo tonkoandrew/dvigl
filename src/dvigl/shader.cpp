@@ -1,6 +1,7 @@
 #include <dvigl/shader.h>
 
-bool Shader::compile_and_link(char* vs_content, char* fs_content)
+
+bool Shader::compile_and_link(std::string vs_content, std::string fs_content)
 {
     GLuint vs_ID;
     GLuint fs_ID;
@@ -42,14 +43,15 @@ bool Shader::compile_and_link(char* vs_content, char* fs_content)
     return true;
 }
 
-GLuint Shader::compile(GLenum type, char* content)
+GLuint Shader::compile(GLenum type, std::string content)
 {
     GLint compiled;
     GLuint shaderID;
 
     shaderID = glCreateShader(type);
 
-    glShaderSource(shaderID, 1, (const char**)&content, NULL);
+    const char* src = content.c_str();
+    glShaderSource(shaderID, 1, &src, NULL);
     glCompileShader(shaderID);
     glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compiled);
 

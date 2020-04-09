@@ -186,7 +186,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     view_proj_m = proj_m * view_m;
 
-    s = ShaderMgr::ptr()->get_shader("simple");
+    s = ShaderMgr::ptr()->get_shader("static_geometry");
     s->bind();
     s->uniform1i("albedoMap", 0);
     s->uniform1i("normalMap", 1);
@@ -201,7 +201,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         m->draw();
     }
 
-    s = ShaderMgr::ptr()->get_shader("skinned");
+    s = ShaderMgr::ptr()->get_shader("skinned_geometry");
     s->bind();
 
     for (auto element : ModelMgr::ptr()->skinned_models)
@@ -215,10 +215,10 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     }
 }
 
-void RenderMgr::lighting_pass(float time_delta)
+void RenderMgr::deferred_pass(float time_delta)
 {
     Shader* s;
-    s = ShaderMgr::ptr()->get_shader("lighting");
+    s = ShaderMgr::ptr()->get_shader("deferred");
     s->bind();
     s->uniform1i("visualize_normals", visualize_normals);
 
@@ -312,7 +312,7 @@ void RenderMgr::render_frame(float time_delta)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    lighting_pass(time_delta);
+    deferred_pass(time_delta);
 
     // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
     // ----------------------------------------------------------------------------------

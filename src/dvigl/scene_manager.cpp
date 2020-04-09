@@ -34,22 +34,22 @@ bool SceneMgr::load_scene(std::string file_name)
     char* content = FileSystemMgr::ptr()->get_content(file_name);
     YAML::Node node = YAML::Load(content);
 
-    if (!ShaderMgr::ptr()->load_shader("simple", "../res/shaders/simple.vs", "../res/shaders/simple.fs"))
+    if (!ShaderMgr::ptr()->load_shader("static_geometry", "../res/shaders/static_geometry.glsl"))
     {
         return false;
     }
 
-    if (!ShaderMgr::ptr()->load_shader("skinned", "../res/shaders/skinned.vs", "../res/shaders/skinned.fs"))
+    if (!ShaderMgr::ptr()->load_shader("skinned_geometry", "../res/shaders/skinned_geometry.glsl"))
     {
         return false;
     }
 
-    if (!ShaderMgr::ptr()->load_shader("lighting", "../res/shaders/lighting.vs", "../res/shaders/lighting.fs"))
+    if (!ShaderMgr::ptr()->load_shader("deferred", "../res/shaders/deferred.glsl"))
     {
         return false;
     }
 
-    if (!ShaderMgr::ptr()->load_shader("forward", "../res/shaders/forward.vs", "../res/shaders/forward.fs"))
+    if (!ShaderMgr::ptr()->load_shader("forward", "../res/shaders/forward.glsl"))
     {
         return false;
     }

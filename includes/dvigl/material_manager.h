@@ -12,5 +12,5 @@ public:
     Material* get_material(std::string name);
 
 private:
-    std::map<std::string, Material*> materials;
+    std::unordered_map<std::string, Material*> materials;
 };

@@ -4,7 +4,7 @@
 class Shader
 {
 public:
-    bool compile_and_link(char* vs_content, char* fs_content);
+    bool compile_and_link(std::string vs_content, std::string fs_content);
     void bind();
     void uniformMatrix4(std::string name, glm::mat4 value);
     void uniformMatrix4(std::string name, std::vector<glm::mat4>* values);
@@ -16,6 +16,6 @@ public:
     void release();
 
 private:
-    GLuint compile(GLenum type, char* content);
+    GLuint compile(GLenum type, std::string content);
     GLuint program_object;
 };

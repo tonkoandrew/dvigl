@@ -15,8 +15,8 @@ public:
     bool generate_model(std::string name, SDL_Surface* surf);
     bool generate_plane_model(std::string name, int w, int h, std::string texture);
     void release();
-    std::map<std::string, ModelNode*> models;
-    std::map<std::string, SkinnedModelNode*> skinned_models;
+    std::unordered_map<std::string, ModelNode*> models;
+    std::unordered_map<std::string, SkinnedModelNode*> skinned_models;
 
 private:
 };
