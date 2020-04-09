@@ -104,6 +104,12 @@ void Shader::uniform1f(std::string name, float value)
     glUniform1f(location, value);
 }
 
+void Shader::uniform1b(std::string name, bool value)
+{
+    int location = get_uniform_location(name);
+    glUniform1i(location, value ? 1 : 0);
+}
+
 void Shader::uniform3f(std::string name, glm::vec3 value)
 {
     int location = get_uniform_location(name);

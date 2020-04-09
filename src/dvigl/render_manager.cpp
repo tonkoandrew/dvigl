@@ -502,6 +502,15 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     {
         LOG("Framebuffer not complete!\n");
     }
+
+    GLuint err = glGetError();
+    if (err != 0)
+    {
+        LOG("G-Buffer setup error ================\n");
+        LOG("%d \n", err);
+        LOG("================\n");
+    }
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

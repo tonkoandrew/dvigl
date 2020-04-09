@@ -11,7 +11,7 @@ bool ShaderMgr::init()
 
 bool ShaderMgr::load_shader(std::string name, std::string file_name)
 {
-    LOG("Loading shader %s... ", file_name.c_str());
+    LOG("Loading shader \"%s\"... ", file_name.c_str());
     char* glsl_content = FileSystemMgr::ptr()->get_content(file_name);
     if ((!glsl_content))
     {
