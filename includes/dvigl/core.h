@@ -139,8 +139,11 @@ typedef GLuint GLhandleARB;
 // GLSL attributes location
 #define attr_pos_loc 0
 #define attr_normal_loc 1
-#define attr_tangent_loc 2
-#define attr_texcoord_loc 3
+#define attr_texcoord_loc 2
+#define attr_tangent_loc 3
+#define attr_bitangent_loc 4
+#define attr_bone_id_loc 5
+#define attr_bone_weight_loc 6
 
 #define INVALID_UNIFORM_LOCATION 0xffffffff
 

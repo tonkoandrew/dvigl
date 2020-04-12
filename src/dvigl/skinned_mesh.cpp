@@ -5,13 +5,6 @@
 #include <dvigl/shader.h>
 #include <dvigl/shader_manager.h>
 
-#define POSITION_LOCATION 0
-#define TEX_COORD_LOCATION 1
-#define NORMAL_LOCATION 2
-#define TANGENT_LOCATION 3
-#define BONE_ID_LOCATION 4
-#define BONE_WEIGHT_LOCATION 5
-
 inline glm::mat4 aiMatrix4x4ToGlm(aiMatrix4x4* from)
 {
     glm::mat4 to;
@@ -133,11 +126,11 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
 {
     m_Entries.resize(scene->mNumMeshes);
     materials.resize(scene->mNumMaterials);
-    // m_NormalMaps.resize(scene->mNumMaterials);
 
     vector<glm::vec3> Positions;
     vector<glm::vec3> Normals;
     vector<glm::vec3> Tangents;
+    vector<glm::vec3> BiTangents;
     vector<glm::vec2> TexCoords;
     vector<VertexBoneData> Bones;
     vector<GLuint> Indices;
@@ -161,6 +154,7 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
     Positions.reserve(NumVertices);
     Normals.reserve(NumVertices);
     Tangents.reserve(NumVertices);
+    BiTangents.reserve(NumVertices);
     TexCoords.reserve(NumVertices);
     Bones.resize(NumVertices);
     Indices.reserve(NumIndices);
@@ -170,7 +164,7 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
     for (GLuint i = 0; i < m_Entries.size(); i++)
     {
         const aiMesh* paiMesh = scene->mMeshes[i];
-        InitMesh(i, paiMesh, Positions, Normals, Tangents, TexCoords, Bones, Indices);
+        InitMesh(i, paiMesh, Positions, Normals, Tangents, BiTangents, TexCoords, Bones, Indices);
     }
 
     if (!InitMaterials(scene))
@@ -181,30 +175,35 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
     // Generate and populate the buffers with vertex attributes and the indices
     glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[POS_VB]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Positions[0]) * Positions.size(), &Positions[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(POSITION_LOCATION);
-    glVertexAttribPointer(POSITION_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(attr_pos_loc);
+    glVertexAttribPointer(attr_pos_loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[TEXCOORD_VB]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(TexCoords[0]) * TexCoords.size(), &TexCoords[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(TEX_COORD_LOCATION);
-    glVertexAttribPointer(TEX_COORD_LOCATION, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(attr_texcoord_loc);
+    glVertexAttribPointer(attr_texcoord_loc, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[NORMAL_VB]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Normals[0]) * Normals.size(), &Normals[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(NORMAL_LOCATION);
-    glVertexAttribPointer(NORMAL_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(attr_normal_loc);
+    glVertexAttribPointer(attr_normal_loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[TANGENT_VB]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Tangents[0]) * Tangents.size(), &Tangents[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(TANGENT_LOCATION);
-    glVertexAttribPointer(TANGENT_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(attr_tangent_loc);
+    glVertexAttribPointer(attr_tangent_loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[BITANGENT_VB]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(BiTangents[0]) * BiTangents.size(), &BiTangents[0], GL_STATIC_DRAW);
+    glEnableVertexAttribArray(attr_bitangent_loc);
+    glVertexAttribPointer(attr_bitangent_loc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, m_Buffers[BONE_VB]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Bones[0]) * Bones.size(), &Bones[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(BONE_ID_LOCATION);
-    glVertexAttribIPointer(BONE_ID_LOCATION, 4, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
-    glEnableVertexAttribArray(BONE_WEIGHT_LOCATION);
-    glVertexAttribPointer(BONE_WEIGHT_LOCATION, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)16);
+    glEnableVertexAttribArray(attr_bone_id_loc);
+    glVertexAttribIPointer(attr_bone_id_loc, 4, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
+    glEnableVertexAttribArray(attr_bone_weight_loc);
+    glVertexAttribPointer(attr_bone_weight_loc, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)16);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Buffers[INDEX_BUFFER]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices[0]) * Indices.size(), &Indices[0], GL_STATIC_DRAW);
@@ -217,6 +216,7 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
     Positions.clear();
     Normals.clear();
     Tangents.clear();
+    BiTangents.clear();
     TexCoords.clear();
     Bones.clear();
     Indices.clear();
@@ -225,7 +225,7 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
 }
 
 void SkinnedMesh::InitMesh(GLuint MeshIndex, const aiMesh* paiMesh, vector<glm::vec3>& Positions,
-    vector<glm::vec3>& Normals, vector<glm::vec3>& Tangents, vector<glm::vec2>& TexCoords,
+    vector<glm::vec3>& Normals, vector<glm::vec3>& Tangents, vector<glm::vec3>& BiTangents, vector<glm::vec2>& TexCoords,
     vector<VertexBoneData>& Bones, vector<GLuint>& Indices)
 {
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
@@ -237,11 +237,13 @@ void SkinnedMesh::InitMesh(GLuint MeshIndex, const aiMesh* paiMesh, vector<glm::
         const aiVector3D* pNormal = &(paiMesh->mNormals[i]);
         const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(0) ? &(paiMesh->mTextureCoords[0][i]) : &Zero3D;
         const aiVector3D* pTangent = paiMesh->HasTangentsAndBitangents() ? &(paiMesh->mTangents[i]) : &Zero3D;
+        const aiVector3D* pBiTangent = paiMesh->HasTangentsAndBitangents() ? &(paiMesh->mBitangents[i]) : &Zero3D;
 
         Positions.push_back(glm::vec3(pPos->x, pPos->y, pPos->z));
         Normals.push_back(glm::vec3(pNormal->x, pNormal->y, pNormal->z));
         TexCoords.push_back(glm::vec2(pTexCoord->x, pTexCoord->y));
         Tangents.push_back(glm::vec3(pTangent->x, pTangent->y, pTangent->z));
+        BiTangents.push_back(glm::vec3(pBiTangent->x, pBiTangent->y, pBiTangent->z));
     }
 
     LoadBones(MeshIndex, paiMesh, Bones);

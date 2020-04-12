@@ -61,7 +61,7 @@ void main()
         // // calculate distance between light source and current fragment
             float distance = length(lights[i].Position - FragPos) * distance_multiplier;
 
-            vec3 lightDir = normalize(lights[i].Position - FragPos);
+            vec3 lightDir = -normalize(lights[i].Position - FragPos);
             vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lights[i].Color;
             // specular
             vec3 halfwayDir = normalize(lightDir + viewDir);
@@ -80,7 +80,7 @@ void main()
     if (visualize_normals > 0)
     {
         FragColor = vec4((Normal * 0.5 + 0.5), 1.0);
-        // FragColor = vec4(FragPos, 1.0);
+        // FragColor = vec4(FragPos/100.0, 1.0);
         // FragColor = vec4(Diffuse, 1.0);
     }
 }

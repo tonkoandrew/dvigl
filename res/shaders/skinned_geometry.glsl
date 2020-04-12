@@ -2,11 +2,13 @@
 #version 410 core
 
 layout(location = 0) in vec3 attr_pos;
-layout(location = 1) in vec2 attr_texcoord;
-layout(location = 2) in vec3 attr_normal;
+layout(location = 1) in vec3 attr_normal;
+layout(location = 2) in vec2 attr_texcoord;
 layout(location = 3) in vec3 attr_tangent;
-layout(location = 4) in ivec4 BoneIDs;
-layout(location = 5) in vec4 Weights;
+layout(location = 4) in vec3 attr_bitangent;
+layout(location = 5) in ivec4 BoneIDs;
+layout(location = 6) in vec4 Weights;
+
 
 out vec2 v_texcoord;
 out vec4 v_pos;
@@ -54,7 +56,6 @@ in vec4 v_pos;
 uniform sampler2D normalMap;
 uniform sampler2D albedoMap;
 
-uniform mat3 normal_matrix;
 // out vec4 FragColor;
 
 layout(location = 0) out vec3 out_position;

@@ -4,40 +4,35 @@ Mesh::Mesh() {}
 Mesh::Mesh(int w, int h)
 {
     vertex_count = 6;
-    vertex_data = (float*)malloc(sizeof(float) * vertex_count * 4);
+    vertex_data = (float*)malloc(sizeof(float) * vertex_count * 3);
     normal_data = (float*)malloc(sizeof(float) * vertex_count * 3);
     tangent_data = (float*)malloc(sizeof(float) * vertex_count * 3);
+    bitangent_data = (float*)malloc(sizeof(float) * vertex_count * 3);
     textureCoord_data = (float*)malloc(sizeof(float) * vertex_count * 2);
 
     vertex_data[0] = 0;
     vertex_data[1] = 0;
     vertex_data[2] = 0;
-    vertex_data[3] = 1.0f;
 
-    vertex_data[4] = 0;
-    vertex_data[5] = h;
-    vertex_data[6] = 0;
-    vertex_data[7] = 1.0f;
+    vertex_data[3] = 0;
+    vertex_data[4] = h;
+    vertex_data[5] = 0;
 
-    vertex_data[8] = w;
-    vertex_data[9] = h;
+    vertex_data[6] = w;
+    vertex_data[7] = h;
+    vertex_data[8] = 0;
+
+    vertex_data[9] = 0;
     vertex_data[10] = 0;
-    vertex_data[11] = 1.0f;
+    vertex_data[11] = 0;
 
-    vertex_data[12] = 0;
-    vertex_data[13] = 0;
+    vertex_data[12] = w;
+    vertex_data[13] = h;
     vertex_data[14] = 0;
-    vertex_data[15] = 1.0f;
 
-    vertex_data[16] = w;
-    vertex_data[17] = h;
-    vertex_data[18] = 0;
-    vertex_data[19] = 1.0f;
-
-    vertex_data[20] = w;
-    vertex_data[21] = 0;
-    vertex_data[22] = 0;
-    vertex_data[23] = 1.0f;
+    vertex_data[15] = w;
+    vertex_data[16] = 0;
+    vertex_data[17] = 0;
 
     textureCoord_data[0] = 0;
     textureCoord_data[1] = 1;
@@ -109,20 +104,17 @@ Mesh::Mesh(int w, int h)
     free(vertex_data);
     free(normal_data);
     free(tangent_data);
+    free(bitangent_data);
     free(textureCoord_data);
 }
 
 Mesh::Mesh(struct aiMesh* mesh)
 {
-    // if(mesh->mNumBones > 0)
-    // {
-    //     scale = glm::vec3(10.0f);
-    // }
-
     vertex_count = (int)(mesh->mNumFaces) * 3;
-    vertex_data = (float*)malloc(sizeof(float) * vertex_count * 4);
+    vertex_data = (float*)malloc(sizeof(float) * vertex_count * 3);
     normal_data = (float*)malloc(sizeof(float) * vertex_count * 3);
     tangent_data = (float*)malloc(sizeof(float) * vertex_count * 3);
+    bitangent_data = (float*)malloc(sizeof(float) * vertex_count * 3);
     textureCoord_data = (float*)malloc(sizeof(float) * vertex_count * 2);
 
     int num_triangles = (int)(mesh->mNumFaces);
@@ -139,7 +131,7 @@ Mesh::Mesh(struct aiMesh* mesh)
             }
             else
             {
-                int v_index = ((t * 3 + i) * 4);
+                int v_index = ((t * 3 + i) * 3);
                 int n_index = ((t * 3 + i) * 3);
                 int tcoord_index = ((t * 3 + i) * 2);
                 if (mesh->mNormals != NULL)
@@ -172,6 +164,13 @@ Mesh::Mesh(struct aiMesh* mesh)
                     tangent_data[n_index + 2] = mesh->mTangents[index].z;
                 }
 
+                if (mesh->mBitangents != NULL)
+                {
+                    bitangent_data[n_index] = mesh->mBitangents[index].x;
+                    bitangent_data[n_index + 1] = mesh->mBitangents[index].y;
+                    bitangent_data[n_index + 2] = mesh->mBitangents[index].z;
+                }
+
                 if (mesh->mTextureCoords[0] != NULL)
                 {
                     textureCoord_data[tcoord_index] = mesh->mTextureCoords[0][index].x;
@@ -181,7 +180,6 @@ Mesh::Mesh(struct aiMesh* mesh)
                 vertex_data[v_index] = mesh->mVertices[index].x;
                 vertex_data[v_index + 1] = mesh->mVertices[index].y;
                 vertex_data[v_index + 2] = mesh->mVertices[index].z;
-                vertex_data[v_index + 3] = 1.0f;
             }
         }
     }
@@ -189,6 +187,7 @@ Mesh::Mesh(struct aiMesh* mesh)
     free(vertex_data);
     free(normal_data);
     free(tangent_data);
+    free(bitangent_data);
     free(textureCoord_data);
 }
 
@@ -202,9 +201,9 @@ void Mesh::genVAO()
         GLuint buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_count * 4, vertex_data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_count * 3, vertex_data, GL_STATIC_DRAW);
         glEnableVertexAttribArray(attr_pos_loc);
-        glVertexAttribPointer(attr_pos_loc, 4, GL_FLOAT, 0, 0, 0);
+        glVertexAttribPointer(attr_pos_loc, 3, GL_FLOAT, 0, 0, 0);
 
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -217,6 +216,12 @@ void Mesh::genVAO()
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_count * 3, tangent_data, GL_STATIC_DRAW);
         glEnableVertexAttribArray(attr_tangent_loc);
         glVertexAttribPointer(attr_tangent_loc, 3, GL_FLOAT, 0, 0, 0);
+
+        glGenBuffers(1, &buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_count * 3, bitangent_data, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(attr_bitangent_loc);
+        glVertexAttribPointer(attr_bitangent_loc, 3, GL_FLOAT, 0, 0, 0);
 
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);

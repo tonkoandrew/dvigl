@@ -18,8 +18,9 @@ bool Shader::compile_and_link(std::string vs_content, std::string fs_content)
 
     glBindAttribLocation(program_object, attr_pos_loc, "attr_pos");
     glBindAttribLocation(program_object, attr_normal_loc, "attr_normal");
-    glBindAttribLocation(program_object, attr_tangent_loc, "attr_tangent");
     glBindAttribLocation(program_object, attr_texcoord_loc, "attr_texcoord");
+    glBindAttribLocation(program_object, attr_tangent_loc, "attr_tangent");
+    glBindAttribLocation(program_object, attr_bitangent_loc, "attr_bitangent");
 
     glLinkProgram(program_object);
 

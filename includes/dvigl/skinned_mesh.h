@@ -64,8 +64,8 @@ private:
     void ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, const glm::mat4& ParentTransform);
     bool InitFromScene(const aiScene* pScene);
     void InitMesh(GLuint MeshIndex, const aiMesh* paiMesh, vector<glm::vec3>& Positions, vector<glm::vec3>& Normals,
-        vector<glm::vec3>& Tangents, vector<glm::vec2>& TexCoords, vector<VertexBoneData>& Bones,
-        vector<unsigned int>& Indices);
+        vector<glm::vec3>& Tangents, vector<glm::vec3>&  BiTangents, vector<glm::vec2>& TexCoords,
+        vector<VertexBoneData>& Bones, vector<unsigned int>& Indices);
     void LoadBones(GLuint MeshIndex, const aiMesh* paiMesh, vector<VertexBoneData>& Bones);
     bool InitMaterials(const aiScene* pScene);
 
@@ -77,6 +77,7 @@ private:
         POS_VB,
         NORMAL_VB,
         TANGENT_VB,
+        BITANGENT_VB,
         TEXCOORD_VB,
         BONE_VB,
         NUM_VBs

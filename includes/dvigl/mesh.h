@@ -20,6 +20,7 @@ protected:
     float* vertex_data;
     float* normal_data;
     float* tangent_data;
+    float* bitangent_data;
     float* textureCoord_data;
     void genVAO();
 };
