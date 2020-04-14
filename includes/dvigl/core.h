@@ -92,8 +92,8 @@ typedef GLuint GLhandleARB;
 #include <iostream>
 #include <list>
 #include <map>
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <assert.h>

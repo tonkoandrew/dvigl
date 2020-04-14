@@ -9,11 +9,16 @@ public:
     SDL_Window* get_main_window();
     void release();
     void resize_buffers(int new_w, int new_h, bool initialize);
+    int visualize_albedo = 0;
     int visualize_normals = 0;
+    int visualize_metallic = 0;
+    int visualize_roughness = 0;
+    int visualize_ao = 0;
+    int visualize_world_position = 0;
 
 private:
     void geometry_pass(float time_delta, float aspect);
-    void deferred_pass(float time_delta);
+    void deferred_pass(float time_delta, float aspect);
     void forward_pass(float aspect);
     void render_quad();
     void render_cube();
@@ -21,7 +26,7 @@ private:
     SDL_Window* main_window;
     SDL_GLContext gl_context;
     GLuint gBuffer;
-    GLuint gPosition, gNormal, gAlbedoSpec;
+    GLuint gAlbedo, gNormal, gMaterialInfo, gPos;
 
     GLuint quadVAO = 0;
     GLuint quadVBO;
@@ -31,7 +36,10 @@ private:
 
     GLuint rboDepth;
 
-    const GLuint NR_LIGHTS = 20;
+    const GLuint NR_LIGHTS = 10;
     std::vector<glm::vec3> lightPositions;
     std::vector<glm::vec3> lightColors;
+    float z_near;
+    float z_far;
+    float fov;
 };

@@ -53,7 +53,7 @@ void InputMgr::process_input(float time_delta)
         cam->move_down(movement_speed * time_delta);
     }
 
-    if (keystates[SDL_SCANCODE_R])
+    if (keystates[SDL_SCANCODE_E])
     {
         cam->move_up(movement_speed * time_delta);
     }
@@ -70,7 +70,10 @@ void InputMgr::process_input(float time_delta)
 
     // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
-    Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
+    // Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
+    // Node* model = (Node*)ModelMgr::ptr()->get_model("body");
+    // Node* model = (Node*)ModelMgr::ptr()->get_model("base");
+    Node* model = (Node*)ModelMgr::ptr()->get_model("head");
 
     if (keystates[SDL_SCANCODE_T])
     {
@@ -116,6 +119,15 @@ void InputMgr::process_input(float time_delta)
         model->position.x -= movement_speed * time_delta;
     }
 
+    if (keystates[SDL_SCANCODE_B])
+    {
+        RenderMgr::ptr()->visualize_albedo = 1;
+    }
+    else
+    {
+        RenderMgr::ptr()->visualize_albedo = 0;
+    }
+
     if (keystates[SDL_SCANCODE_N])
     {
         RenderMgr::ptr()->visualize_normals = 1;
@@ -123,6 +135,42 @@ void InputMgr::process_input(float time_delta)
     else
     {
         RenderMgr::ptr()->visualize_normals = 0;
+    }
+
+    if (keystates[SDL_SCANCODE_M])
+    {
+        RenderMgr::ptr()->visualize_metallic = 1;
+    }
+    else
+    {
+        RenderMgr::ptr()->visualize_metallic = 0;
+    }
+
+    if (keystates[SDL_SCANCODE_R])
+    {
+        RenderMgr::ptr()->visualize_roughness = 1;
+    }
+    else
+    {
+        RenderMgr::ptr()->visualize_roughness = 0;
+    }
+
+    if (keystates[SDL_SCANCODE_O])
+    {
+        RenderMgr::ptr()->visualize_ao = 1;
+    }
+    else
+    {
+        RenderMgr::ptr()->visualize_ao = 0;
+    }
+
+    if (keystates[SDL_SCANCODE_P])
+    {
+        RenderMgr::ptr()->visualize_world_position = 1;
+    }
+    else
+    {
+        RenderMgr::ptr()->visualize_world_position = 0;
     }
 }
 

@@ -4,10 +4,7 @@
 
 ShaderMgr gShaderMgr;
 
-bool ShaderMgr::init()
-{
-    return true;
-}
+bool ShaderMgr::init() { return true; }
 
 bool ShaderMgr::load_shader(std::string name, std::string file_name)
 {
@@ -48,23 +45,26 @@ bool ShaderMgr::load_shader(std::string name, std::string file_name)
     return true;
 }
 
-
-std::unordered_map<std::string, std::string> ShaderMgr::preProcessShaderBinary(std::string &source) {
+std::unordered_map<std::string, std::string> ShaderMgr::preProcessShaderBinary(std::string& source)
+{
     std::unordered_map<std::string, std::string> shaderSources;
 
-    const char *shaderTypeToken = "#shader-type";
+    const char* shaderTypeToken = "#shader-type";
     size_t shaderTypeTokenLength = strlen(shaderTypeToken);
     size_t pos = source.find(shaderTypeToken);
-    while (pos != std::string::npos) {
+    while (pos != std::string::npos)
+    {
         size_t eol = source.find_first_of("\r\n", pos);
         // TODO: eol == std::string::npos, if so then we have a syntax error
         size_t begin = pos + shaderTypeTokenLength + 1;
         std::string shaderType = source.substr(begin, eol - begin);
-        // TODO: type != "vertex" || fragment || hull || domain || compute, if so then we have an invalid shader type specified
+        // TODO: type != "vertex" || fragment || hull || domain || compute, if so then we have an invalid shader type
+        // specified
 
         size_t nextLinePos = source.find_first_not_of("\r\n", eol);
         pos = source.find(shaderTypeToken, nextLinePos);
-        shaderSources[shaderType] = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
+        shaderSources[shaderType]
+            = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
     }
 
     return shaderSources;

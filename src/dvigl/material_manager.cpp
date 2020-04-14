@@ -31,18 +31,39 @@ bool MaterialMgr::load_material(std::string name, std::string file_name)
     //    LOG("WTF???\n");
     // }
 
-    std::string diffuse_map;
+    std::string albedo_map;
     std::string normal_map;
-    if (node["diffuse"])
+    std::string metallic_map;
+    std::string roughness_map;
+    std::string ao_map;
+
+    if (node["albedo"])
     {
-        diffuse_map = "../res/textures/" + node["diffuse"].as<std::string>();
-        TextureMgr::ptr()->load_texture(diffuse_map, diffuse_map);
+        albedo_map = "../res/textures/" + node["albedo"].as<std::string>();
+        TextureMgr::ptr()->load_texture(albedo_map, albedo_map);
     }
 
     if (node["normal"])
     {
         normal_map = "../res/textures/" + node["normal"].as<std::string>();
         TextureMgr::ptr()->load_texture(normal_map, normal_map);
+    }
+
+    if (node["metallic"])
+    {
+        metallic_map = "../res/textures/" + node["metallic"].as<std::string>();
+        TextureMgr::ptr()->load_texture(metallic_map, metallic_map);
+    }
+
+    if (node["roughness"])
+    {
+        roughness_map = "../res/textures/" + node["roughness"].as<std::string>();
+        TextureMgr::ptr()->load_texture(roughness_map, roughness_map);
+    }
+    if (node["ao"])
+    {
+        ao_map = "../res/textures/" + node["ao"].as<std::string>();
+        TextureMgr::ptr()->load_texture(ao_map, ao_map);
     }
 
     // if (node["uv_params"]) {
@@ -58,9 +79,12 @@ bool MaterialMgr::load_material(std::string name, std::string file_name)
     // for (std::size_t i=0; i< node.size(); i++) {
     //   LOG("%s\n", node[i].as<int>());
     // }
-    Texture* diffuse_tex = TextureMgr::ptr()->get_texture(diffuse_map);
+    Texture* albedo_tex = TextureMgr::ptr()->get_texture(albedo_map);
     Texture* normal_tex = TextureMgr::ptr()->get_texture(normal_map);
-    materials[name] = new Material(diffuse_tex, normal_tex);
+    Texture* metallic_tex = TextureMgr::ptr()->get_texture(metallic_map);
+    Texture* roughness_tex = TextureMgr::ptr()->get_texture(metallic_map);
+    Texture* ao_tex = TextureMgr::ptr()->get_texture(ao_map);
+    materials[name] = new Material(albedo_tex, normal_tex, metallic_tex, roughness_tex, ao_tex);
     return true;
 }
 

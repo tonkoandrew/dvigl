@@ -1,5 +1,5 @@
 shader: 'skinned'
-diffuse: 'FatElvis_diffuse.jpg'
+albedo: 'FatElvis_diffuse.jpg'
 normal: 'FatElvis_normal.jpg'
 uv_params:
   offset_x: 0.5

@@ -1,5 +1,5 @@
 shader: 'skinned'
-diffuse: 'guard1_helmet.tga'
+albedo: 'guard1_helmet.tga'
 normal: 'normal.jpg'
 uv_params:
   offset_x: 0.5

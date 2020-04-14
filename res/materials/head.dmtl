@@ -1,0 +1,9 @@
+shader: 'simple'
+albedo: '01_Head_Base_Color.png'
+normal: '01_Head_Normal_DirectX.png'
+metallic: '01_Head_Metallic.png'
+roughness: '01_Head_Roughness.png'
+ao: 'corkboard3b-ao.png'
+uv_params:
+  offset_x: 0.5
+  offset_y: 0.5

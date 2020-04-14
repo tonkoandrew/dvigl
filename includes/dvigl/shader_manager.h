@@ -8,7 +8,7 @@ class ShaderMgr : public Singleton<ShaderMgr>
 public:
     bool init();
     bool load_shader(std::string name, std::string file_name);
-    std::unordered_map<std::string, std::string> preProcessShaderBinary(std::string &source);
+    std::unordered_map<std::string, std::string> preProcessShaderBinary(std::string& source);
     Shader* get_shader(std::string name);
     void release();
 

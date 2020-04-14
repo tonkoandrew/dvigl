@@ -1,5 +1,5 @@
 shader: 'skinned'
-diffuse: 'iron_grill.tga'
+albedo: 'iron_grill.tga'
 normal: 'normal.jpg'
 uv_params:
   offset_x: 0.5

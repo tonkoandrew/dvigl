@@ -225,8 +225,8 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
 }
 
 void SkinnedMesh::InitMesh(GLuint MeshIndex, const aiMesh* paiMesh, vector<glm::vec3>& Positions,
-    vector<glm::vec3>& Normals, vector<glm::vec3>& Tangents, vector<glm::vec3>& BiTangents, vector<glm::vec2>& TexCoords,
-    vector<VertexBoneData>& Bones, vector<GLuint>& Indices)
+    vector<glm::vec3>& Normals, vector<glm::vec3>& Tangents, vector<glm::vec3>& BiTangents,
+    vector<glm::vec2>& TexCoords, vector<VertexBoneData>& Bones, vector<GLuint>& Indices)
 {
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 

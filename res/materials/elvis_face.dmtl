@@ -1,5 +1,5 @@
 shader: 'skinned'
-diffuse: 'elvis_face.png'
+albedo: 'elvis_face.png'
 normal: 'normal.jpg'
 uv_params:
   offset_x: 0.5

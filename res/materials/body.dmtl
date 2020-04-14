@@ -1,0 +1,9 @@
+shader: 'simple'
+albedo: '02_Body_Base_Color.png'
+normal: '02_Body_Normal_DirectX.png'
+metallic: '02_Body_Metallic.png'
+roughness: '02_Body_Roughness.png'
+ao: 'corkboard3b-ao.png'
+uv_params:
+  offset_x: 0.5
+  offset_y: 0.5

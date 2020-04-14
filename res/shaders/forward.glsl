@@ -6,10 +6,7 @@ layout(location = 2) in vec2 attr_texcoord;
 
 uniform mat4 mvp;
 
-void main()
-{
-	gl_Position = mvp * vec4(attr_pos, 1.0);
-}
+void main() { gl_Position = mvp * vec4(attr_pos, 1.0); }
 
 #shader-type fragment
 #version 410 core

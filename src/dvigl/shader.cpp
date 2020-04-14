@@ -1,6 +1,5 @@
 #include <dvigl/shader.h>
 
-
 bool Shader::compile_and_link(std::string vs_content, std::string fs_content)
 {
     GLuint vs_ID;

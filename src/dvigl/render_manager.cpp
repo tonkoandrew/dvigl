@@ -29,8 +29,7 @@ bool RenderMgr::init()
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
 
-    int flags = SDL_WINDOW_SHOWN
-        | SDL_WINDOW_OPENGL
+    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
         // | SDL_WINDOW_ALLOW_HIGHDPI
         // | SDL_WINDOW_MOUSE_FOCUS
         // | SDL_WINDOW_INPUT_GRABBED
@@ -104,24 +103,27 @@ bool RenderMgr::init()
 
     SDL_GL_MakeCurrent(main_window, gl_context);
 
-    glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_POLYGON_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 
+    glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
     // glDisable(GL_CULL_FACE);
 
+    glDisable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
+    glDepthRange(0.0, 1.0);
 
     glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
 
-    // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
-    // #ifdef __PLATFORM_ANDROID__
-    //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
-    // #endif
+// glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+// #ifdef __PLATFORM_ANDROID__
+//   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
+// #endif
 
 #if !defined(__PLATFORM_ANDROID__)
     // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -142,6 +144,18 @@ bool RenderMgr::init()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     SDL_GL_SwapWindow(main_window);
+
+    fov = 45.0f;
+    z_near = 0.1f;
+    z_far = 1000.0f;
+
+    GLuint err = glGetError();
+    if (err != 0)
+    {
+        LOG("GL Renderer init ERRORS HERE ================\n");
+        LOG("%d \n", err);
+        LOG("================\n");
+    }
 
     resize_buffers(w, h, true);
 
@@ -164,6 +178,7 @@ bool RenderMgr::init()
         float bColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
         lightColors.push_back(glm::vec3(rColor, gColor, bColor));
     }
+
     return true;
 }
 
@@ -178,7 +193,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     glm::mat4 view_proj_m;
     glm::mat4 mvp;
 
-    proj_m = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
+    proj_m = glm::perspective(fov, aspect, z_near, z_far);
 
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
@@ -188,18 +203,23 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     s = ShaderMgr::ptr()->get_shader("static_geometry");
     s->bind();
-    s->uniform1i("albedoMap", 0);
-    s->uniform1i("normalMap", 1);
+    s->uniform1i("material.texture_albedo", 0);
+    s->uniform1i("material.texture_normal", 1);
+    s->uniform1i("material.texture_metallic", 2);
+    s->uniform1i("material.texture_roughness", 3);
+    s->uniform1i("material.texture_ao", 4);
 
     for (auto element : ModelMgr::ptr()->models)
     {
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
+        // glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(mvp)));
         glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
         s->uniformMatrix4("model", model_m);
-        s->uniformMatrix4("mvp", mvp);
-        // s->uniformMatrix3("normal_matrix", normalMatrix);
+        s->uniformMatrix4("projection", proj_m);
+        s->uniformMatrix4("view", view_m);
+        s->uniformMatrix3("normalMatrix", normalMatrix);
         m->draw();
     }
 
@@ -211,54 +231,89 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         SkinnedModelNode* m = (SkinnedModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
+        glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(view_m * model_m)));
+
         s->uniformMatrix4("model", model_m);
         s->uniformMatrix4("mvp", mvp);
+        s->uniformMatrix3("normalMatrix", normalMatrix);
         m->draw();
     }
 }
 
-void RenderMgr::deferred_pass(float time_delta)
+void RenderMgr::deferred_pass(float time_delta, float aspect)
 {
     Shader* s;
     s = ShaderMgr::ptr()->get_shader("deferred");
     s->bind();
+
+    glm::mat4 model_m;
+    glm::mat4 view_m;
+    glm::mat4 proj_m;
+    glm::mat4 view_proj_m;
+
+    proj_m = glm::perspective(fov, aspect, z_near, z_far);
+    CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
+    view_m = camera->get_view_matrix();
+    view_proj_m = proj_m * view_m;
+
+    s->uniform3f("viewPos", camera->get_position());
+
+    s->uniform1i("visualize_albedo", visualize_albedo);
     s->uniform1i("visualize_normals", visualize_normals);
+    s->uniform1i("visualize_metallic", visualize_metallic);
+    s->uniform1i("visualize_roughness", visualize_roughness);
+    s->uniform1i("visualize_ao", visualize_ao);
+    s->uniform1i("visualize_world_position", visualize_world_position);
+
+    // for ( int i=0; i < 1; i++){
+    s->uniform3f("dirLights[0].direction", glm::normalize(glm::vec3(0.2f, -1.0f, 0.0f)));
+    s->uniform3f("dirLights[0].lightColour", glm::vec3(1.0f));
+    s->uniform1f("dirLights[0].intensity", 2.0f);
+    // }
 
     // send light relevant uniforms
     for (unsigned int i = 0; i < lightPositions.size(); i++)
     {
-        s->uniform3f("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
-        s->uniform3f("lights[" + std::to_string(i) + "].Color", lightColors[i]);
-
-        // update attenuation parameters
-        const float constant = 1.0;
-        const float linear = 0.7f;
-        const float quadratic = 1.8f;
-
-        s->uniform1f("lights[" + std::to_string(i) + "].Linear", linear);
-        s->uniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
-        // // then calculate radius of light volume/sphere
-        // const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].r, lightColors[i].g), lightColors[i].b);
-        // float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (coeff)*maxBrightness)))
-            // / (2.0f * quadratic);
-        // LOG("radius = %f\n", radius);
-        // s->uniform1f("lights[" + std::to_string(i) + "].Radius", radius);
+        s->uniform3f("pointLights[" + std::to_string(i) + "].position", lightPositions[i]);
+        s->uniform1f("pointLights[" + std::to_string(i) + "].intensity", 800.0);
+        s->uniform3f("pointLights[" + std::to_string(i) + "].lightColour", lightColors[i]);
+        s->uniform1f("pointLights[" + std::to_string(i) + "].attenuationRadius", 200.0f);
     }
+    // for (unsigned int i = 0; i < lightPositions.size(); i++)
+    // {
+    //     s->uniform3f("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
+    //     s->uniform3f("lights[" + std::to_string(i) + "].Color", lightColors[i]);
 
-    CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
-    s->uniform3f("viewPos", camera->position);
+    //     // update attenuation parameters
+    //     const float constant = 1.0;
+    //     const float linear = 0.7f;
+    //     const float quadratic = 1.8f;
+
+    //     s->uniform1f("lights[" + std::to_string(i) + "].Linear", linear);
+    //     s->uniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
+    //     // // then calculate radius of light volume/sphere
+    //     // const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].r, lightColors[i].g), lightColors[i].b);
+    //     // float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (coeff)*maxBrightness)))
+    //         // / (2.0f * quadratic);
+    //     // LOG("radius = %f\n", radius);
+    //     // s->uniform1f("lights[" + std::to_string(i) + "].Radius", radius);
+    // }
 
     glActiveTexture(GL_TEXTURE0);
-    s->uniform1i("gPosition", 0);
-    glBindTexture(GL_TEXTURE_2D, gPosition);
+    s->uniform1i("materialInfoTexture", 0);
+    glBindTexture(GL_TEXTURE_2D, gMaterialInfo);
 
     glActiveTexture(GL_TEXTURE1);
-    s->uniform1i("gNormal", 1);
+    s->uniform1i("normalTexture", 1);
     glBindTexture(GL_TEXTURE_2D, gNormal);
 
     glActiveTexture(GL_TEXTURE2);
-    s->uniform1i("gAlbedoSpec", 2);
-    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+    s->uniform1i("albedoTexture", 2);
+    glBindTexture(GL_TEXTURE_2D, gAlbedo);
+
+    glActiveTexture(GL_TEXTURE3);
+    s->uniform1i("worldPosTexture", 3);
+    glBindTexture(GL_TEXTURE_2D, gPos);
 
     render_quad();
 }
@@ -274,7 +329,7 @@ void RenderMgr::forward_pass(float aspect)
     glm::mat4 mvp;
     glm::mat4 view_proj_m;
 
-    proj_m = glm::perspective(45.0f, aspect, 0.1f, 1000.0f);
+    proj_m = glm::perspective(fov, aspect, z_near, z_far);
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
     view_m = camera->get_view_matrix();
     view_proj_m = proj_m * view_m;
@@ -298,7 +353,6 @@ void RenderMgr::forward_pass(float aspect)
 void RenderMgr::render_frame(float time_delta)
 {
     int w, h;
-    glGetError();
     SDL_GL_MakeCurrent(main_window, gl_context);
     SDL_GL_GetDrawableSize(main_window, &w, &h);
     float aspect = (float)w / (float)(h > 1 ? h : 1);
@@ -314,7 +368,7 @@ void RenderMgr::render_frame(float time_delta)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    deferred_pass(time_delta);
+    deferred_pass(time_delta, aspect);
 
     // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
     // ----------------------------------------------------------------------------------
@@ -341,26 +395,8 @@ void RenderMgr::render_quad()
     {
         float quadVertices[] = {
             // positions        // texture Coords
-            -1.0f,
-            1.0f,
-            0.0f,
-            0.0f,
-            1.0f,
-            -1.0f,
-            -1.0f,
-            0.0f,
-            0.0f,
-            0.0f,
-            1.0f,
-            1.0f,
-            0.0f,
-            1.0f,
-            1.0f,
-            1.0f,
-            -1.0f,
-            0.0f,
-            1.0f,
-            0.0f,
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f,
+            0.0f, 1.0f, 0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);
@@ -456,37 +492,42 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
 
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 
-    // - position color buffer
-
     if (initialize)
-        glGenTextures(1, &gPosition);
-    glBindTexture(GL_TEXTURE_2D, gPosition);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
+        glGenTextures(1, &gAlbedo);
+    glBindTexture(GL_TEXTURE_2D, gAlbedo);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedo, 0);
 
-    // - normal color buffer
     if (initialize)
         glGenTextures(1, &gNormal);
     glBindTexture(GL_TEXTURE_2D, gNormal);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
 
-    // - color + specular color buffer
     if (initialize)
-        glGenTextures(1, &gAlbedoSpec);
-    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glGenTextures(1, &gMaterialInfo);
+    glBindTexture(GL_TEXTURE_2D, gMaterialInfo);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gMaterialInfo, 0);
 
-    // - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering
-    GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-    glDrawBuffers(3, attachments);
+    if (initialize)
+        glGenTextures(1, &gPos);
+    glBindTexture(GL_TEXTURE_2D, gPos);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, gPos, 0);
+
+    GLuint attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+    // GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+    glDrawBuffers(4, attachments);
+    // glDrawBuffers(3, attachments);
     glGenRenderbuffers(1, &rboDepth);
     glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h);
