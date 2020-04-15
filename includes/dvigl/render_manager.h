@@ -15,6 +15,8 @@ public:
     int visualize_roughness = 0;
     int visualize_ao = 0;
     int visualize_world_position = 0;
+    float cutOff = 0.1f;
+    float outerCutOff = 0.0f;
 
 private:
     void geometry_pass(float time_delta, float aspect);

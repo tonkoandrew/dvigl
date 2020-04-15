@@ -65,7 +65,7 @@ struct SpotLight
 
 #define MAX_DIR_LIGHTS 10
 #define MAX_POINT_LIGHTS 20
-#define MAX_SPOT_LIGHTS 5
+#define MAX_SPOT_LIGHTS 20
 const float PI = 3.14159265359;
 // IBL
 uniform int reflectionProbeMipCount;
@@ -86,7 +86,7 @@ uniform vec3 viewPos;
 // uniform mat4 projectionInverse;
 uniform mat4 lightSpaceViewProjectionMatrix;
 
-ivec4 numDirPointSpotLights = ivec4(1, 20, 0, 0);
+ivec4 numDirPointSpotLights = ivec4(1, 0, 20, 0);
 
 // Approximates the amount of microfacets that are properly aligned with the halfway vector, thus determines the
 // strength and area for specular light
@@ -205,13 +205,12 @@ vec3 CalculatePointLightRadiance(
     vec3 albedo, vec3 normal, float metallic, float roughness, vec3 fragPos, vec3 fragToView, vec3 baseReflectivity)
 {
     vec3 pointLightIrradiance = vec3(0.0);
-    float distance_multiplier = 1.0;
 
     for (int i = 0; i < numDirPointSpotLights.y; ++i)
     {
         vec3 fragToLight = normalize(pointLights[i].position - fragPos);
         vec3 halfway = normalize(fragToView + fragToLight);
-        float fragToLightDistance = length(pointLights[i].position - fragPos) * distance_multiplier;
+        float fragToLightDistance = length(pointLights[i].position - fragPos);
 
         // Attenuation calculation (based on Epic's UE4 falloff model)
         float d = fragToLightDistance / pointLights[i].attenuationRadius;
@@ -252,13 +251,12 @@ vec3 CalculateSpotLightRadiance(
     vec3 albedo, vec3 normal, float metallic, float roughness, vec3 fragPos, vec3 fragToView, vec3 baseReflectivity)
 {
     vec3 spotLightIrradiance = vec3(0.0);
-    float distance_multiplier = 1.0;
 
     for (int i = 0; i < numDirPointSpotLights.z; ++i)
     {
         vec3 fragToLight = normalize(spotLights[i].position - fragPos);
         vec3 halfway = normalize(fragToView + fragToLight);
-        float fragToLightDistance = length(spotLights[i].position - fragPos) * distance_multiplier;
+        float fragToLightDistance = length(spotLights[i].position - fragPos);
 
         // Attenuation calculation (based on Epic's UE4 falloff model)
         float d = fragToLightDistance / spotLights[i].attenuationRadius;
@@ -358,13 +356,7 @@ void main()
         ambient = (indirectDiffuse + indirectSpecular) * ao;
     }
 
-    vec3 final_color;
-    final_color.r = ambient.r + directLightIrradiance.r > 1 ? 1 : ambient.r + directLightIrradiance.r;
-    final_color.g = ambient.g + directLightIrradiance.g > 1 ? 1 : ambient.g + directLightIrradiance.g;
-    final_color.b = ambient.b + directLightIrradiance.b > 1 ? 1 : ambient.b + directLightIrradiance.b;
-
-    FragColor = vec4(final_color, 1.0);
-    // FragColor = vec4(ambient + directLightIrradiance, 1.0);
+    FragColor = vec4(ambient + directLightIrradiance, 1.0);
     // =============+++++++++++++++++============
 
     if (visualize_albedo)

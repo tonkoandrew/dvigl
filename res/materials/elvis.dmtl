@@ -1,6 +1,11 @@
 shader: 'skinned'
-albedo: 'FatElvis_diffuse.jpg'
-normal: 'FatElvis_normal.jpg'
+
+albedo: 'rustediron2_basecolor.png'
+normal: 'rustediron2_normal.png'
+metallic: 'rustediron2_metallic.png'
+roughness: 'rustediron2_roughness.png'
+ao: 'ground_ao.jpg'
+
 uv_params:
   offset_x: 0.5
   offset_y: 0.5

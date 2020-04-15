@@ -1,11 +1,11 @@
 name: start
-# skinned_models:
-# - file: elvis.dae
-#   format: collada
-#   name: elvis
-#   position: {x: 0.0, y: 0.0, z: 0.0}
-#   rotation: {x: 0, y: 0, z: 0.0}
-#   scale: 50.0
+skinned_models:
+- file: elvis.dae
+  format: collada
+  name: elvis
+  position: {x: 100.0, y: 0.0, z: 0.0}
+  rotation: {x: 0, y: 0, z: 0.0}
+  scale: 30.0
 # - file: bob.dae
 #   format: collada
 #   name: bob
@@ -13,18 +13,19 @@ name: start
 #   rotation: {x: 0, y: 0, z: 0}
 #   scale: 1.5
 static_models:
-# - file: elvis.dae
-#   format: collada
-#   name: elvis
-#   position: {x: -100.0, y: 0.0, z: 0.0}
-#   rotation: {x: 0, y: 0, z: 0.0}
-#   scale: 0.3
+- file: elvis.dae
+  format: collada
+  name: elvis
+  position: {x: -100.0, y: 0.0, z: 0.0}
+  rotation: {x: 0, y: 0, z: 0.0}
+  scale: 0.3
 # - file: bob.dae
 #   format: collada
 #   name: bob
 #   position: {x: 100.0, y: 0.0, z: 0.0}
 #   rotation: {x: -1.55, y: 0, z: 0.0}
 #   scale: 1.0
+
 - file: plane.dae
   format: collada
   name: plane
@@ -46,7 +47,6 @@ static_models:
   rotation: {x: 0.0, y: 1.5707963267948966, z: 0}
   scale: 500.0
 
-
 - file: base.dae
   format: collada
   name: base
@@ -54,12 +54,13 @@ static_models:
   rotation: {x: 0.0, y: 1.5707963267948966, z: 0}
   scale: 500.0
 
-# - file: sphere.dae
-#   format: collada
-#   name: sphere
-#   position: {x: 0.0, y: 0.0, z: 0.0}
-#   rotation: {x: 0, y: 0, z: 0}
-#   scale: 60.0
+- file: sphere.dae
+  format: collada
+  name: sphere
+  position: {x: -50.0, y: 20.0, z: 0.0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: 20.0
+
 # - file: tree.dae
 #   format: collada
 #   name: tree

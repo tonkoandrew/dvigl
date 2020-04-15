@@ -38,42 +38,52 @@ void InputMgr::process_input(float time_delta)
         cam->move_back(movement_speed * time_delta);
     }
 
-    if (keystates[SDL_SCANCODE_Z])
+    if (keystates[SDL_SCANCODE_A])
     {
         cam->move_left(movement_speed * time_delta);
     }
 
-    if (keystates[SDL_SCANCODE_C])
+    if (keystates[SDL_SCANCODE_D])
     {
         cam->move_right(movement_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_F])
     {
-        cam->move_down(movement_speed * time_delta);
+        cam->position.y -= movement_speed * time_delta;
     }
 
-    if (keystates[SDL_SCANCODE_E])
+    if (keystates[SDL_SCANCODE_R])
     {
-        cam->move_up(movement_speed * time_delta);
+        cam->position.y += movement_speed * time_delta;
     }
 
-    if (keystates[SDL_SCANCODE_A])
+    if (keystates[SDL_SCANCODE_LEFT])
     {
-        cam->yaw(rotation_speed * time_delta);
+        cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
     }
 
-    if (keystates[SDL_SCANCODE_D])
+    if (keystates[SDL_SCANCODE_RIGHT])
     {
-        cam->yaw(-rotation_speed * time_delta);
+        cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
+    }
+
+    if (keystates[SDL_SCANCODE_UP])
+    {
+        cam->rotate_around_vector(cam->left, rotation_speed * time_delta);
+    }
+    if (keystates[SDL_SCANCODE_DOWN])
+    {
+        cam->rotate_around_vector(cam->left, -rotation_speed * time_delta);
     }
 
     // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
+    Node* model = (Node*)ModelMgr::ptr()->get_model("sphere");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("body");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("base");
-    Node* model = (Node*)ModelMgr::ptr()->get_model("head");
+    // Node* model = (Node*)ModelMgr::ptr()->get_model("head");
 
     if (keystates[SDL_SCANCODE_T])
     {
@@ -85,23 +95,23 @@ void InputMgr::process_input(float time_delta)
         model->position.z -= movement_speed * time_delta;
         // model->move_down(movement_speed * time_delta);
     }
-    if (keystates[SDL_SCANCODE_LEFT])
-    {
-        model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
-        // model->move_left(movement_speed * time_delta);
-    }
-    if (keystates[SDL_SCANCODE_RIGHT])
-    {
-        model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-    }
-    if (keystates[SDL_SCANCODE_UP])
-    {
-        model->rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), rotation_speed * time_delta);
-    }
-    if (keystates[SDL_SCANCODE_DOWN])
-    {
-        model->rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), -rotation_speed * time_delta);
-    }
+    // if (keystates[SDL_SCANCODE_LEFT])
+    // {
+    //     model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
+    //     // model->move_left(movement_speed * time_delta);
+    // }
+    // if (keystates[SDL_SCANCODE_RIGHT])
+    // {
+    //     model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+    // }
+    // if (keystates[SDL_SCANCODE_UP])
+    // {
+    //     model->rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), rotation_speed * time_delta);
+    // }
+    // if (keystates[SDL_SCANCODE_DOWN])
+    // {
+    //     model->rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), -rotation_speed * time_delta);
+    // }
     if (keystates[SDL_SCANCODE_Y])
     {
         model->position.y += movement_speed * time_delta;
@@ -146,7 +156,7 @@ void InputMgr::process_input(float time_delta)
         RenderMgr::ptr()->visualize_metallic = 0;
     }
 
-    if (keystates[SDL_SCANCODE_R])
+    if (keystates[SDL_SCANCODE_I])
     {
         RenderMgr::ptr()->visualize_roughness = 1;
     }
@@ -172,6 +182,44 @@ void InputMgr::process_input(float time_delta)
     {
         RenderMgr::ptr()->visualize_world_position = 0;
     }
+
+
+    if (keystates[SDL_SCANCODE_V])
+    {
+        RenderMgr::ptr()->cutOff += 0.0001 * time_delta;
+        if (RenderMgr::ptr()->cutOff > 1) 
+            RenderMgr::ptr()->cutOff = 1;
+        if(RenderMgr::ptr()->outerCutOff > RenderMgr::ptr()->cutOff)
+            RenderMgr::ptr()->outerCutOff  -= 0.0001 * time_delta;
+        LOG("cutOff = %f   outerCutOff =  %f\n", RenderMgr::ptr()->cutOff, RenderMgr::ptr()->outerCutOff);
+    }
+    if (keystates[SDL_SCANCODE_X])
+    {
+        RenderMgr::ptr()->cutOff -= 0.0001 * time_delta;
+        if (RenderMgr::ptr()->cutOff < 0)
+            RenderMgr::ptr()->cutOff = 0;
+        if(RenderMgr::ptr()->outerCutOff > RenderMgr::ptr()->cutOff)
+            RenderMgr::ptr()->outerCutOff  -= 0.0001 * time_delta;
+        LOG("cutOff = %f   outerCutOff =  %f\n", RenderMgr::ptr()->cutOff, RenderMgr::ptr()->outerCutOff);
+    }
+
+    if (keystates[SDL_SCANCODE_L])
+    {
+        RenderMgr::ptr()->outerCutOff += 0.0001 * time_delta;
+        if(RenderMgr::ptr()->outerCutOff > RenderMgr::ptr()->cutOff)
+            RenderMgr::ptr()->outerCutOff -= 0.0001 * time_delta;
+        LOG("cutOff = %f   outerCutOff =  %f\n", RenderMgr::ptr()->cutOff, RenderMgr::ptr()->outerCutOff);
+    }
+    if (keystates[SDL_SCANCODE_K])
+    {
+        RenderMgr::ptr()->outerCutOff -= 0.0001 * time_delta;
+
+        if(RenderMgr::ptr()->outerCutOff < 0)
+            RenderMgr::ptr()->outerCutOff  = 0;
+        LOG("cutOff = %f   outerCutOff =  %f\n", RenderMgr::ptr()->cutOff, RenderMgr::ptr()->outerCutOff);
+    }
+
+    
 }
 
 void InputMgr::release() {}

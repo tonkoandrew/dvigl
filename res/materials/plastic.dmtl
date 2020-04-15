@@ -1,0 +1,9 @@
+shader: 'simple'
+albedo: 'plasticpattern1-albedo.png'
+normal: 'plasticpattern1-normal2b.png'
+metallic: 'plasticpattern1-metalness.png'
+roughness: 'plasticpattern1-roughness2.png'
+ao: 'ground_ao.jpg'
+uv_params:
+  offset_x: 0.5
+  offset_y: 0.5

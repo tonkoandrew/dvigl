@@ -351,9 +351,6 @@ void SkinnedMesh::draw()
 
     Shader* s = ShaderMgr::ptr()->get_shader("skinned_geometry");
     s->bind();
-    s->uniform1i("albedoMap", 0);
-    s->uniform1i("normalMap", 1);
-    // s->uniform1i("gNormalMap", 1);
     s->uniformMatrix4("gBones", &Transforms);
 
     glBindVertexArray(m_VAO);

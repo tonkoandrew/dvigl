@@ -225,13 +225,18 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     s = ShaderMgr::ptr()->get_shader("skinned_geometry");
     s->bind();
+    s->uniform1i("material.texture_albedo", 0);
+    s->uniform1i("material.texture_normal", 1);
+    s->uniform1i("material.texture_metallic", 2);
+    s->uniform1i("material.texture_roughness", 3);
+    s->uniform1i("material.texture_ao", 4);
 
     for (auto element : ModelMgr::ptr()->skinned_models)
     {
         SkinnedModelNode* m = (SkinnedModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
-        glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(view_m * model_m)));
+        glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
 
         s->uniformMatrix4("model", model_m);
         s->uniformMatrix4("mvp", mvp);
@@ -268,36 +273,29 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     // for ( int i=0; i < 1; i++){
     s->uniform3f("dirLights[0].direction", glm::normalize(glm::vec3(0.2f, -1.0f, 0.0f)));
     s->uniform3f("dirLights[0].lightColour", glm::vec3(1.0f));
-    s->uniform1f("dirLights[0].intensity", 1.0f);
+    s->uniform1f("dirLights[0].intensity", 1.5f);
     // }
 
     // send light relevant uniforms
     for (unsigned int i = 0; i < lightPositions.size(); i++)
     {
-        s->uniform3f("pointLights[" + std::to_string(i) + "].position", lightPositions[i]);
-        s->uniform1f("pointLights[" + std::to_string(i) + "].intensity", 800.0);
-        s->uniform3f("pointLights[" + std::to_string(i) + "].lightColour", lightColors[i]);
-        s->uniform1f("pointLights[" + std::to_string(i) + "].attenuationRadius", 200.0f);
+        s->uniform3f("spotLights[" + std::to_string(i) + "].position", lightPositions[i]);
+        s->uniform1f("spotLights[" + std::to_string(i) + "].intensity", 600.0);
+        s->uniform3f("spotLights[" + std::to_string(i) + "].lightColour", lightColors[i]);
+        s->uniform1f("spotLights[" + std::to_string(i) + "].attenuationRadius", 800.0f);
+        s->uniform1f("spotLights[" + std::to_string(i) + "].cutOff", cutOff);
+        s->uniform1f("spotLights[" + std::to_string(i) + "].outerCutOff", outerCutOff);
+        s->uniform3f("spotLights[" + std::to_string(i) + "].direction", glm::normalize(glm::vec3(0.0f, -1.0f, 0.0f)));
+ 
     }
     // for (unsigned int i = 0; i < lightPositions.size(); i++)
     // {
-    //     s->uniform3f("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
-    //     s->uniform3f("lights[" + std::to_string(i) + "].Color", lightColors[i]);
-
-    //     // update attenuation parameters
-    //     const float constant = 1.0;
-    //     const float linear = 0.7f;
-    //     const float quadratic = 1.8f;
-
-    //     s->uniform1f("lights[" + std::to_string(i) + "].Linear", linear);
-    //     s->uniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
-    //     // // then calculate radius of light volume/sphere
-    //     // const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].r, lightColors[i].g), lightColors[i].b);
-    //     // float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (coeff)*maxBrightness)))
-    //         // / (2.0f * quadratic);
-    //     // LOG("radius = %f\n", radius);
-    //     // s->uniform1f("lights[" + std::to_string(i) + "].Radius", radius);
+    //     s->uniform3f("pointLights[" + std::to_string(i) + "].position", lightPositions[i]);
+    //     s->uniform1f("pointLights[" + std::to_string(i) + "].intensity", 800.0);
+    //     s->uniform3f("pointLights[" + std::to_string(i) + "].lightColour", lightColors[i]);
+    //     s->uniform1f("pointLights[" + std::to_string(i) + "].attenuationRadius", 200.0f);
     // }
+
 
     glActiveTexture(GL_TEXTURE0);
     s->uniform1i("materialInfoTexture", 0);

@@ -7,6 +7,8 @@ layout(location = 2) in vec2 attr_texcoord;
 layout(location = 3) in vec3 attr_tangent;
 layout(location = 4) in vec3 attr_bitangent;
 
+
+
 out mat3 TBN;
 out vec2 v_texcoord;
 out vec3 v_pos;
@@ -35,6 +37,7 @@ void main()
 
 #defshader fragment
 #version 410 core
+
 layout(location = 0) out vec4 gb_Albedo;
 layout(location = 1) out vec3 gb_Normal;
 layout(location = 2) out vec4 gb_MaterialInfo;

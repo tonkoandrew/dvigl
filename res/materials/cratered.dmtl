@@ -1,0 +1,14 @@
+shader: 'skinned'
+
+
+albedo: 'cratered-rock-albedo.png'
+normal: 'cratered-rock-normal.png'
+metallic: 'cratered-rock-metalness.png'
+roughness: 'cratered-rock-roughness.png'
+ao: 'cratered-rock-ao.png'
+height: 'cratered-rock-height.png'
+
+
+uv_params:
+  offset_x: 0.5
+  offset_y: 0.5
