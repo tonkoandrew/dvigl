@@ -49,7 +49,7 @@ std::unordered_map<std::string, std::string> ShaderMgr::preProcessShaderBinary(s
 {
     std::unordered_map<std::string, std::string> shaderSources;
 
-    const char* shaderTypeToken = "#shader-type";
+    const char* shaderTypeToken = "#defshader";
     size_t shaderTypeTokenLength = strlen(shaderTypeToken);
     size_t pos = source.find(shaderTypeToken);
     while (pos != std::string::npos)

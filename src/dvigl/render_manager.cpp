@@ -268,7 +268,7 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     // for ( int i=0; i < 1; i++){
     s->uniform3f("dirLights[0].direction", glm::normalize(glm::vec3(0.2f, -1.0f, 0.0f)));
     s->uniform3f("dirLights[0].lightColour", glm::vec3(1.0f));
-    s->uniform1f("dirLights[0].intensity", 2.0f);
+    s->uniform1f("dirLights[0].intensity", 1.0f);
     // }
 
     // send light relevant uniforms

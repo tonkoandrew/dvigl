@@ -1,4 +1,4 @@
-#shader-type vertex
+#defshader vertex
 #version 410 core
 
 layout(location = 0) in vec3 attr_pos;
@@ -46,7 +46,7 @@ void main()
     gl_Position = mvpb * vec4(attr_pos, 1.0);
 }
 
-#shader-type fragment
+#defshader fragment
 #version 410 core
 
 #ifdef GL_ES

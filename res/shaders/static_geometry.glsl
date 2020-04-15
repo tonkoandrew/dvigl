@@ -1,6 +1,6 @@
-#shader-type vertex
-
+#defshader vertex
 #version 410 core
+
 layout(location = 0) in vec3 attr_pos;
 layout(location = 1) in vec3 attr_normal;
 layout(location = 2) in vec2 attr_texcoord;
@@ -10,7 +10,6 @@ layout(location = 4) in vec3 attr_bitangent;
 out mat3 TBN;
 out vec2 v_texcoord;
 out vec3 v_pos;
-out vec3 v_normal;
 
 uniform vec3 viewPos;
 
@@ -32,11 +31,9 @@ void main()
     gl_Position = projection * view * vec4(fragPos, 1.0);
 
     v_pos = (model * vec4(attr_pos, 1.0)).xyz;
-
-    v_normal = (model * vec4(attr_normal, 0.0)).xyz;
 }
 
-#shader-type fragment
+#defshader fragment
 #version 410 core
 layout(location = 0) out vec4 gb_Albedo;
 layout(location = 1) out vec3 gb_Normal;
@@ -55,7 +52,6 @@ struct Material
 in mat3 TBN;
 in vec2 v_texcoord;
 in vec3 v_pos;
-in vec3 v_normal;
 
 uniform Material material;
 
@@ -72,7 +68,6 @@ void main()
 
     gb_Albedo = albedo;
     gb_Normal = normalize(TBN * UnpackNormal(normal));
-    // gb_Normal = normalize(v_normal);
 
     gb_MaterialInfo = vec4(metallic, roughness, ao, 1.0);
 
@@ -80,4 +75,6 @@ void main()
 }
 
 // Unpacks the normal from the texture and returns the normal in tangent space
-vec3 UnpackNormal(vec3 textureNormal) { return normalize(textureNormal * 2.0 - 1.0); }
+vec3 UnpackNormal(vec3 textureNormal) {
+    return normalize(textureNormal * 2.0 - 1.0);
+}

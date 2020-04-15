@@ -1,4 +1,4 @@
-#shader-type vertex
+#defshader vertex
 #version 410 core
 
 layout(location = 0) in vec3 aPos;
@@ -12,7 +12,7 @@ void main()
     gl_Position = vec4(aPos, 1.0);
 }
 
-#shader-type fragment
+#defshader fragment
 #version 410 core
 out vec4 FragColor;
 
@@ -64,7 +64,7 @@ struct SpotLight
 };
 
 #define MAX_DIR_LIGHTS 10
-#define MAX_POINT_LIGHTS 10
+#define MAX_POINT_LIGHTS 20
 #define MAX_SPOT_LIGHTS 5
 const float PI = 3.14159265359;
 // IBL
@@ -86,7 +86,7 @@ uniform vec3 viewPos;
 // uniform mat4 projectionInverse;
 uniform mat4 lightSpaceViewProjectionMatrix;
 
-ivec4 numDirPointSpotLights = ivec4(1, 10, 0, 0);
+ivec4 numDirPointSpotLights = ivec4(1, 20, 0, 0);
 
 // Approximates the amount of microfacets that are properly aligned with the halfway vector, thus determines the
 // strength and area for specular light
@@ -358,7 +358,13 @@ void main()
         ambient = (indirectDiffuse + indirectSpecular) * ao;
     }
 
-    FragColor = vec4(ambient + directLightIrradiance, 1.0);
+    vec3 final_color;
+    final_color.r = ambient.r + directLightIrradiance.r > 1 ? 1 : ambient.r + directLightIrradiance.r;
+    final_color.g = ambient.g + directLightIrradiance.g > 1 ? 1 : ambient.g + directLightIrradiance.g;
+    final_color.b = ambient.b + directLightIrradiance.b > 1 ? 1 : ambient.b + directLightIrradiance.b;
+
+    FragColor = vec4(final_color, 1.0);
+    // FragColor = vec4(ambient + directLightIrradiance, 1.0);
     // =============+++++++++++++++++============
 
     if (visualize_albedo)

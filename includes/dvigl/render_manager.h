@@ -36,7 +36,7 @@ private:
 
     GLuint rboDepth;
 
-    const GLuint NR_LIGHTS = 10;
+    const GLuint NR_LIGHTS = 20;
     std::vector<glm::vec3> lightPositions;
     std::vector<glm::vec3> lightColors;
     float z_near;
