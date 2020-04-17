@@ -10,6 +10,7 @@ public:
     void uniformMatrix4(std::string name, std::vector<glm::mat4>* values);
     void uniformMatrix3(std::string name, glm::mat3 value);
     void uniform1i(std::string name, int value);
+    void uniform3i(std::string name, glm::ivec3 value);
     void uniform1f(std::string name, float value);
     void uniform1b(std::string name, bool value);
     void uniform3f(std::string name, glm::vec3 value);

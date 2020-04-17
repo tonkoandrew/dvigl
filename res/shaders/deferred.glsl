@@ -64,8 +64,8 @@ struct SpotLight
 };
 
 #define MAX_DIR_LIGHTS 10
-#define MAX_POINT_LIGHTS 20
-#define MAX_SPOT_LIGHTS 20
+#define MAX_POINT_LIGHTS 10
+#define MAX_SPOT_LIGHTS 10
 const float PI = 3.14159265359;
 // IBL
 uniform int reflectionProbeMipCount;
@@ -86,7 +86,7 @@ uniform vec3 viewPos;
 // uniform mat4 projectionInverse;
 uniform mat4 lightSpaceViewProjectionMatrix;
 
-ivec4 numDirPointSpotLights = ivec4(1, 0, 20, 0);
+uniform ivec3 numDirPointSpotLights;
 
 // Approximates the amount of microfacets that are properly aligned with the halfway vector, thus determines the
 // strength and area for specular light
@@ -306,13 +306,16 @@ void main()
 
     vec3 FragPos = texture(worldPosTexture, TexCoords).xyz;
     // Sample textures
+    vec3 normal = texture(normalTexture, TexCoords).rgb;
+    if (length(normal) < 0.5)
+        discard;
+    normal = normalize(normal);
+
     vec3 albedo = texture(albedoTexture, TexCoords).rgb;
     float albedoAlpha = texture(albedoTexture, TexCoords).w;
-    vec3 normal = texture(normalTexture, TexCoords).rgb;
     float metallic = texture(materialInfoTexture, TexCoords).r;
     float unclampedRoughness = texture(materialInfoTexture, TexCoords).g; // Used for indirect specular (reflections)
-    float roughness = max(unclampedRoughness,
-        0.4); // Used for calculations since specular highlights will be too fine, and will cause flicker
+    float roughness = max(unclampedRoughness, 0.4); // Used for calculations since specular highlights will be too fine, and will cause flicker
     float materialAO = texture(materialInfoTexture, TexCoords).b;
     float sceneAO = texture(ssaoTexture, TexCoords).r;
     float ao = min(materialAO, sceneAO);
@@ -331,12 +334,15 @@ void main()
     vec3 directLightIrradiance = vec3(0.0);
     directLightIrradiance += CalculateDirectionalLightRadiance(
         albedo, normal, metallic, roughness, fragPos, fragToView, baseReflectivity);
+    directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
+
     directLightIrradiance
         += CalculatePointLightRadiance(albedo, normal, metallic, roughness, fragPos, fragToView, baseReflectivity);
+    directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
+
     directLightIrradiance
         += CalculateSpotLightRadiance(albedo, normal, metallic, roughness, fragPos, fragToView, baseReflectivity);
-
-    directLightIrradiance = clamp(directLightIrradiance, 0.0, 0.8);
+    directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
 
     // Calcualte ambient IBL for both diffuse and specular
     vec3 ambient = vec3(0.05) * albedo * ao;
@@ -357,8 +363,8 @@ void main()
     }
 
     FragColor = vec4(ambient + directLightIrradiance, 1.0);
-    // =============+++++++++++++++++============
 
+    // =============+++++++++++++++++============
     if (visualize_albedo)
     {
         FragColor = vec4(albedo, 1.0);

@@ -15,9 +15,10 @@ public:
     int visualize_roughness = 0;
     int visualize_ao = 0;
     int visualize_world_position = 0;
-    float cutOff = 0.1f;
-    float outerCutOff = 0.0f;
 
+    float z_near;
+    float z_far;
+    float fov;
 private:
     void geometry_pass(float time_delta, float aspect);
     void deferred_pass(float time_delta, float aspect);
@@ -38,10 +39,4 @@ private:
 
     GLuint rboDepth;
 
-    const GLuint NR_LIGHTS = 20;
-    std::vector<glm::vec3> lightPositions;
-    std::vector<glm::vec3> lightColors;
-    float z_near;
-    float z_far;
-    float fov;
 };

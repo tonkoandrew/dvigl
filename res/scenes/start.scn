@@ -1,4 +1,64 @@
 name: start
+dir_lights:
+- name: dirlight1
+  rotation: {x: 0.0, y: 0.0, z: 0.0}
+  color: {r: 0.9, g: 0.8, b: 0.8}
+  intensity: 0.5
+- name: dirlight2
+  rotation: {x: 0.8, y: 0.0, z: 0.0}
+  color: {r: 0.9, g: 0.8, b: 0.8}
+  intensity: 0.5
+- name: dirlight3
+  rotation: {x: 0.8, y: 0.8, z: 0.0}
+  color: {r: 0.9, g: 0.8, b: 0.8}
+  intensity: 0.5
+
+
+point_lights:
+- name: pointlight1
+  position: {x: -80.0, y: 20.0, z: 10.0}
+  color: {r: 1.0, g: 1.0, b: 1.0}
+  intensity: 500.0
+  attenuationRadius: 100.0
+- name: pointlight2
+  position: {x: -80.0, y: 20.0, z: 50.0}
+  color: {r: 1.0, g: 1.0, b: 1.0}
+  intensity: 500.0
+  attenuationRadius: 100.0
+- name: pointlight3
+  position: {x: -80.0, y: 20.0, z: -50.0}
+  color: {r: 1.0, g: 1.0, b: 1.0}
+  intensity: 500.0
+  attenuationRadius: 100.0
+
+
+spot_lights:
+- name: spotlight1
+  position: {x: 70.0, y: 20.0, z: 50.0}
+  rotation: {x: 0.5, y: 0.0, z: 0.0}
+  color: {r: 1.0, g: 0.0, b: 0.0}
+  intensity: 1500.0
+  attenuationRadius: 300.0
+  cutOff: 0.7
+  outerCutOff: 0.6
+- name: spotlight2
+  position: {x: 70.0, y: 20.0, z: 0.0}
+  rotation: {x: 0.5, y: 0.0, z: 0.0}
+  color: {r: 0.0, g: 1.0, b: 0.0}
+  intensity: 1500.0
+  attenuationRadius: 300.0
+  cutOff: 0.8
+  outerCutOff: 0.75
+- name: spotlight3
+  position: {x: 70.0, y: 20.0, z: -50.0}
+  rotation: {x: 0.5, y: 0.0, z: 0.0}
+  color: {r: 0.0, g: 0.0, b: 1.0}
+  intensity: 1500.0
+  attenuationRadius: 300.0
+  cutOff: 0.7
+  outerCutOff: 0.6
+
+
 skinned_models:
 - file: elvis.dae
   format: collada
@@ -13,6 +73,12 @@ skinned_models:
 #   rotation: {x: 0, y: 0, z: 0}
 #   scale: 1.5
 static_models:
+# - file: terrain.dae
+#   format: collada
+#   name: terrain
+#   position: {x: 0.0, y: 0.0, z: 0.0}
+#   rotation: {x: -1.5707963267948966, y: 0, z: 0.0}
+#   scale: 100.0
 - file: elvis.dae
   format: collada
   name: elvis

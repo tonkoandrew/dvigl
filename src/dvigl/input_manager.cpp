@@ -10,6 +10,10 @@
 
 #include <dvigl/render_manager.h>
 
+#include <dvigl/dir_light_node.h>
+#include <dvigl/point_light_node.h>
+#include <dvigl/spot_light_node.h>
+
 InputMgr gInputMgr;
 
 bool InputMgr::init() { return true; }
@@ -30,12 +34,12 @@ void InputMgr::process_input(float time_delta)
 
     if (keystates[SDL_SCANCODE_W])
     {
-        cam->move_forward(movement_speed * time_delta);
+        cam->position += glm::normalize(glm::vec3(cam->forward.x, 0, cam->forward.z)) * movement_speed * time_delta;
     }
 
     if (keystates[SDL_SCANCODE_S])
     {
-        cam->move_back(movement_speed * time_delta);
+        cam->position -= glm::normalize(glm::vec3(cam->forward.x, 0, cam->forward.z)) * movement_speed * time_delta;
     }
 
     if (keystates[SDL_SCANCODE_A])
@@ -68,50 +72,34 @@ void InputMgr::process_input(float time_delta)
         cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
     }
 
-    if (keystates[SDL_SCANCODE_UP])
+    if (keystates[SDL_SCANCODE_DOWN])
     {
         cam->rotate_around_vector(cam->left, rotation_speed * time_delta);
     }
-    if (keystates[SDL_SCANCODE_DOWN])
+    if (keystates[SDL_SCANCODE_UP])
     {
         cam->rotate_around_vector(cam->left, -rotation_speed * time_delta);
     }
 
     // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
-    Node* model = (Node*)ModelMgr::ptr()->get_model("sphere");
+    // Node* model = (Node*)ModelMgr::ptr()->get_model("sphere");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("body");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("base");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("head");
 
+
+    SpotLightNode* model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
+
     if (keystates[SDL_SCANCODE_T])
     {
         model->position.z += movement_speed * time_delta;
-        // model->move_up(movement_speed * time_delta);
     }
     if (keystates[SDL_SCANCODE_G])
     {
         model->position.z -= movement_speed * time_delta;
-        // model->move_down(movement_speed * time_delta);
     }
-    // if (keystates[SDL_SCANCODE_LEFT])
-    // {
-    //     model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
-    //     // model->move_left(movement_speed * time_delta);
-    // }
-    // if (keystates[SDL_SCANCODE_RIGHT])
-    // {
-    //     model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-    // }
-    // if (keystates[SDL_SCANCODE_UP])
-    // {
-    //     model->rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), rotation_speed * time_delta);
-    // }
-    // if (keystates[SDL_SCANCODE_DOWN])
-    // {
-    //     model->rotate_around_vector(glm::vec3(1.0, 0.0, 0.0), -rotation_speed * time_delta);
-    // }
     if (keystates[SDL_SCANCODE_Y])
     {
         model->position.y += movement_speed * time_delta;
@@ -183,43 +171,52 @@ void InputMgr::process_input(float time_delta)
         RenderMgr::ptr()->visualize_world_position = 0;
     }
 
-
     if (keystates[SDL_SCANCODE_V])
     {
-        RenderMgr::ptr()->cutOff += 0.0001 * time_delta;
-        if (RenderMgr::ptr()->cutOff > 1) 
-            RenderMgr::ptr()->cutOff = 1;
-        if(RenderMgr::ptr()->outerCutOff > RenderMgr::ptr()->cutOff)
-            RenderMgr::ptr()->outerCutOff  -= 0.0001 * time_delta;
-        LOG("cutOff = %f   outerCutOff =  %f\n", RenderMgr::ptr()->cutOff, RenderMgr::ptr()->outerCutOff);
+        model->pitch(rotation_speed * time_delta);
     }
     if (keystates[SDL_SCANCODE_X])
     {
-        RenderMgr::ptr()->cutOff -= 0.0001 * time_delta;
-        if (RenderMgr::ptr()->cutOff < 0)
-            RenderMgr::ptr()->cutOff = 0;
-        if(RenderMgr::ptr()->outerCutOff > RenderMgr::ptr()->cutOff)
-            RenderMgr::ptr()->outerCutOff  -= 0.0001 * time_delta;
-        LOG("cutOff = %f   outerCutOff =  %f\n", RenderMgr::ptr()->cutOff, RenderMgr::ptr()->outerCutOff);
+        model->pitch(-rotation_speed * time_delta);
     }
-
     if (keystates[SDL_SCANCODE_L])
     {
-        RenderMgr::ptr()->outerCutOff += 0.0001 * time_delta;
-        if(RenderMgr::ptr()->outerCutOff > RenderMgr::ptr()->cutOff)
-            RenderMgr::ptr()->outerCutOff -= 0.0001 * time_delta;
-        LOG("cutOff = %f   outerCutOff =  %f\n", RenderMgr::ptr()->cutOff, RenderMgr::ptr()->outerCutOff);
+        model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
     }
+    model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+
     if (keystates[SDL_SCANCODE_K])
     {
-        RenderMgr::ptr()->outerCutOff -= 0.0001 * time_delta;
-
-        if(RenderMgr::ptr()->outerCutOff < 0)
-            RenderMgr::ptr()->outerCutOff  = 0;
-        LOG("cutOff = %f   outerCutOff =  %f\n", RenderMgr::ptr()->cutOff, RenderMgr::ptr()->outerCutOff);
+        model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
     }
 
-    
+
+    if (keystates[SDL_SCANCODE_Z])
+    {
+        model->intensity -= 1.0 * time_delta;
+    }
+    if (keystates[SDL_SCANCODE_C])
+    {
+        model->intensity += 1.0 * time_delta;
+    }
+
+
+    if (keystates[SDL_SCANCODE_1])
+    {
+        model->attenuationRadius -= 0.1 * time_delta;
+    }
+    if (keystates[SDL_SCANCODE_2])
+    {
+        model->attenuationRadius += 0.1 * time_delta;
+    }
+    if (keystates[SDL_SCANCODE_9])
+    {
+        RenderMgr::ptr()->fov += 0.001 * time_delta;
+    }
+    if (keystates[SDL_SCANCODE_0])
+    {
+        RenderMgr::ptr()->fov -= 0.001 * time_delta;
+    }
 }
 
 void InputMgr::release() {}

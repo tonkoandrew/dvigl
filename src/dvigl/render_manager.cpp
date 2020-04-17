@@ -15,6 +15,10 @@
 #include <dvigl/scene.h>
 #include <dvigl/scene_manager.h>
 
+#include <dvigl/dir_light_node.h>
+#include <dvigl/point_light_node.h>
+#include <dvigl/spot_light_node.h>
+
 RenderMgr gRenderMgr;
 
 bool RenderMgr::init()
@@ -118,7 +122,8 @@ bool RenderMgr::init()
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0, 1.0);
 
-    glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
+    // glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
 // #ifdef __PLATFORM_ANDROID__
@@ -158,26 +163,6 @@ bool RenderMgr::init()
     }
 
     resize_buffers(w, h, true);
-
-    float a = 300.0f;
-    float b = a / 2.0f;
-    for (unsigned int i = 0; i < NR_LIGHTS; i++)
-    {
-        // calculate slightly random offsets
-        float xPos = ((rand() % 100) / 100.0) * a - b;
-
-        // float yPos = ((rand() % 100) / 100.0) * a - b;
-        // yPos = (yPos / 2.0f) + 20.0f;
-        float yPos = ((rand() % 100) / 100.0) * a / 3;
-        float zPos = ((rand() % 100) / 100.0) * a - b;
-
-        lightPositions.push_back(glm::vec3(xPos, yPos, zPos));
-        // also calculate random color
-        float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
-        float gColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
-        float bColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
-        lightColors.push_back(glm::vec3(rColor, gColor, bColor));
-    }
 
     return true;
 }
@@ -270,32 +255,49 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     s->uniform1i("visualize_ao", visualize_ao);
     s->uniform1i("visualize_world_position", visualize_world_position);
 
-    // for ( int i=0; i < 1; i++){
-    s->uniform3f("dirLights[0].direction", glm::normalize(glm::vec3(0.2f, -1.0f, 0.0f)));
-    s->uniform3f("dirLights[0].lightColour", glm::vec3(1.0f));
-    s->uniform1f("dirLights[0].intensity", 1.5f);
-    // }
+    s->uniform3i("numDirPointSpotLights",
+        glm::ivec3(
+            (int) SceneMgr::ptr()->get_current_scene()->dir_lights.size(),
+            (int) SceneMgr::ptr()->get_current_scene()->point_lights.size(),
+            (int) SceneMgr::ptr()->get_current_scene()->spot_lights.size()
+        )
+    );
 
     // send light relevant uniforms
-    for (unsigned int i = 0; i < lightPositions.size(); i++)
+    int i = 0;
+    for (auto element : SceneMgr::ptr()->get_current_scene()->dir_lights)
     {
-        s->uniform3f("spotLights[" + std::to_string(i) + "].position", lightPositions[i]);
-        s->uniform1f("spotLights[" + std::to_string(i) + "].intensity", 600.0);
-        s->uniform3f("spotLights[" + std::to_string(i) + "].lightColour", lightColors[i]);
-        s->uniform1f("spotLights[" + std::to_string(i) + "].attenuationRadius", 800.0f);
-        s->uniform1f("spotLights[" + std::to_string(i) + "].cutOff", cutOff);
-        s->uniform1f("spotLights[" + std::to_string(i) + "].outerCutOff", outerCutOff);
-        s->uniform3f("spotLights[" + std::to_string(i) + "].direction", glm::normalize(glm::vec3(0.0f, -1.0f, 0.0f)));
- 
+        DirLightNode* light = (DirLightNode*)element.second;
+        s->uniform3f("dirLights[" + std::to_string(i) + "].direction", light->get_direction());
+        s->uniform3f("dirLights[" + std::to_string(i) + "].lightColour", light->color);
+        s->uniform1f("dirLights[" + std::to_string(i) + "].intensity", light->intensity);
+        i += 1;
     }
-    // for (unsigned int i = 0; i < lightPositions.size(); i++)
-    // {
-    //     s->uniform3f("pointLights[" + std::to_string(i) + "].position", lightPositions[i]);
-    //     s->uniform1f("pointLights[" + std::to_string(i) + "].intensity", 800.0);
-    //     s->uniform3f("pointLights[" + std::to_string(i) + "].lightColour", lightColors[i]);
-    //     s->uniform1f("pointLights[" + std::to_string(i) + "].attenuationRadius", 200.0f);
-    // }
 
+    i = 0;
+    for (auto element : SceneMgr::ptr()->get_current_scene()->point_lights)
+    {
+        PointLightNode* light = (PointLightNode*)element.second;
+        s->uniform3f("pointLights[" + std::to_string(i) + "].position", light->position);
+        s->uniform1f("pointLights[" + std::to_string(i) + "].intensity", light->intensity);
+        s->uniform3f("pointLights[" + std::to_string(i) + "].lightColour", light->color);
+        s->uniform1f("pointLights[" + std::to_string(i) + "].attenuationRadius", light->attenuationRadius);
+        i += 1;
+    }
+
+    i = 0;
+    for (auto element : SceneMgr::ptr()->get_current_scene()->spot_lights)
+    {
+        SpotLightNode* light = (SpotLightNode*)element.second;
+        s->uniform3f("spotLights[" + std::to_string(i) + "].position", light->position);
+        s->uniform3f("spotLights[" + std::to_string(i) + "].direction", light->get_direction());
+        s->uniform1f("spotLights[" + std::to_string(i) + "].intensity", light->intensity);
+        s->uniform3f("spotLights[" + std::to_string(i) + "].lightColour", light->color);
+        s->uniform1f("spotLights[" + std::to_string(i) + "].attenuationRadius", light->attenuationRadius);
+        s->uniform1f("spotLights[" + std::to_string(i) + "].cutOff", light->cutOff);
+        s->uniform1f("spotLights[" + std::to_string(i) + "].outerCutOff", light->outerCutOff);
+        i += 1;
+    }
 
     glActiveTexture(GL_TEXTURE0);
     s->uniform1i("materialInfoTexture", 0);
@@ -335,15 +337,23 @@ void RenderMgr::forward_pass(float aspect)
     s = ShaderMgr::ptr()->get_shader("forward");
     s->bind();
 
-    for (unsigned int i = 0; i < lightPositions.size(); i++)
+    for (auto element : SceneMgr::ptr()->get_current_scene()->point_lights)
     {
-        model_m = glm::mat4(1.0f);
-        model_m = glm::translate(model_m, lightPositions[i]);
-        model_m = glm::scale(model_m, glm::vec3(0.5f));
-
+        PointLightNode* light = (PointLightNode*)element.second;
+        model_m = light->get_model_matrix();
         mvp = view_proj_m * model_m;
         s->uniformMatrix4("mvp", mvp);
-        s->uniform3f("lightColor", lightColors[i]);
+        s->uniform3f("lightColor", light->color);
+        render_cube();
+    }
+
+    for (auto element : SceneMgr::ptr()->get_current_scene()->spot_lights)
+    {
+        SpotLightNode* light = (SpotLightNode*)element.second;
+        model_m = light->get_model_matrix();
+        mvp = view_proj_m * model_m;
+        s->uniformMatrix4("mvp", mvp);
+        s->uniform3f("lightColor", light->color);
         render_cube();
     }
 }

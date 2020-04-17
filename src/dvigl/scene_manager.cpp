@@ -17,6 +17,10 @@
 
 #include <dvigl/material_manager.h>
 
+#include <dvigl/dir_light_node.h>
+#include <dvigl/point_light_node.h>
+#include <dvigl/spot_light_node.h>
+
 SceneMgr gSceneMgr;
 
 bool SceneMgr::init()
@@ -68,6 +72,166 @@ bool SceneMgr::load_scene(std::string file_name)
     // ModelNode* plane = ModelMgr::ptr()->get_model("plane");
     // plane->set_rotation(glm::vec3(3.14 / 2, 0.0, 0.0));
     // plane->set_position(glm::vec3(-100.0f, 0.0, -50.0));
+
+    LOG("Loading light sources... ");
+
+    if (node["dir_lights"])
+    {
+        if (node["dir_lights"].Type() != YAML::NodeType::Sequence)
+        {
+            LOG("dir_lights should be list of objects\n");
+            return false;
+        }
+
+        for (std::size_t i = 0; i < node["dir_lights"].size(); i++)
+        {
+            YAML::Node light_node = node["dir_lights"][i];
+            glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+            glm::vec3 color = glm::vec3(1.0f);
+            float intensity = 1.0f;
+
+            std::string name = light_node["name"].as<std::string>();
+
+            if (light_node["rotation"])
+            {
+                float x = light_node["rotation"]["x"].as<float>();
+                float y = light_node["rotation"]["y"].as<float>();
+                float z = light_node["rotation"]["z"].as<float>();
+                rotation = glm::vec3(x, y, z);
+            }
+
+            if (light_node["color"])
+            {
+                float r = light_node["color"]["r"].as<float>();
+                float g = light_node["color"]["g"].as<float>();
+                float b = light_node["color"]["b"].as<float>();
+                color = glm::vec3(r, g, b);
+            }
+            if (light_node["intensity"])
+            {
+                intensity = light_node["intensity"].as<float>();
+            }
+
+            current_scene->dir_lights[name] = new DirLightNode(rotation, color, intensity);
+        }
+    }
+
+    if (node["point_lights"])
+    {
+        if (node["point_lights"].Type() != YAML::NodeType::Sequence)
+        {
+            LOG("point_lights should be list of objects\n");
+            return false;
+        }
+
+        for (std::size_t i = 0; i < node["point_lights"].size(); i++)
+        {
+            YAML::Node light_node = node["point_lights"][i];
+            glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+            glm::vec3 color = glm::vec3(1.0f);
+            float intensity = 1.0f;
+            float attenuationRadius = 100.0f;
+
+            std::string name = light_node["name"].as<std::string>();
+
+            if (light_node["position"])
+            {
+                float x = light_node["position"]["x"].as<float>();
+                float y = light_node["position"]["y"].as<float>();
+                float z = light_node["position"]["z"].as<float>();
+                position = glm::vec3(x, y, z);
+            }
+
+            if (light_node["color"])
+            {
+                float r = light_node["color"]["r"].as<float>();
+                float g = light_node["color"]["g"].as<float>();
+                float b = light_node["color"]["b"].as<float>();
+                color = glm::vec3(r, g, b);
+            }
+            if (light_node["intensity"])
+            {
+                intensity = light_node["intensity"].as<float>();
+            }
+            if (light_node["attenuationRadius"])
+            {
+                attenuationRadius = light_node["attenuationRadius"].as<float>();
+            }
+
+            current_scene->point_lights[name] = new PointLightNode(position, color, intensity, attenuationRadius);
+        }
+    }
+
+    if (node["spot_lights"])
+    {
+        if (node["spot_lights"].Type() != YAML::NodeType::Sequence)
+        {
+            LOG("spot_lights should be list of objects\n");
+            return false;
+        }
+
+        for (std::size_t i = 0; i < node["spot_lights"].size(); i++)
+        {
+            YAML::Node light_node = node["spot_lights"][i];
+            glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+            glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+            glm::vec3 color = glm::vec3(1.0f);
+            float intensity = 1.0f;
+            float attenuationRadius = 100.0f;
+            float cutOff = 0.1f;
+            float outerCutOff = 0.0f;
+
+            std::string name = light_node["name"].as<std::string>();
+
+            if (light_node["position"])
+            {
+                float x = light_node["position"]["x"].as<float>();
+                float y = light_node["position"]["y"].as<float>();
+                float z = light_node["position"]["z"].as<float>();
+                position = glm::vec3(x, y, z);
+            }
+
+            if (light_node["rotation"])
+            {
+                float x = light_node["rotation"]["x"].as<float>();
+                float y = light_node["rotation"]["y"].as<float>();
+                float z = light_node["rotation"]["z"].as<float>();
+                rotation = glm::vec3(x, y, z);
+            }
+
+            if (light_node["color"])
+            {
+                float r = light_node["color"]["r"].as<float>();
+                float g = light_node["color"]["g"].as<float>();
+                float b = light_node["color"]["b"].as<float>();
+                color = glm::vec3(r, g, b);
+            }
+            if (light_node["intensity"])
+            {
+                intensity = light_node["intensity"].as<float>();
+            }
+            if (light_node["attenuationRadius"])
+            {
+                attenuationRadius = light_node["attenuationRadius"].as<float>();
+            }
+            if (light_node["cutOff"])
+            {
+                cutOff = light_node["cutOff"].as<float>();
+            }
+
+            if (light_node["outerCutOff"])
+            {
+                outerCutOff = light_node["outerCutOff"].as<float>();
+            }
+
+            current_scene->spot_lights[name]
+                = new SpotLightNode(position, rotation, color, intensity, attenuationRadius, cutOff, outerCutOff);
+        }
+    }
+    LOG("done\n");
+    LOG("%d dir lights\n", (int)current_scene->dir_lights.size());
+    LOG("%d point lights\n", (int)current_scene->point_lights.size());
+    LOG("%d spot lights\n", (int)current_scene->spot_lights.size());
 
     if (node["static_models"])
     {
@@ -142,9 +306,8 @@ bool SceneMgr::load_scene(std::string file_name)
         }
     }
 
-    current_scene->get_current_camera()->move_back(200.0f);
-    current_scene->get_current_camera()->move_up(80.0f);
-
+    current_scene->get_current_camera()->set_position(glm::vec3(0.0f, 40.0f, 200.0f));
+    current_scene->get_current_camera()->set_rotation(glm::vec3(1.55, 0, 0));
     AudioMgr::ptr()->set_volume(MIX_MAX_VOLUME / 2);
     // if (!AudioMgr::ptr()->load_audio("elvis", "../res/audio/elvis.ogg"))
     // {
