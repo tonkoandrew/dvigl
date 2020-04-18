@@ -4,7 +4,7 @@
 class Shader
 {
 public:
-    bool compile_and_link(std::string vs_content, std::string fs_content);
+    bool compile_and_link(std::unordered_map<std::string, std::string> source);
     void bind();
     void uniformMatrix4(std::string name, glm::mat4 value);
     void uniformMatrix4(std::string name, std::vector<glm::mat4>* values);

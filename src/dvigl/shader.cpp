@@ -1,19 +1,98 @@
 #include <dvigl/shader.h>
 
-bool Shader::compile_and_link(std::string vs_content, std::string fs_content)
+bool contains(std::unordered_map<std::string, std::string> dict, std::string key)
 {
-    GLuint vs_ID;
-    GLuint fs_ID;
-    vs_ID = compile(GL_VERTEX_SHADER, vs_content);
-    fs_ID = compile(GL_FRAGMENT_SHADER, fs_content);
-    if ((!vs_ID) || (!fs_ID))
+    return dict.find(key) != dict.end();
+}
+
+bool Shader::compile_and_link(std::unordered_map<std::string, std::string> source)
+// (std::string vs_content, std::string fs_content)
+{
+    GLuint vs_ID = 0;
+    GLuint fs_ID = 0;
+    GLuint cs_ID = 0;
+    GLuint tcs_ID = 0;
+    GLuint tes_ID = 0;
+    GLuint gs_ID = 0;
+
+    if (contains(source, "vertex"))
+    {
+        std::string content = source["vertex"];
+        vs_ID = compile(GL_VERTEX_SHADER, content);
+        if(!vs_ID)
+        {
+            return false;
+        }
+    }
+
+    if (contains(source, "fragment"))
+    {
+        std::string content = source["fragment"];
+        fs_ID = compile(GL_FRAGMENT_SHADER, content);
+        if(!fs_ID)
+        {
+            return false;
+        }
+    }
+
+    if (contains(source, "compute"))
+    {
+        std::string content = source["compute"];
+        cs_ID = compile(GL_COMPUTE_SHADER, content);
+        if(!cs_ID)
+        {
+            return false;
+        }
+    }
+    if (contains(source, "tess_control"))
+    {
+        std::string content = source["tess_control"];
+        tcs_ID = compile(GL_TESS_CONTROL_SHADER, content);
+        if(!tcs_ID)
+        {
+            return false;
+        }
+    }
+    if (contains(source, "tess_eval"))
+    {
+        std::string content = source["tess_eval"];
+        tes_ID = compile(GL_TESS_EVALUATION_SHADER, content);
+        if(!tes_ID)
+        {
+            return false;
+        }
+    }
+    if (contains(source, "geometry"))
+    {
+        std::string content = source["geometry"];
+        gs_ID = compile(GL_GEOMETRY_SHADER, content);
+        if(!gs_ID)
+        {
+            return false;
+        }
+    }
+
+    // LOG("VS content: \"%s\"\n", vs_content.c_str());
+    // LOG("FS content: \"%s\"\n", fs_content.c_str());
+
+    if ((vs_ID + fs_ID + cs_ID + tcs_ID + tes_ID + gs_ID) == 0)
     {
         return false;
     }
 
     program_object = glCreateProgram();
-    glAttachShader(program_object, vs_ID);
-    glAttachShader(program_object, fs_ID);
+    if(vs_ID)
+        glAttachShader(program_object, vs_ID);
+    if(fs_ID)
+        glAttachShader(program_object, fs_ID);
+    if(cs_ID)
+        glAttachShader(program_object, cs_ID);
+    if(tcs_ID)
+        glAttachShader(program_object, tcs_ID);
+    if(tes_ID)
+        glAttachShader(program_object, tes_ID);
+    if(gs_ID)
+        glAttachShader(program_object, gs_ID);
 
     glBindAttribLocation(program_object, attr_pos_loc, "attr_pos");
     glBindAttribLocation(program_object, attr_normal_loc, "attr_normal");
