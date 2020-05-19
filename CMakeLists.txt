@@ -113,7 +113,11 @@ message(STATUS "YAML_CPP_INCLUDE_DIR at ${YAML_CPP_INCLUDE_DIR}")
 find_package(JPEG REQUIRED)
 message(STATUS "JPEG at ${JPEG_LIBRARIES}")
 
-find_package(HarfBuzz REQUIRED)
+if(WIN32)
+	find_package(HARFBUZZ REQUIRED)
+else()
+	find_package(HarfBuzz REQUIRED)
+endif(WIN32)
 message(STATUS "HARFBUZZ at ${HARFBUZZ_LIBRARIES}")
 
 
