@@ -228,6 +228,14 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         s->uniformMatrix3("normalMatrix", normalMatrix);
         m->draw();
     }
+
+    GLuint err = glGetError();
+    if (err != 0)
+    {
+        LOG("geometry pass GL ERRORS HERE ================\n");
+        LOG("%d \n", err);
+        LOG("================\n");
+    }
 }
 
 void RenderMgr::deferred_pass(float time_delta, float aspect)
@@ -316,6 +324,14 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     glBindTexture(GL_TEXTURE_2D, gPos);
 
     render_quad();
+    GLuint err = glGetError();
+    if (err != 0)
+    {
+        LOG("deferred pass GL ERRORS HERE ================\n");
+        LOG("%d \n", err);
+        LOG("================\n");
+    }
+
 }
 
 void RenderMgr::forward_pass(float aspect)
@@ -356,6 +372,15 @@ void RenderMgr::forward_pass(float aspect)
         s->uniform3f("lightColor", light->color);
         render_cube();
     }
+
+    GLuint err = glGetError();
+    if (err != 0)
+    {
+        LOG("forward pass GL ERRORS HERE ================\n");
+        LOG("%d \n", err);
+        LOG("================\n");
+    }
+
 }
 
 void RenderMgr::render_frame(float time_delta)
@@ -380,9 +405,11 @@ void RenderMgr::render_frame(float time_delta)
 
     // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
     // ----------------------------------------------------------------------------------
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    // glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+    // glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    // glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    glBlitNamedFramebuffer(gBuffer, 0,   0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     forward_pass(aspect);
@@ -555,6 +582,7 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 SDL_Window* RenderMgr::get_main_window() { return main_window; }
