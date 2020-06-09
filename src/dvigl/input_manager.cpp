@@ -89,7 +89,6 @@ void InputMgr::process_input(float time_delta)
     // Node* model = (Node*)ModelMgr::ptr()->get_model("base");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("head");
 
-
     SpotLightNode* model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
 
     if (keystates[SDL_SCANCODE_T])
@@ -190,7 +189,6 @@ void InputMgr::process_input(float time_delta)
         model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
     }
 
-
     if (keystates[SDL_SCANCODE_Z])
     {
         model->intensity -= 1.0 * time_delta;
@@ -199,7 +197,6 @@ void InputMgr::process_input(float time_delta)
     {
         model->intensity += 1.0 * time_delta;
     }
-
 
     if (keystates[SDL_SCANCODE_1])
     {

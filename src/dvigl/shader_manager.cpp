@@ -17,13 +17,13 @@ bool ShaderMgr::load_shader(std::string name, std::string file_name)
 
     std::string shader_content = std::string(glsl_content);
     auto shaderSources = preProcessShaderBinary(shader_content);
+    free(glsl_content);
 
     Shader* shader = new Shader();
     if (!shader->compile_and_link(shaderSources))
     {
         return false;
     }
-    free(glsl_content);
 
     auto it = shaders.find(name);
     while (it != shaders.end())

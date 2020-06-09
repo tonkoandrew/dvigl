@@ -31,3 +31,10 @@ Now try to run
 ## Demo
 
 ![Demo](https://raw.githubusercontent.com/tonkoandrew/dvigl/master/res/demo.gif?cache=false)
+
+## some useful debug commands
+
+```
+valgrind  --tool=massif  --time-unit=ms  ./bin/game
+massif-visualizer massif.out.${pid}
+```

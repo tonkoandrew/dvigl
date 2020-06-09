@@ -11,7 +11,4 @@ DirLightNode::DirLightNode(glm::vec3 rot, glm::vec3 clr, float intnst)
     intensity = intnst;
 }
 
-glm::vec3 DirLightNode::get_direction()
-{
-    return forward;
-}
+glm::vec3 DirLightNode::get_direction() { return forward; }

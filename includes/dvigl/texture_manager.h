@@ -14,4 +14,5 @@ public:
 
 private:
     std::unordered_map<std::string, Texture*> textures;
+    SDL_PixelFormat RGBAFormat;
 };

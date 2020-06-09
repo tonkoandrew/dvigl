@@ -19,7 +19,7 @@ bool Shader::compile_and_link(std::unordered_map<std::string, std::string> sourc
     {
         std::string content = source["vertex"];
         vs_ID = compile(GL_VERTEX_SHADER, content);
-        if(!vs_ID)
+        if (!vs_ID)
         {
             return false;
         }
@@ -29,7 +29,7 @@ bool Shader::compile_and_link(std::unordered_map<std::string, std::string> sourc
     {
         std::string content = source["fragment"];
         fs_ID = compile(GL_FRAGMENT_SHADER, content);
-        if(!fs_ID)
+        if (!fs_ID)
         {
             return false;
         }
@@ -39,7 +39,7 @@ bool Shader::compile_and_link(std::unordered_map<std::string, std::string> sourc
     {
         std::string content = source["compute"];
         cs_ID = compile(GL_COMPUTE_SHADER, content);
-        if(!cs_ID)
+        if (!cs_ID)
         {
             return false;
         }
@@ -48,7 +48,7 @@ bool Shader::compile_and_link(std::unordered_map<std::string, std::string> sourc
     {
         std::string content = source["tess_control"];
         tcs_ID = compile(GL_TESS_CONTROL_SHADER, content);
-        if(!tcs_ID)
+        if (!tcs_ID)
         {
             return false;
         }
@@ -57,7 +57,7 @@ bool Shader::compile_and_link(std::unordered_map<std::string, std::string> sourc
     {
         std::string content = source["tess_eval"];
         tes_ID = compile(GL_TESS_EVALUATION_SHADER, content);
-        if(!tes_ID)
+        if (!tes_ID)
         {
             return false;
         }
@@ -66,7 +66,7 @@ bool Shader::compile_and_link(std::unordered_map<std::string, std::string> sourc
     {
         std::string content = source["geometry"];
         gs_ID = compile(GL_GEOMETRY_SHADER, content);
-        if(!gs_ID)
+        if (!gs_ID)
         {
             return false;
         }
@@ -81,17 +81,17 @@ bool Shader::compile_and_link(std::unordered_map<std::string, std::string> sourc
     }
 
     program_object = glCreateProgram();
-    if(vs_ID)
+    if (vs_ID)
         glAttachShader(program_object, vs_ID);
-    if(fs_ID)
+    if (fs_ID)
         glAttachShader(program_object, fs_ID);
-    if(cs_ID)
+    if (cs_ID)
         glAttachShader(program_object, cs_ID);
-    if(tcs_ID)
+    if (tcs_ID)
         glAttachShader(program_object, tcs_ID);
-    if(tes_ID)
+    if (tes_ID)
         glAttachShader(program_object, tes_ID);
-    if(gs_ID)
+    if (gs_ID)
         glAttachShader(program_object, gs_ID);
 
     glBindAttribLocation(program_object, attr_pos_loc, "attr_pos");
@@ -176,7 +176,6 @@ void Shader::uniform1i(std::string name, int value)
     int location = get_uniform_location(name);
     glUniform1i(location, value);
 }
-
 
 void Shader::uniform3i(std::string name, glm::ivec3 value)
 {

@@ -20,6 +20,8 @@ bool MaterialMgr::load_material(std::string name, std::string file_name)
 
     YAML::Node node = YAML::Load(content);
 
+    free(content);
+
     // LOG("NODE TYPE: ");
     // switch (node.Type()) {
     //   case YAML::NodeType::Null: LOG("Null\n"); break;

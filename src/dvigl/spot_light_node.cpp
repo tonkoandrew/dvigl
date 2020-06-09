@@ -1,7 +1,7 @@
 #include <dvigl/spot_light_node.h>
 
-SpotLightNode::SpotLightNode(glm::vec3 pos, glm::vec3 rot, glm::vec3 clr, float intnst,
-    float attRad, float ctf, float octf)
+SpotLightNode::SpotLightNode(
+    glm::vec3 pos, glm::vec3 rot, glm::vec3 clr, float intnst, float attRad, float ctf, float octf)
 {
     position = pos;
 
@@ -10,16 +10,13 @@ SpotLightNode::SpotLightNode(glm::vec3 pos, glm::vec3 rot, glm::vec3 clr, float 
     left = glm::cross(up, forward);
     set_rotation(rot);
 
-
     color = clr;
     intensity = intnst;
     attenuationRadius = attRad;
 
     cutOff = ctf;
-    outerCutOff = octf;;
+    outerCutOff = octf;
+    ;
 }
 
-glm::vec3 SpotLightNode::get_direction()
-{
-    return forward;
-}
+glm::vec3 SpotLightNode::get_direction() { return forward; }

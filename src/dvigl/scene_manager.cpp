@@ -37,7 +37,7 @@ bool SceneMgr::load_scene(std::string file_name)
 
     char* content = FileSystemMgr::ptr()->get_content(file_name);
     YAML::Node node = YAML::Load(content);
-
+    free(content);
     if (!ShaderMgr::ptr()->load_shader("static_geometry", "../res/shaders/static_geometry.glsl"))
     {
         return false;

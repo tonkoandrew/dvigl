@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.5)
 cmake_policy(VERSION 3.5)
-
+# set(CMAKE_C_COMPILER /usr/bin/clang-10)
+# set(CMAKE_CXX_COMPILER /usr/bin/clang++-10)
 project (dvigl)
 
 IF(NOT CMAKE_BUILD_TYPE)
@@ -34,6 +35,7 @@ if(APPLE)
   list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -pedantic")
 else()
   list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic")
+  # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic")
 endif(APPLE)
 
 # find the required packages

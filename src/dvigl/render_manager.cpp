@@ -93,6 +93,12 @@ bool RenderMgr::init()
 
     LOG("rendering context: OpenGL %d.%d Core profile\n", GLVersion.major, GLVersion.minor);
 
+    // if (GLAD_GL_ARB_pipeline_statistics_query)
+    // {
+    //     LOG("***********************************************************\n");
+    //     LOG("***********************************************************\n");
+    //     LOG("***********************************************************\n");
+    // }
     if (!GLAD_GL_ARB_texture_multisample)
     {
         LOG("GL_ARB_texture_multisample is not supported\n");
@@ -263,13 +269,9 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     s->uniform1i("visualize_ao", visualize_ao);
     s->uniform1i("visualize_world_position", visualize_world_position);
 
-    s->uniform3i("numDirPointSpotLights",
-        glm::ivec3(
-            (int) SceneMgr::ptr()->get_current_scene()->dir_lights.size(),
-            (int) SceneMgr::ptr()->get_current_scene()->point_lights.size(),
-            (int) SceneMgr::ptr()->get_current_scene()->spot_lights.size()
-        )
-    );
+    s->uniform3i("numDirPointSpotLights", glm::ivec3((int)SceneMgr::ptr()->get_current_scene()->dir_lights.size(),
+                                              (int)SceneMgr::ptr()->get_current_scene()->point_lights.size(),
+                                              (int)SceneMgr::ptr()->get_current_scene()->spot_lights.size()));
 
     // send light relevant uniforms
     int i = 0;
@@ -331,7 +333,6 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
         LOG("%d \n", err);
         LOG("================\n");
     }
-
 }
 
 void RenderMgr::forward_pass(float aspect)
@@ -380,7 +381,6 @@ void RenderMgr::forward_pass(float aspect)
         LOG("%d \n", err);
         LOG("================\n");
     }
-
 }
 
 void RenderMgr::render_frame(float time_delta)
@@ -395,6 +395,12 @@ void RenderMgr::render_frame(float time_delta)
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // GLuint    query;
+    // GLuint64 elapsedTime;
+    // glGenQueries ( 1, &query );
+    // // glBeginQuery ( GL_VERTICES_SUBMITTED_ARB, query );
+    // glBeginQuery ( GL_PRIMITIVES_SUBMITTED_ARB, query );
+
     geometry_pass(time_delta, aspect);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -408,7 +414,7 @@ void RenderMgr::render_frame(float time_delta)
     // glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
     // glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     // glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-    glBlitNamedFramebuffer(gBuffer, 0,   0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+    glBlitNamedFramebuffer(gBuffer, 0, 0, 0, w, h, 0, 0, w, h, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -421,6 +427,11 @@ void RenderMgr::render_frame(float time_delta)
         LOG("%d \n", err);
         LOG("================\n");
     }
+    // glEndQuery ( GL_PRIMITIVES_SUBMITTED_ARB );
+    // glGetQueryObjectui64v ( query, GL_QUERY_RESULT, &elapsedTime );
+    // LOG("GL_PRIMITIVES_SUBMITTED_ARB = %d\n", elapsedTime);
+    // // LOG("GL_VERTICES_SUBMITTED_ARB = %d\n", elapsedTime);
+
     SDL_GL_SwapWindow(main_window);
 }
 
@@ -528,7 +539,15 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
 
     if (initialize)
+    {
         glGenTextures(1, &gAlbedo);
+    }
+    else
+    {
+        glDeleteTextures(1, &gAlbedo);
+        glGenTextures(1, &gAlbedo);
+    }
+
     glBindTexture(GL_TEXTURE_2D, gAlbedo);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -536,7 +555,14 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedo, 0);
 
     if (initialize)
+    {
         glGenTextures(1, &gNormal);
+    }
+    else
+    {
+        glDeleteTextures(1, &gNormal);
+        glGenTextures(1, &gNormal);
+    }
     glBindTexture(GL_TEXTURE_2D, gNormal);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -544,7 +570,14 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
 
     if (initialize)
+    {
         glGenTextures(1, &gMaterialInfo);
+    }
+    else
+    {
+        glDeleteTextures(1, &gMaterialInfo);
+        glGenTextures(1, &gMaterialInfo);
+    }
     glBindTexture(GL_TEXTURE_2D, gMaterialInfo);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -552,7 +585,14 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gMaterialInfo, 0);
 
     if (initialize)
+    {
         glGenTextures(1, &gPos);
+    }
+    else
+    {
+        glDeleteTextures(1, &gPos);
+        glGenTextures(1, &gPos);
+    }
     glBindTexture(GL_TEXTURE_2D, gPos);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -582,7 +622,6 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 }
 
 SDL_Window* RenderMgr::get_main_window() { return main_window; }

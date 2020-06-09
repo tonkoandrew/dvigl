@@ -25,6 +25,7 @@ bool ModelMgr::load_skinned_model(std::string name, std::string file_name, std::
         return false;
     }
     skinned_models[name] = new SkinnedModelNode(content, size, format, scale);
+    free(content);
     return true;
 }
 
@@ -46,6 +47,7 @@ bool ModelMgr::load_model(std::string name, std::string file_name, std::string f
         return false;
     }
     models[name] = new ModelNode(content, size, format, scale);
+    free(content);
     return true;
 }
 
