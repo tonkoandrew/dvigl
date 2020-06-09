@@ -37,4 +37,8 @@ Now try to run
 ```
 valgrind  --tool=massif  --time-unit=ms  ./bin/game
 massif-visualizer massif.out.${pid}
+
+cd ..
+for f in $(find includes/ -type f); do clang-format -i $f; done
+for f in $(find src/ -type f); do clang-format -i $f; done
 ```

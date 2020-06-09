@@ -19,6 +19,7 @@ public:
     float z_near;
     float z_far;
     float fov;
+
 private:
     void geometry_pass(float time_delta, float aspect);
     void deferred_pass(float time_delta, float aspect);
@@ -38,5 +39,4 @@ private:
     GLuint cubeVBO = 0;
 
     GLuint rboDepth;
-
 };
