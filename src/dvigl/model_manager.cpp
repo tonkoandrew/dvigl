@@ -104,6 +104,7 @@ void ModelMgr::release()
     {
         // LOG("Free model %s\n", pair.first.c_str() );
         pair.second->release();
+        delete pair.second;
     }
     // release all models
 }

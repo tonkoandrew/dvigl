@@ -35,6 +35,7 @@ if(APPLE)
   list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -pedantic")
 else()
   list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic")
+  # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic -fsanitize=address")
   # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic")
 endif(APPLE)
 
@@ -117,10 +118,8 @@ message(STATUS "JPEG at ${JPEG_LIBRARIES}")
 
 if(WIN32)
 	find_package(HARFBUZZ REQUIRED)
-else()
-	find_package(HarfBuzz REQUIRED)
+    message(STATUS "HARFBUZZ at ${HARFBUZZ_LIBRARIES}")
 endif(WIN32)
-message(STATUS "HARFBUZZ at ${HARFBUZZ_LIBRARIES}")
 
 
 if(WIN32)
@@ -264,3 +263,24 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/includes
     ${BULLET_INCLUDE_DIRS}
 )
+
+###
+### Build unit tests
+###
+    set(NAME "test_runner")
+
+    file(GLOB SOURCE
+       "src/tests/*.h"
+       "src/tests/*.cpp"
+    )
+    enable_testing()
+    add_executable(${NAME} ${SOURCE})
+    target_link_libraries(${NAME} ${LIBS})
+    if(WIN32)
+        set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+    elseif(UNIX AND NOT APPLE)
+        set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
+    endif(WIN32)
+
+    get_target_property(BINARY_PATH ${NAME} RUNTIME_OUTPUT_DIRECTORY)
+    add_test( run_all_jctests ${BINARY_PATH}/${NAME})

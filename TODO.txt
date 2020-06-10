@@ -1,0 +1,24 @@
+implement basic editor
+
+create cpack file
+
+add Binary builds to github releases
+
+spatial structure for optimizations, (hierarchical view frustum culling)
+
+Fix depth on Intel GPU
+
+Add more unit tests
+
+Add AddressSanitizer and other sanitizers to build process
+
+Use valgrind and massif
+
+Add unit tests (jctest)
+
+Add docs (mkdocs material)
+
+Write CONTRIBUTING best practices doc
+
+
+Remove some dependencies
