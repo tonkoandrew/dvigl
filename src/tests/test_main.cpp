@@ -7,7 +7,7 @@ TEST(MyTest, CameraNodeTest)
 {
     CameraNode * c = new CameraNode();
     glm::mat4 default_view_mat = c->get_view_matrix();
-    
+
     const float* actual =(const float*) glm::value_ptr(default_view_mat);
     glm::mat4 v = glm::mat4(
         1.0, 0.0, 0.0, 0.0,
