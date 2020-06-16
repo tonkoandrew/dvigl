@@ -21,7 +21,7 @@ find_package(ZLIB REQUIRED)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/;${CMAKE_MODULE_PATH}")
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -31,12 +31,20 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
+option(SANITIZE "Enable memory sanitizer" OFF)
+
+set(CMAKE_BUILD_TYPE "Release")
+
 if(APPLE)
   list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -pedantic")
 else()
-  list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic")
-  # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic -fsanitize=address")
-  # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic")
+    if (SANITIZE)
+        list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic -fsanitize=address")
+        # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic")
+    else()
+        # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic -fno-exceptions")
+        list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic -fno-data-sections -fno-function-sections")
+    endif(SANITIZE)
 endif(APPLE)
 
 # find the required packages
@@ -128,9 +136,9 @@ else()
     SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 endif(WIN32)
 
-if (UNIX AND NOT APPLE)
-  find_package(Qt5 COMPONENTS Widgets REQUIRED)
-endif(UNIX AND NOT APPLE)
+# if (UNIX AND NOT APPLE)
+#   find_package(Qt5 COMPONENTS Widgets REQUIRED)
+# endif(UNIX AND NOT APPLE)
 
 if(WIN32)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
@@ -145,7 +153,8 @@ elseif(UNIX AND NOT APPLE)
   add_definitions(${OPENGL_DEFINITIONS})
   find_package(X11 REQUIRED)
   # note that the order is important for setting the libs
-  set(LIBS Qt5::Widgets ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xext Xrandr Xinerama Xi Xxf86vm Xcursor GL dl asound pthread FLAC ${JPEG_LIBRARIES} )
+  set(LIBS ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xext Xrandr Xinerama Xi Xxf86vm Xcursor GL dl asound pthread FLAC ${JPEG_LIBRARIES} )
+  # set(LIBS Qt5::Widgets ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xext Xrandr Xinerama Xi Xxf86vm Xcursor GL dl asound pthread FLAC ${JPEG_LIBRARIES} )
   set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
 elseif(APPLE)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
@@ -231,33 +240,34 @@ elseif(APPLE)
 endif(WIN32)
 
 
+# ============================ EDITOR ===========================================
+# if(UNIX AND NOT APPLE)
+#   ###
+#   ### Build editor
+#   ###
+#   set(NAME "editor")
 
-if(UNIX AND NOT APPLE)
-  ###
-  ### Build editor
-  ###
-  set(NAME "editor")
+#   set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-  set(CMAKE_INCLUDE_CURRENT_DIR ON)
+#   file(GLOB SOURCE
+#       "src/${NAME}/*.h"
+#       "src/${NAME}/*.cpp"
+#   )
 
-  file(GLOB SOURCE
-      "src/${NAME}/*.h"
-      "src/${NAME}/*.cpp"
-  )
+#   qt5_wrap_cpp(SOURCE src/${NAME}/mainwindow.h)
+#   qt5_wrap_ui(SOURCE src/${NAME}/mainwindow.ui)
 
-  qt5_wrap_cpp(SOURCE src/${NAME}/mainwindow.h)
-  qt5_wrap_ui(SOURCE src/${NAME}/mainwindow.ui)
+#   add_executable(${NAME} ${SOURCE})
+#   # set_target_properties(${NAME} PROPERTIES AUTOMOC TRUE)
+#   target_link_libraries(${NAME} ${LIBS})
 
-  add_executable(${NAME} ${SOURCE})
-  # set_target_properties(${NAME} PROPERTIES AUTOMOC TRUE)
-  target_link_libraries(${NAME} ${LIBS})
-
-  if(WIN32)
-      set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
-  elseif(UNIX AND NOT APPLE)
-      set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
-  endif(WIN32)
-endif(UNIX AND NOT APPLE)
+#   if(WIN32)
+#       set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+#   elseif(UNIX AND NOT APPLE)
+#       set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
+#   endif(WIN32)
+# endif(UNIX AND NOT APPLE)
+# ============================ EDITOR ===========================================
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/includes

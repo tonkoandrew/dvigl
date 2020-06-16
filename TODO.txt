@@ -22,3 +22,5 @@ Write CONTRIBUTING best practices doc
 
 
 Remove some dependencies
+
+Load resources in parallel (Implement some kind of job system)
