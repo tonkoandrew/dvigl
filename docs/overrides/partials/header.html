@@ -1,0 +1,160 @@
+<!-- Application header -->
+<header class="md-header" data-md-component="header">
+
+  <!-- Top-level navigation -->
+  <nav class="md-header-nav md-grid" aria-label="{{ lang.t('header.title') }}">
+
+    <!-- Link to home -->
+    <a
+      href="{{ config.site_url | default(nav.homepage.url, true) | url }}"
+      title="{{ config.site_name }}"
+      class="md-header-nav__button md-logo"
+      aria-label="{{ config.site_name }}"
+    >
+      {% include "partials/logo.html" %}
+    </a>
+
+    <!-- Button to open drawer -->
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      {% include ".icons/material/menu" ~ ".svg" %}
+    </label>
+
+    <!-- Header title -->
+    <div class="md-header-nav__title" data-md-component="header-title">
+      {% if config.site_name == page.title %}
+        <div class="md-header-nav__ellipsis md-ellipsis">
+          {{ config.site_name }}
+        </div>
+      {% else %}
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            {{ config.site_name }}
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            {% if page and page.meta and page.meta.title %}
+              {{ page.meta.title }}
+            {% else %}
+              {{ page.title }}
+            {% endif %}
+          </span>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Button to open search dialogue -->
+    {% if "search" in config["plugins"] %}
+      <label class="md-header-nav__button md-icon" for="__search">
+        {% include ".icons/material/magnify.svg" %}
+      </label>
+
+      <!-- Search interface -->
+      {% include "partials/search.html" %}
+    {% endif %}
+
+    <!-- Repository containing source -->
+    {% if config.repo_url %}
+      <div class="md-header-nav__source">
+        {% include "partials/source.html" %}
+      </div>
+    {% endif %}
+
+    <div class="nav-dark-mode-switch">
+        Dark mode
+        <label class="switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+        </label>
+    </div>
+
+  </nav>
+</header>
+
+
+
+<style>
+    .nav-dark-mode-switch {
+      position: relative;
+      display: inline-block;
+      margin-top: 15px;
+      vertical-align: middle;
+      /*padding-top: 15px;*/
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    /*  padding-top: 15px;
+      margin-top: 10px;*/
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* The slider */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: hsla(231, 99%, 66%, 1);
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      /*left: 4px;*/
+      /*bottom: 4px;*/
+      top: 1px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked + .slider {
+      /*background-color: var(--md-default-fg-color--light);*/
+    }
+
+    input:focus + .slider {
+      /*box-shadow: 0 0 1px var(--md-default-fg-color--light);*/
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 24px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+</style>
+
+
+<script>
+  var buttons = document.querySelectorAll(".slider")
+  buttons.forEach(function(button) {
+    var attr = "data-md-color-scheme"
+    button.addEventListener("click", function() {
+        var current = document.body.getAttribute(attr);
+        var newValue = current == "default" ? "slate" : "default";
+        document.body.setAttribute(attr, newValue);
+      // document.body.setAttribute(attr, this.getAttribute(attr));
+    })
+  })
+</script>

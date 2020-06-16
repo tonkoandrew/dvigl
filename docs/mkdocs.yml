@@ -1,0 +1,67 @@
+site_name: dvigl documentation
+site_description: Dvigl engine
+site_author: Andrew Tonko
+site_url: http://tonko.im/dvigl
+
+# Repository
+repo_name: tonkoandrew/dvigl
+repo_url: https://github.com/tonkoandrew/dvigl
+
+# Copyright
+copyright: Copyright &copy; 2016 - 2020 Andrew Tonko
+
+# Configuration
+theme:
+  name: material
+  custom_dir: overrides
+  language: en
+  palette:
+    primary: indigo
+    accent: indigo
+    scheme: default
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+# Extras
+extra:
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/tonkoandrew
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/andrew_tonko
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/andrewtonko
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - meta
+  - footnotes
+  - codehilite:
+      guess_lang: false
+      linenums: true
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed
+  - pymdownx.tilde
