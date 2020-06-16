@@ -1,7 +1,7 @@
 ---
 title: Dvigl docs
 description: dvigl - my first game engine in C++
-path: docs/docs
+path: blob/master/docs/docs
 source: index.md
 ---
 
