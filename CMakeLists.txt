@@ -4,6 +4,12 @@ cmake_policy(VERSION 3.5)
 # set(CMAKE_CXX_COMPILER /usr/bin/clang++-10)
 project (dvigl)
 
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache) # Less useful to do it for linking, see edit2
+endif(CCACHE_FOUND)
+
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
@@ -39,8 +45,8 @@ if(APPLE)
   list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -pedantic")
 else()
     if (SANITIZE)
-        list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic -fsanitize=address")
-        # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic")
+        # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic -fsanitize=address")
+        list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic")
     else()
         # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic -fno-exceptions")
         list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic -fno-data-sections -fno-function-sections")
@@ -277,20 +283,29 @@ include_directories(
 ###
 ### Build unit tests
 ###
-    set(NAME "test_runner")
+set(NAME "test_runner")
 
-    file(GLOB SOURCE
-       "src/tests/*.h"
-       "src/tests/*.cpp"
-    )
-    enable_testing()
-    add_executable(${NAME} ${SOURCE})
-    target_link_libraries(${NAME} ${LIBS})
-    if(WIN32)
-        set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
-    elseif(UNIX AND NOT APPLE)
-        set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
-    endif(WIN32)
+file(GLOB SOURCE
+   "src/tests/*.h"
+    "src/tests/*.cpp"
+)
+enable_testing()
+add_executable(${NAME} ${SOURCE})
+target_link_libraries(${NAME} ${LIBS})
+if(WIN32)
+    set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+elseif(UNIX AND NOT APPLE)
+    set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
+endif(WIN32)
 
-    get_target_property(BINARY_PATH ${NAME} RUNTIME_OUTPUT_DIRECTORY)
-    add_test( run_all_jctests ${BINARY_PATH}/${NAME})
+get_target_property(BINARY_PATH ${NAME} RUNTIME_OUTPUT_DIRECTORY)
+
+add_test(ctest_build_test_code
+    "${CMAKE_COMMAND}"
+    --build ${CMAKE_BINARY_DIR}
+    --target ${BINARY_PATH}/${NAME}
+)
+
+add_test(run_all_jctests ${BINARY_PATH}/${NAME})
+
+set_tests_properties(run_all_jctests PROPERTIES DEPENDS ctest_build_test_code)

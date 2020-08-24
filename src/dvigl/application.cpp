@@ -162,7 +162,6 @@ bool Application::init()
         error_code = 16;
         return false;
     }
-
     return true;
 }
 
