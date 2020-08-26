@@ -185,7 +185,6 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     glm::mat4 proj_m;
 
 
-    glm::mat4 prev_model_m;
     glm::mat4 prev_view_m;
 
     glm::mat4 view_proj_m;
@@ -217,7 +216,6 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     {
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
-        prev_model_m = m->prev_model_matrix;
         mvp = view_proj_m * model_m;
         // glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(mvp)));
         glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
@@ -225,7 +223,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         s->uniformMatrix4("projection", proj_m);
         s->uniformMatrix4("view", view_m);
 
-        s->uniformMatrix4("prev_model", prev_model_m);
+        s->uniformMatrix4("prev_model", m->prev_model_matrix);
         s->uniformMatrix4("prev_projection", prev_proj_m);
         s->uniformMatrix4("prev_view", prev_view_m);
 
