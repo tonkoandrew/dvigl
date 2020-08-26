@@ -13,12 +13,21 @@ out mat3 TBN;
 out vec2 v_texcoord;
 out vec3 v_pos;
 
+
+out vec4 v_pos_cam;
+out vec4 v_prev_pos_cam;
+
 uniform vec3 viewPos;
 
 uniform mat3 normalMatrix;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+
+
+uniform mat4 prev_model;
+uniform mat4 prev_view;
+uniform mat4 prev_projection;
 
 void main()
 {
@@ -29,10 +38,12 @@ void main()
 
     v_texcoord = attr_texcoord;
 
-    vec3 fragPos = vec3(model * vec4(attr_pos, 1.0f));
-    gl_Position = projection * view * vec4(fragPos, 1.0);
-
     v_pos = (model * vec4(attr_pos, 1.0)).xyz;
+
+    v_pos_cam = projection * view * vec4(vec3(model * vec4(attr_pos, 1.0f)), 1.0);
+    v_prev_pos_cam = prev_projection * prev_view * vec4(vec3(prev_model * vec4(attr_pos, 1.0f)), 1.0);
+
+    gl_Position = v_pos_cam;
 }
 
 #defshader fragment
@@ -42,6 +53,7 @@ layout(location = 0) out vec4 gb_Albedo;
 layout(location = 1) out vec3 gb_Normal;
 layout(location = 2) out vec4 gb_MaterialInfo;
 layout(location = 3) out vec3 gb_WorldPos;
+layout(location = 4) out vec3 gb_Velocity;
 
 struct Material
 {
@@ -56,7 +68,11 @@ in mat3 TBN;
 in vec2 v_texcoord;
 in vec3 v_pos;
 
+in vec4 v_pos_cam;
+in vec4 v_prev_pos_cam;
+
 uniform Material material;
+uniform float time_delta;
 
 vec3 UnpackNormal(vec3 textureNormal);
 
@@ -75,6 +91,11 @@ void main()
     gb_MaterialInfo = vec4(metallic, roughness, ao, 1.0);
 
     gb_WorldPos = v_pos;
+
+    vec2 a = (v_pos_cam.xy / v_pos_cam.w);
+    vec2 b = (v_prev_pos_cam.xy / v_prev_pos_cam.w);
+    vec2 vel = (a - b) * time_delta;
+    gb_Velocity = vec3(vel, 1.0);
 }
 
 // Unpacks the normal from the texture and returns the normal in tangent space

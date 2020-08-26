@@ -23,7 +23,9 @@ uniform sampler2D albedoTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D materialInfoTexture;
 uniform sampler2D worldPosTexture;
+uniform sampler2D velocityTexture;
 uniform sampler2D ssaoTexture;
+
 
 uniform bool visualize_albedo;
 uniform bool visualize_normals;
@@ -31,6 +33,7 @@ uniform bool visualize_metallic;
 uniform bool visualize_roughness;
 uniform bool visualize_ao;
 uniform bool visualize_world_position;
+uniform bool visualize_velocity;
 
 // ============================= ++++++++++++++++++++++++++++++++=== ==================
 struct DirLight
@@ -311,6 +314,7 @@ void main()
         discard;
     normal = normalize(normal);
 
+    vec3 velocity = texture(velocityTexture, TexCoords).rgb;
     vec3 albedo = texture(albedoTexture, TexCoords).rgb;
     float albedoAlpha = texture(albedoTexture, TexCoords).w;
     float metallic = texture(materialInfoTexture, TexCoords).r;
@@ -393,5 +397,10 @@ void main()
     if (visualize_world_position)
     {
         FragColor = vec4(fragPos / 100.0, 1.0);
+    }
+
+    if (visualize_velocity)
+    {
+        FragColor = vec4(velocity, 1.0);
     }
 }

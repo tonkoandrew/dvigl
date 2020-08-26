@@ -207,6 +207,9 @@ bool Application::main_loop()
 
         /* 16ms each frame for ~60fps */
         int delay = 16.6f - time_delta;
+        /* 33ms each frame for ~30fps */
+        // int delay = 33.3f - time_delta;
+        // int delay = 260.0f - time_delta;
         if (delay < 0)
         {
             delay = 0;

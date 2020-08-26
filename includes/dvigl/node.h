@@ -9,6 +9,9 @@ public:
     Node();
     glm::vec3 get_position();
     glm::mat4 get_model_matrix();
+
+    glm::mat4 prev_model_matrix;
+
     void rotate_around_vector(glm::vec3 V, float angle);
     void roll(float angle);
     void pitch(float angle);

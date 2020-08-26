@@ -1,8 +1,8 @@
 shader: 'skinned'
 
-normal: 'FatElvis_diffuse.jpg'
+albedo: 'FatElvis_diffuse.jpg'
 normal: 'FatElvis_normal.jpg'
-metallic: 'rustediron2_metallic.png'
+metallic: 'plasticpattern1-metalness.png'
 roughness: 'rustediron2_roughness.png'
 ao: 'ground_ao.jpg'
 

@@ -161,6 +161,17 @@ void InputMgr::process_input(float time_delta)
         RenderMgr::ptr()->visualize_ao = 0;
     }
 
+
+    if (keystates[SDL_SCANCODE_V])
+    {
+        RenderMgr::ptr()->visualize_velocity = 1;
+    }
+    else
+    {
+        RenderMgr::ptr()->visualize_velocity = 0;
+
+    }
+
     if (keystates[SDL_SCANCODE_P])
     {
         RenderMgr::ptr()->visualize_world_position = 1;
@@ -170,10 +181,6 @@ void InputMgr::process_input(float time_delta)
         RenderMgr::ptr()->visualize_world_position = 0;
     }
 
-    if (keystates[SDL_SCANCODE_V])
-    {
-        model->pitch(rotation_speed * time_delta);
-    }
     if (keystates[SDL_SCANCODE_X])
     {
         model->pitch(-rotation_speed * time_delta);

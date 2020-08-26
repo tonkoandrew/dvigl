@@ -352,6 +352,7 @@ void SkinnedMesh::draw()
     Shader* s = ShaderMgr::ptr()->get_shader("skinned_geometry");
     s->bind();
     s->uniformMatrix4("gBones", &Transforms);
+    s->uniformMatrix4("prev_gBones", &prev_Transforms);
 
     glBindVertexArray(m_VAO);
 
@@ -372,6 +373,8 @@ void SkinnedMesh::draw()
 
     // Make sure the VAO is not changed from the outside
     glBindVertexArray(0);
+
+    prev_Transforms = Transforms;
 }
 
 GLuint SkinnedMesh::FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)

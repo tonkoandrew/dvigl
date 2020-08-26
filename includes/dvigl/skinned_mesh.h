@@ -22,6 +22,8 @@ public:
 
     long long m_startTime;
 
+    vector<glm::mat4> prev_Transforms;
+
 private:
 #define NUM_BONES_PER_VEREX 4
     float TicksPerSecond;

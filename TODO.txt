@@ -1,3 +1,8 @@
+add shadow maps
+
+add Chromium Embedded Framework (CEF) support for UI rendering
+https://bitbucket.org/chromiumembedded/cef/src/master/
+
 implement basic editor
 
 create cpack file
@@ -5,6 +10,14 @@ create cpack file
 add Binary builds to github releases
 
 spatial structure for optimizations, (hierarchical view frustum culling)
+
+light culling (clustered forward/deferred shading)
+
+decals with culling (clustered forward shading, Doom-like implementation)
+
+light probes system with culling (clustered, Doom implementation)
+
+velocity map computation, needed for motion blur, TAA, etc.
 
 Fix depth on Intel GPU
 
@@ -14,8 +27,6 @@ Add AddressSanitizer and other sanitizers to build process
 
 Use valgrind and massif
 
-Add unit tests (jctest)
-
 Add docs (mkdocs material)
 
 Write CONTRIBUTING best practices doc
@@ -24,3 +35,5 @@ Write CONTRIBUTING best practices doc
 Remove some dependencies
 
 Load resources in parallel (Implement some kind of job system)
+
+Optimize/reimplement skeletal animation system

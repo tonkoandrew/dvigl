@@ -128,7 +128,7 @@ bool RenderMgr::init()
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0, 1.0);
 
-    // glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
+    // glClearColor(0.01f, 0.1f, 0.01f, 1.0f);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
@@ -177,20 +177,31 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 {
     glDisable(GL_BLEND);
 
+    float dt = time_delta * 100.0f;
+
     Shader* s;
     glm::mat4 model_m;
     glm::mat4 view_m;
     glm::mat4 proj_m;
+
+
+    glm::mat4 prev_model_m;
+    glm::mat4 prev_view_m;
+
     glm::mat4 view_proj_m;
+    glm::mat4 prev_view_proj_m;
     glm::mat4 mvp;
+    glm::mat4 prev_mvp;
 
     proj_m = glm::perspective(fov, aspect, z_near, z_far);
 
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
     view_m = camera->get_view_matrix();
+    prev_view_m = camera->prev_view_matrix;
 
     view_proj_m = proj_m * view_m;
+    prev_view_proj_m = prev_proj_m * prev_view_m;
 
     s = ShaderMgr::ptr()->get_shader("static_geometry");
     s->bind();
@@ -200,18 +211,27 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     s->uniform1i("material.texture_roughness", 3);
     s->uniform1i("material.texture_ao", 4);
 
+    s->uniform1f("time_delta", dt);
+
     for (auto element : ModelMgr::ptr()->models)
     {
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
+        prev_model_m = m->prev_model_matrix;
         mvp = view_proj_m * model_m;
         // glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(mvp)));
         glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
         s->uniformMatrix4("model", model_m);
         s->uniformMatrix4("projection", proj_m);
         s->uniformMatrix4("view", view_m);
+
+        s->uniformMatrix4("prev_model", prev_model_m);
+        s->uniformMatrix4("prev_projection", prev_proj_m);
+        s->uniformMatrix4("prev_view", prev_view_m);
+
         s->uniformMatrix3("normalMatrix", normalMatrix);
         m->draw();
+        m->prev_model_matrix = glm::mat4(model_m);
     }
 
     s = ShaderMgr::ptr()->get_shader("skinned_geometry");
@@ -222,17 +242,24 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     s->uniform1i("material.texture_roughness", 3);
     s->uniform1i("material.texture_ao", 4);
 
+    s->uniform1f("time_delta", dt);
+
     for (auto element : ModelMgr::ptr()->skinned_models)
     {
         SkinnedModelNode* m = (SkinnedModelNode*)element.second;
         model_m = m->get_model_matrix();
         mvp = view_proj_m * model_m;
+        prev_mvp = prev_view_proj_m * m->prev_model_matrix;
+
         glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
 
         s->uniformMatrix4("model", model_m);
         s->uniformMatrix4("mvp", mvp);
+        s->uniformMatrix4("prev_mvp", prev_mvp);
         s->uniformMatrix3("normalMatrix", normalMatrix);
         m->draw();
+
+        m->prev_model_matrix = glm::mat4(model_m);
     }
 
     GLuint err = glGetError();
@@ -242,6 +269,9 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         LOG("%d \n", err);
         LOG("================\n");
     }
+
+    prev_proj_m = glm::mat4(proj_m);
+    camera->prev_view_matrix = glm::mat4(view_m);
 }
 
 void RenderMgr::deferred_pass(float time_delta, float aspect)
@@ -268,6 +298,7 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     s->uniform1i("visualize_roughness", visualize_roughness);
     s->uniform1i("visualize_ao", visualize_ao);
     s->uniform1i("visualize_world_position", visualize_world_position);
+    s->uniform1i("visualize_velocity", visualize_velocity);
 
     s->uniform3i("numDirPointSpotLights", glm::ivec3((int)SceneMgr::ptr()->get_current_scene()->dir_lights.size(),
                                               (int)SceneMgr::ptr()->get_current_scene()->point_lights.size(),
@@ -324,6 +355,11 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     glActiveTexture(GL_TEXTURE3);
     s->uniform1i("worldPosTexture", 3);
     glBindTexture(GL_TEXTURE_2D, gPos);
+
+
+    glActiveTexture(GL_TEXTURE4);
+    s->uniform1i("velocityTexture", 4);
+    glBindTexture(GL_TEXTURE_2D, gVelocity);
 
     render_quad();
     GLuint err = glGetError();
@@ -599,9 +635,31 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, gPos, 0);
 
-    GLuint attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-    // GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
-    glDrawBuffers(4, attachments);
+
+    if (initialize)
+    {
+        glGenTextures(1, &gVelocity);
+    }
+    else
+    {
+        glDeleteTextures(1, &gVelocity);
+        glGenTextures(1, &gVelocity);
+    }
+    glBindTexture(GL_TEXTURE_2D, gVelocity);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, gVelocity, 0);
+
+
+    GLuint attachments[5] = {
+        GL_COLOR_ATTACHMENT0,
+        GL_COLOR_ATTACHMENT1,
+        GL_COLOR_ATTACHMENT2,
+        GL_COLOR_ATTACHMENT3,
+        GL_COLOR_ATTACHMENT4
+    };
+    glDrawBuffers(5, attachments);
     // glDrawBuffers(3, attachments);
     glGenRenderbuffers(1, &rboDepth);
     glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);

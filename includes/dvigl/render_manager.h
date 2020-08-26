@@ -15,6 +15,7 @@ public:
     int visualize_roughness = 0;
     int visualize_ao = 0;
     int visualize_world_position = 0;
+    int visualize_velocity = 0;
 
     float z_near;
     float z_far;
@@ -30,7 +31,7 @@ private:
     SDL_Window* main_window;
     SDL_GLContext gl_context;
     GLuint gBuffer;
-    GLuint gAlbedo, gNormal, gMaterialInfo, gPos;
+    GLuint gAlbedo, gNormal, gMaterialInfo, gPos, gVelocity;
 
     GLuint quadVAO = 0;
     GLuint quadVBO;
@@ -39,4 +40,6 @@ private:
     GLuint cubeVBO = 0;
 
     GLuint rboDepth;
+
+    glm::mat4 prev_proj_m;
 };

@@ -75,7 +75,7 @@ bool PhysicsMgr::init()
         if (isDynamic)
             colShape->calculateLocalInertia(mass, localInertia);
 
-        startTransform.setOrigin(btVector3(85, 15, 0));
+        startTransform.setOrigin(btVector3(-100, 25, 0));
 
         // using motionstate is recommended, it provides interpolation capabilities,
         // and only synchronizes 'active' objects
@@ -123,13 +123,13 @@ void PhysicsMgr::update(float time_delta)
     }
 
     // ModelNode *m = ModelMgr::ptr()->get_model("yoda");
-    // glm::vec3 v = glm::vec3(float(trans.getOrigin().getX()),
-    //                         float(trans.getOrigin().getY()),
-    //                         float(trans.getOrigin().getZ()));
-    // m->set_pose(v);
+    glm::vec3 v = glm::vec3(float(trans.getOrigin().getX()),
+                            float(trans.getOrigin().getY()),
+                            float(trans.getOrigin().getZ()));
+    // m->set_position(v);
 
-    // SkinnedModelNode *elvis = ModelMgr::ptr()->get_skinned_model("elvis");
-    // elvis->set_pose(v);
+    ModelNode *elvis = ModelMgr::ptr()->get_model("elvis");
+    elvis->set_position(v);
 
     // LOG("world pos object = %.8f, %.8f, %.8f\n",
     // float(trans.getOrigin().getX()), float(trans.getOrigin().getY()),
