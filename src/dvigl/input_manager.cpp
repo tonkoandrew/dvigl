@@ -14,6 +14,8 @@
 #include <dvigl/point_light_node.h>
 #include <dvigl/spot_light_node.h>
 
+#include <dvigl/physics_manager.h>
+
 InputMgr gInputMgr;
 
 bool InputMgr::init() { return true; }
@@ -81,6 +83,13 @@ void InputMgr::process_input(float time_delta)
         cam->rotate_around_vector(cam->left, -rotation_speed * time_delta);
     }
 
+if (keystates[SDL_SCANCODE_SPACE]) {
+
+    btCollisionObject* obj = PhysicsMgr::ptr()->dynamicsWorld->getCollisionObjectArray()[1];
+    btRigidBody* body = btRigidBody::upcast(obj);
+    body->activate(true);
+    body->applyCentralImpulse( btVector3( 0.f, 0.8f, 0.f ) );
+}
     // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("sphere");
@@ -89,7 +98,15 @@ void InputMgr::process_input(float time_delta)
     // Node* model = (Node*)ModelMgr::ptr()->get_model("base");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("head");
 
-    SpotLightNode* model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
+    SpotLightNode* model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight1"];
+    model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+    model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
+    model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+    model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight3"];
+    model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+
+
+    model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
 
     if (keystates[SDL_SCANCODE_T])
     {
@@ -189,7 +206,6 @@ void InputMgr::process_input(float time_delta)
     {
         model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
     }
-    model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
 
     if (keystates[SDL_SCANCODE_K])
     {

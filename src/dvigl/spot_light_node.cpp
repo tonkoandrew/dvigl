@@ -16,7 +16,6 @@ SpotLightNode::SpotLightNode(
 
     cutOff = ctf;
     outerCutOff = octf;
-    ;
 }
 
 glm::vec3 SpotLightNode::get_direction() { return forward; }

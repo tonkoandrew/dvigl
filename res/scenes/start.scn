@@ -3,15 +3,15 @@ dir_lights:
 - name: dirlight1
   rotation: {x: 0.0, y: 0.0, z: 0.0}
   color: {r: 0.9, g: 0.8, b: 0.8}
-  intensity: 0.5
+  intensity: 0.8
 - name: dirlight2
   rotation: {x: 0.8, y: 0.0, z: 0.0}
   color: {r: 0.9, g: 0.8, b: 0.8}
-  intensity: 0.5
+  intensity: 0.8
 - name: dirlight3
   rotation: {x: 0.8, y: 0.8, z: 0.0}
   color: {r: 0.9, g: 0.8, b: 0.8}
-  intensity: 0.5
+  intensity: 0.8
 
 
 point_lights:
@@ -30,6 +30,25 @@ point_lights:
   color: {r: 1.0, g: 1.0, b: 1.0}
   intensity: 500.0
   attenuationRadius: 100.0
+
+- name: pointlight4
+  position: {x: 0.0, y: 20.0, z: 30.0}
+  color: {r: 1.0, g: 1.0, b: 1.0}
+  intensity: 500.0
+  attenuationRadius: 100.0
+
+- name: pointlight5
+  position: {x: 0.0, y: 20.0, z: 50.0}
+  color: {r: 1.0, g: 1.0, b: 1.0}
+  intensity: 500.0
+  attenuationRadius: 100.0
+
+- name: pointlight6
+  position: {x: 0.0, y: 20.0, z: -50.0}
+  color: {r: 1.0, g: 1.0, b: 1.0}
+  intensity: 500.0
+  attenuationRadius: 100.0
+
 
 
 spot_lights:
@@ -82,7 +101,7 @@ static_models:
 - file: elvis.dae
   format: collada
   name: elvis
-  position: {x: -100.0, y: 0.0, z: 0.0}
+  position: {x: -100.0, y: 0.0, z: 50.0}
   rotation: {x: 0, y: 0, z: 0.0}
   scale: 0.3
 # - file: bob.dae
@@ -125,7 +144,7 @@ static_models:
   name: sphere
   position: {x: -50.0, y: 20.0, z: 0.0}
   rotation: {x: 0, y: 0, z: 0}
-  scale: 20.0
+  scale: 28.0
 
 # - file: tree.dae
 #   format: collada

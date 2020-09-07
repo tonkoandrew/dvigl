@@ -136,6 +136,13 @@ bool RenderMgr::init()
 //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
 // #endif
 
+
+int max_tex_size;
+glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &max_tex_size);
+LOG("====================================================\n");
+LOG("Max texture buffer size is %d\n", max_tex_size);
+LOG("====================================================\n");
+
 #if !defined(__PLATFORM_ANDROID__)
     // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     // int max_attrs = 0;
@@ -177,7 +184,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 {
     glDisable(GL_BLEND);
 
-    float dt = time_delta * 100.0f;
+    float dt = time_delta * 500.0f;
 
     Shader* s;
     glm::mat4 model_m;

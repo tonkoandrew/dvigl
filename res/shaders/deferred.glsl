@@ -319,7 +319,7 @@ void main()
     float albedoAlpha = texture(albedoTexture, TexCoords).w;
     float metallic = texture(materialInfoTexture, TexCoords).r;
     float unclampedRoughness = texture(materialInfoTexture, TexCoords).g; // Used for indirect specular (reflections)
-    float roughness = max(unclampedRoughness, 0.4); // Used for calculations since specular highlights will be too fine, and will cause flicker
+    float roughness = max(unclampedRoughness, 0.5); // Used for calculations since specular highlights will be too fine, and will cause flicker
     float materialAO = texture(materialInfoTexture, TexCoords).b;
     float sceneAO = texture(ssaoTexture, TexCoords).r;
     float ao = min(materialAO, sceneAO);
@@ -401,6 +401,7 @@ void main()
 
     if (visualize_velocity)
     {
-        FragColor = vec4(velocity, 1.0);
+        // FragColor = vec4(vec3(length(velocity.xy)*0.5), 1.0);
+        FragColor = vec4(abs(velocity.x), abs(velocity.y), 0.0, 1.0);
     }
 }

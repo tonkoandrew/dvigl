@@ -28,7 +28,7 @@ bool PhysicsMgr::init()
 
     btTransform groundTransform;
     groundTransform.setIdentity();
-    groundTransform.setOrigin(btVector3(0, -50, 0));
+    groundTransform.setOrigin(btVector3(0, -25, 0));
 
     btScalar mass(0.);
 
@@ -46,7 +46,7 @@ bool PhysicsMgr::init()
 
     rbInfo.m_restitution = 1.0f;
     rbInfo.m_friction = 0.01f;
-    rbInfo.m_linearDamping = 0.1f;
+    rbInfo.m_linearDamping = 0.01f;
     rbInfo.m_rollingFriction = 0.01f;
     // rbInfo.m_mass            = 0.0f;
 
@@ -75,7 +75,7 @@ bool PhysicsMgr::init()
         if (isDynamic)
             colShape->calculateLocalInertia(mass, localInertia);
 
-        startTransform.setOrigin(btVector3(-100, 25, 0));
+        startTransform.setOrigin(btVector3(-50, 100, 0));
 
         // using motionstate is recommended, it provides interpolation capabilities,
         // and only synchronizes 'active' objects
@@ -83,8 +83,8 @@ bool PhysicsMgr::init()
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 
         rbInfo.m_restitution = 1.0f;
-        rbInfo.m_friction = 0.01f;
-        rbInfo.m_linearDamping = 0.1f;
+        rbInfo.m_friction = 0.1f;
+        rbInfo.m_linearDamping = 0.2f;
         rbInfo.m_rollingFriction = 0.01f;
 
         // rbInfo.m_restitution   = 1.0f;
@@ -128,8 +128,8 @@ void PhysicsMgr::update(float time_delta)
                             float(trans.getOrigin().getZ()));
     // m->set_position(v);
 
-    ModelNode *elvis = ModelMgr::ptr()->get_model("elvis");
-    elvis->set_position(v);
+    ModelNode *sphere = ModelMgr::ptr()->get_model("sphere");
+    sphere->set_position(v);
 
     // LOG("world pos object = %.8f, %.8f, %.8f\n",
     // float(trans.getOrigin().getX()), float(trans.getOrigin().getY()),
