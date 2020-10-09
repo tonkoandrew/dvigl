@@ -15,6 +15,13 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 
+if (WIN32)
+else()
+  set(OpenGL_GL_PREFERENCE GLVND CACHE STRING "Linux-only: if GLVND, use the vendor-neutral GL libraries (default). If LEGACY, use the legacy ones (might be necessary to have optirun/primusrun work)")
+  set_property(CACHE OpenGL_GL_PREFERENCE PROPERTY STRINGS GLVND LEGACY)
+endif(WIN32)
+
+
 if(WIN32)
   set(CMAKE_INCLUDE_PATH "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32")
   set(CMAKE_LIBRARY_PATH "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32")
@@ -159,14 +166,16 @@ elseif(UNIX AND NOT APPLE)
   add_definitions(${OPENGL_DEFINITIONS})
   find_package(X11 REQUIRED)
   # note that the order is important for setting the libs
-  set(LIBS ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xext Xrandr Xinerama Xi Xxf86vm Xcursor GL dl asound pthread FLAC ${JPEG_LIBRARIES} )
+  set(LIBS ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES}  ${ASSIMP_LIBRARY} ${IRRXML_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xext Xrandr Xinerama Xi Xxf86vm Xcursor GL dl asound pthread FLAC ${JPEG_LIBRARIES} tiff webp.a vorbisfile.a fluidsynth modplug mpg123 opus opusfile theora cairo)
   # set(LIBS Qt5::Widgets ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xext Xrandr Xinerama Xi Xxf86vm Xcursor GL dl asound pthread FLAC ${JPEG_LIBRARIES} )
-  set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
+  execute_process(COMMAND sdl2-config --static-libs OUTPUT_VARIABLE SDL_VARS)
+
+  set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE}  ${SDL_VARS}")
 elseif(APPLE)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
   find_package(OpenGL REQUIRED)
   add_definitions(${OPENGL_DEFINITIONS})
-  set(LIBS ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} dl pthread FLAC ${JPEG_LIBRARIES} bz2 iconv modplug TIFF webp.a vorbisfile.a)
+  set(LIBS ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${a_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} dl pthread FLAC ${JPEG_LIBRARIES} bz2 iconv modplug TIFF webp.a vorbisfile.a)
   set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -L/usr/local/lib -lSDL2 -lm -liconv -Wl,-framework,CoreAudio -Wl,-framework,AudioToolbox -Wl,-framework,ForceFeedback -lobjc -Wl,-framework,CoreVideo -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,IOKit -Wl,-weak_framework,QuartzCore -Wl,-weak_framework,Metal")
 
   # INCLUDE_DIRECTORIES(/System/Library/Frameworks)
@@ -216,7 +225,8 @@ file(GLOB SOURCE
 add_library(${NAME} STATIC ${SOURCE})
 # add_library(${NAME} SHARED ${SOURCE})
 
-target_link_libraries(${NAME} ${LIBS})
+# target_link_libraries(${NAME} c SDL2 dl asound dl pthread pulse-simple pulse X11 Xext Xcursor Xinerama Xi Xrandr Xss Xxf86vm wayland-egl wayland-client wayland-cursor xkbcommon pthread rt ${LIBS})
+target_link_libraries(${NAME} m ${LIBS})
 
 set(LIBS ${NAME} ${LIBS})
 
