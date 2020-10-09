@@ -1,0 +1,9 @@
+shader: 'simple'
+albedo: 'flame_head.png'
+normal: 'corkboard3b-normal.png'
+metallic: 'corkboard3b-metalness.png'
+roughness: 'corkboard3b-metalness.png'
+ao: 'corkboard3b-ao.png'
+uv_params:
+  offset_x: 0.05
+  offset_y: 0.05

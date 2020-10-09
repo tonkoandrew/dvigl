@@ -11,7 +11,7 @@ dir_lights:
 - name: dirlight3
   rotation: {x: 0.8, y: 0.8, z: 0.0}
   color: {r: 0.9, g: 0.8, b: 0.8}
-  intensity: 0.8
+  intensity: 1.8
 
 
 point_lights:
@@ -98,6 +98,14 @@ static_models:
 #   position: {x: 0.0, y: 0.0, z: 0.0}
 #   rotation: {x: -1.5707963267948966, y: 0, z: 0.0}
 #   scale: 100.0
+
+- file: flame-head.dae
+  format: collada
+  name: flame_head
+  position: {x: 0.0, y: 50.0, z: 100.0}
+  rotation: {x: 0.0, y: 0.0, z: 0.0}
+  scale: 400.0
+
 - file: elvis.dae
   format: collada
   name: elvis

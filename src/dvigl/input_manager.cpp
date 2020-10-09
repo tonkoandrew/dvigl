@@ -96,17 +96,17 @@ if (keystates[SDL_SCANCODE_SPACE]) {
     // Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("body");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("base");
-    // Node* model = (Node*)ModelMgr::ptr()->get_model("head");
+    Node* model = (Node*)ModelMgr::ptr()->get_model("flame_head");
 
-    SpotLightNode* model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight1"];
-    model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-    model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
-    model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-    model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight3"];
-    model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+    // SpotLightNode* model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight1"];
+    // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+    // // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
+    // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+    // // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight3"];
+    // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
 
 
-    model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
+    // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["flame_head"];
 
     if (keystates[SDL_SCANCODE_T])
     {
@@ -212,23 +212,23 @@ if (keystates[SDL_SCANCODE_SPACE]) {
         model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
     }
 
-    if (keystates[SDL_SCANCODE_Z])
-    {
-        model->intensity -= 1.0 * time_delta;
-    }
-    if (keystates[SDL_SCANCODE_C])
-    {
-        model->intensity += 1.0 * time_delta;
-    }
+    // if (keystates[SDL_SCANCODE_Z])
+    // {
+    //     model->intensity -= 1.0 * time_delta;
+    // }
+    // if (keystates[SDL_SCANCODE_C])
+    // {
+    //     model->intensity += 1.0 * time_delta;
+    // }
 
-    if (keystates[SDL_SCANCODE_1])
-    {
-        model->attenuationRadius -= 0.1 * time_delta;
-    }
-    if (keystates[SDL_SCANCODE_2])
-    {
-        model->attenuationRadius += 0.1 * time_delta;
-    }
+    // if (keystates[SDL_SCANCODE_1])
+    // {
+    //     model->attenuationRadius -= 0.1 * time_delta;
+    // }
+    // if (keystates[SDL_SCANCODE_2])
+    // {
+    //     model->attenuationRadius += 0.1 * time_delta;
+    // }
     if (keystates[SDL_SCANCODE_9])
     {
         RenderMgr::ptr()->fov += 0.001 * time_delta;
