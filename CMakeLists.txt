@@ -7,24 +7,24 @@ project(dvigl)
 find_program(CCACHE_FOUND ccache)
 if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache) # Less useful to do it for linking, see edit2
-endif(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif()
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release
         CACHE STRING "Choose the type of build (Debug or Release)"
         FORCE
     )
-endif(NOT CMAKE_BUILD_TYPE)
+endif()
 
 if(WIN32)
 else()
     set(OpenGL_GL_PREFERENCE GLVND
         CACHE STRING
-        "Linux-only: if GLVND, use the vendor-neutral GL libraries (default). If LEGACY, use the legacy ones (might be necessary to have optirun/primusrun work)"
+        "Linux-only: if GLVND, use the vendor-neutral GL libraries (default)."
     )
     set_property(CACHE OpenGL_GL_PREFERENCE PROPERTY STRINGS GLVND LEGACY)
-endif(WIN32)
+endif()
 
 if(WIN32)
     set(CMAKE_INCLUDE_PATH
@@ -36,7 +36,7 @@ if(WIN32)
     set(CMAKE_PREFIX_PATH
         "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32"
     )
-endif(WIN32)
+endif()
 
 find_package(Threads REQUIRED)
 
@@ -74,8 +74,8 @@ else()
             CMAKE_CXX_FLAGS
             "-std=c++11 -s -pedantic -fno-data-sections -fno-function-sections"
         )
-    endif(SANITIZE)
-endif(APPLE)
+    endif()
+endif()
 
 # find the required packages
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
@@ -105,7 +105,7 @@ if(APPLE)
 else()
     find_package(PNG REQUIRED)
     message(STATUS "PNG at ${PNG_LIBRARIES}")
-endif(APPLE)
+endif()
 
 find_package(SDL2_image REQUIRED)
 message(STATUS "SDL2_image included at ${SDL2_IMAGE_INCLUDE_DIRS}")
@@ -156,13 +156,13 @@ message(STATUS "JPEG at ${JPEG_LIBRARIES}")
 if(WIN32)
     find_package(HARFBUZZ REQUIRED)
     message(STATUS "HARFBUZZ at ${HARFBUZZ_LIBRARIES}")
-endif(WIN32)
+endif()
 
 if(WIN32)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
 else()
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
-endif(WIN32)
+endif()
 
 # if (UNIX AND NOT APPLE)
 #   find_package(Qt5 COMPONENTS Widgets REQUIRED)
@@ -329,7 +329,7 @@ elseif(APPLE)
     # set(LIBS ${LIBS} ${APPLE_LIBS})
 else()
     set(LIBS)
-endif(WIN32)
+endif()
 
 # first create relevant static libraries requried for other projects
 add_library(GLAD STATIC "src/glad.c")
@@ -409,7 +409,7 @@ elseif(APPLE)
         PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_BINARY_DIR}/bin"
     )
-endif(WIN32)
+endif()
 
 # ============================ EDITOR ===========================================
 # if(UNIX AND NOT APPLE)
@@ -436,8 +436,8 @@ endif(WIN32)
 #       set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 #   elseif(UNIX AND NOT APPLE)
 #       set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
-#   endif(WIN32)
-# endif(UNIX AND NOT APPLE)
+#   endif()
+# endif()
 # ============================ EDITOR ===========================================
 
 include_directories(${CMAKE_SOURCE_DIR}/includes ${BULLET_INCLUDE_DIRS})
@@ -461,7 +461,7 @@ elseif(UNIX AND NOT APPLE)
         ${NAME}
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
     )
-endif(WIN32)
+endif()
 
 get_target_property(BINARY_PATH ${NAME} RUNTIME_OUTPUT_DIRECTORY)
 

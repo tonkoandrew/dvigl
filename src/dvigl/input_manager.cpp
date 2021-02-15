@@ -36,12 +36,13 @@ void InputMgr::process_input(float time_delta)
 
     if (keystates[SDL_SCANCODE_W])
     {
-        cam->position += glm::normalize(glm::vec3(cam->forward.x, 0, cam->forward.z)) * movement_speed * time_delta;
+        cam->move_forward(movement_speed * time_delta);
     }
 
     if (keystates[SDL_SCANCODE_S])
     {
-        cam->position -= glm::normalize(glm::vec3(cam->forward.x, 0, cam->forward.z)) * movement_speed * time_delta;
+        cam->move_back(movement_speed * time_delta);
+        // cam->position -= glm::normalize(glm::vec3(cam->forward.x, 0, cam->forward.z)) * movement_speed * time_delta;
     }
 
     if (keystates[SDL_SCANCODE_A])

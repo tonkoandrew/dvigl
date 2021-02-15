@@ -74,6 +74,12 @@ bool RenderMgr::init()
     }
     SDL_ClearError();
 
+
+    if(SDL_SetRelativeMouseMode(SDL_TRUE)) {
+        LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
+        return false;
+    }
+
     SDL_Surface* icon = IMG_Load("../res/icons/icon.png");
     SDL_SetWindowIcon(main_window, icon);
 

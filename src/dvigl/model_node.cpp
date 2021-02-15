@@ -61,7 +61,7 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
         {
             const char* name = scene->mMeshes[0]->mBones[i]->mName.C_Str();
             int num_weights = scene->mMeshes[0]->mBones[i]->mNumWeights;
-            // LOG("Bone \"%s\" have %d weights\n", name, num_weights);
+            LOG("Bone \"%s\" have %d weights\n", name, num_weights);
         }
 
         meshes[m] = new Mesh(scene->mMeshes[m]);

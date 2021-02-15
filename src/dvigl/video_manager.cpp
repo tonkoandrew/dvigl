@@ -98,11 +98,6 @@ bool VideoMgr::load_video(std::string fname)
         SDL_Delay(10);
     }
 
-    int width = video->width;
-    int height = video->height;
-    // int width = 1920;
-    // int height = 1080;
-
     framems = (video->fps == 0.0) ? 0 : ((Uint32)(1000.0 / video->fps));
     screen = RenderMgr::ptr()->get_main_window();
 

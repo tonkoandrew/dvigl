@@ -6,7 +6,6 @@ bool FileSystemMgr::init() { return true; }
 
 char* FileSystemMgr::get_content(std::string file_name)
 {
-    char* buffer = NULL;
     Sint64 bufferLength = 0;
 
     SDL_RWops* rw = SDL_RWFromFile(file_name.c_str(), "rb");
@@ -14,6 +13,7 @@ char* FileSystemMgr::get_content(std::string file_name)
     {
         /* Seek to 0 bytes from the end of the file */
         bufferLength = SDL_RWsize(rw);
+        char* buffer = NULL;
         if (bufferLength == 0)
         {
             LOG("File is empty: %s\n", file_name.c_str());

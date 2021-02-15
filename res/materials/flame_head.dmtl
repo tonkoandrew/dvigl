@@ -1,6 +1,6 @@
 shader: 'simple'
-albedo: 'flame_head.png'
-normal: 'corkboard3b-normal.png'
+albedo: 'face_texture.png'
+normal: 'normal.jpg'
 metallic: 'corkboard3b-metalness.png'
 roughness: 'corkboard3b-metalness.png'
 ao: 'corkboard3b-ao.png'

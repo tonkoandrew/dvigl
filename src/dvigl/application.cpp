@@ -14,6 +14,9 @@
 #include <dvigl/texture_manager.h>
 #include <dvigl/video_manager.h>
 
+#include <dvigl/camera_node.h>
+#include <dvigl/scene.h>
+
 Application gApplication;
 
 bool Application::init()
@@ -191,6 +194,16 @@ bool Application::main_loop()
                     int new_h = event.window.data2;
                     RenderMgr::ptr()->resize_buffers(new_w, new_h, false);
                 }
+            }
+            if (event.type == SDL_MOUSEMOTION)
+            {
+
+                CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
+
+                float time_delta = 0.005;
+
+                cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -event.motion.xrel * time_delta);
+                cam->rotate_around_vector(cam->left, event.motion.yrel * time_delta);
             }
         }
         prev_tick = current_tick;

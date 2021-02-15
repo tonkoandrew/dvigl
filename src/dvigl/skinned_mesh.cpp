@@ -92,10 +92,8 @@ SkinnedMesh::SkinnedMesh(const aiScene* scene)
     // Create the buffers for the vertices attributes
     glGenBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
 
-    bool Ret = false;
-
     m_GlobalInverseTransform = glm::inverse(aiMatrix4x4ToGlm(&(scene->mRootNode->mTransformation)));
-    Ret = InitFromScene(scene);
+    InitFromScene(scene);
 
     // Make sure the VAO is not changed from the outside
     glBindVertexArray(0);

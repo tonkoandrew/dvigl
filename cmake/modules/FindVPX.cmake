@@ -26,11 +26,10 @@
 #  VPX_INCLUDE_DIRS - the VPX include directory
 #  VPX_LIBRARIES - The libraries needed to use VPX
 
-set(_VPX_ROOT_PATHS
-    ${CMAKE_INSTALL_PREFIX}
-)
+set(_VPX_ROOT_PATHS ${CMAKE_INSTALL_PREFIX})
 
-find_path(VPX_INCLUDE_DIRS
+find_path(
+    VPX_INCLUDE_DIRS
     NAMES vpx/vpx_encoder.h
     HINTS _VPX_ROOT_PATHS
     PATH_SUFFIXES include
@@ -39,16 +38,20 @@ if(VPX_INCLUDE_DIRS)
     set(HAVE_VPX_VPX_ENCODER_H 1)
 endif()
 
-find_library(VPX_LIBRARIES
+find_library(
+    VPX_LIBRARIES
     NAMES vpx vpxmd
     HINTS _VPX_ROOT_PATHS
     PATH_SUFFIXES bin lib lib/Win32
 )
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(VPX
+find_package_handle_standard_args(
+    VPX
     DEFAULT_MSG
-    VPX_INCLUDE_DIRS VPX_LIBRARIES HAVE_VPX_VPX_ENCODER_H
+    VPX_INCLUDE_DIRS
+    VPX_LIBRARIES
+    HAVE_VPX_VPX_ENCODER_H
 )
 
 mark_as_advanced(VPX_INCLUDE_DIRS VPX_LIBRARIES HAVE_VPX_VPX_ENCODER_H)

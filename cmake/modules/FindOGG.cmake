@@ -1,17 +1,14 @@
-find_path(OGG_INCLUDE_DIR
-  NAMES
-    ogg/ogg.h
-  DOC "ogg include directory")
+find_path(OGG_INCLUDE_DIR NAMES ogg/ogg.h DOC "ogg include directory")
 mark_as_advanced(OGG_INCLUDE_DIR)
 
-find_library(OGG_LIBRARY
-  NAMES
-    ogg
-  DOC "ogg library")
+find_library(OGG_LIBRARY NAMES ogg DOC "ogg library")
 mark_as_advanced(OGG_LIBRARY)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(OGG REQUIRED_VARS OGG_LIBRARY OGG_INCLUDE_DIR)
+find_package_handle_standard_args(
+    OGG
+    REQUIRED_VARS OGG_LIBRARY OGG_INCLUDE_DIR
+)
 
 # if (OGG_FOUND)
 #   set(OGG_LIBRARIES "${OGG_LIBRRAY}")

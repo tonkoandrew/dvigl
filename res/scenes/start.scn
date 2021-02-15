@@ -102,9 +102,9 @@ static_models:
 - file: flame-head.dae
   format: collada
   name: flame_head
-  position: {x: 0.0, y: 50.0, z: 100.0}
+  position: {x: 0.0, y: 50.0, z: 50.0}
   rotation: {x: 0.0, y: 0.0, z: 0.0}
-  scale: 400.0
+  scale: 100.0
 
 - file: elvis.dae
   format: collada
