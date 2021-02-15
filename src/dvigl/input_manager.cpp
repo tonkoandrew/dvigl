@@ -217,10 +217,12 @@ if (keystates[SDL_SCANCODE_SPACE]) {
     // {
     //     model->intensity -= 1.0 * time_delta;
     // }
-    // if (keystates[SDL_SCANCODE_C])
-    // {
-    //     model->intensity += 1.0 * time_delta;
-    // }
+    if (keystates[SDL_SCANCODE_C])
+    {
+        RenderMgr::ptr()->visualize_wireframe = 1;
+    } else {
+        RenderMgr::ptr()->visualize_wireframe = 0;
+    }
 
     // if (keystates[SDL_SCANCODE_1])
     // {

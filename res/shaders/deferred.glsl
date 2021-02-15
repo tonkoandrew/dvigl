@@ -34,6 +34,7 @@ uniform bool visualize_roughness;
 uniform bool visualize_ao;
 uniform bool visualize_world_position;
 uniform bool visualize_velocity;
+uniform bool visualize_wireframe;
 
 // ============================= ++++++++++++++++++++++++++++++++=== ==================
 struct DirLight
@@ -403,5 +404,11 @@ void main()
     {
         // FragColor = vec4(vec3(length(velocity.xy)*0.5), 1.0);
         FragColor = vec4(abs(velocity.x), abs(velocity.y), 0.0, 1.0);
+    }
+
+
+    if (visualize_wireframe)
+    {
+        FragColor = vec4(1.0);
     }
 }

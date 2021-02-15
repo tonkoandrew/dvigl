@@ -16,6 +16,7 @@ public:
     int visualize_ao = 0;
     int visualize_world_position = 0;
     int visualize_velocity = 0;
+    int visualize_wireframe = 0;
 
     float z_near;
     float z_far;

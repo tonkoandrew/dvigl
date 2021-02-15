@@ -23,6 +23,11 @@ RenderMgr gRenderMgr;
 
 bool RenderMgr::init()
 {
+    
+    if(SDL_SetRelativeMouseMode(SDL_TRUE)) {
+        LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
+        return false;
+    }
     LOG("\n");
     SDL_GL_SetSwapInterval(0); // set VSync
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -73,12 +78,6 @@ bool RenderMgr::init()
         return false;
     }
     SDL_ClearError();
-
-
-    if(SDL_SetRelativeMouseMode(SDL_TRUE)) {
-        LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
-        return false;
-    }
 
     SDL_Surface* icon = IMG_Load("../res/icons/icon.png");
     SDL_SetWindowIcon(main_window, icon);
@@ -188,6 +187,10 @@ LOG("====================================================\n");
 
 void RenderMgr::geometry_pass(float time_delta, float aspect)
 {
+    if(visualize_wireframe){
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
     glDisable(GL_BLEND);
 
     float dt = time_delta * 500.0f;
@@ -283,6 +286,10 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     prev_proj_m = glm::mat4(proj_m);
     camera->prev_view_matrix = glm::mat4(view_m);
+
+    if (visualize_wireframe) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 }
 
 void RenderMgr::deferred_pass(float time_delta, float aspect)
@@ -310,6 +317,7 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     s->uniform1i("visualize_ao", visualize_ao);
     s->uniform1i("visualize_world_position", visualize_world_position);
     s->uniform1i("visualize_velocity", visualize_velocity);
+    s->uniform1i("visualize_wireframe", visualize_wireframe);
 
     s->uniform3i("numDirPointSpotLights", glm::ivec3((int)SceneMgr::ptr()->get_current_scene()->dir_lights.size(),
                                               (int)SceneMgr::ptr()->get_current_scene()->point_lights.size(),
