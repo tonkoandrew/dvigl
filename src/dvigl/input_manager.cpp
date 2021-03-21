@@ -97,7 +97,7 @@ if (keystates[SDL_SCANCODE_SPACE]) {
     // Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("body");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("base");
-    Node* model = (Node*)ModelMgr::ptr()->get_model("flame_head");
+    // Node* model = (Node*)ModelMgr::ptr()->get_model("flame_head");
 
     // SpotLightNode* model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight1"];
     // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
@@ -109,30 +109,30 @@ if (keystates[SDL_SCANCODE_SPACE]) {
 
     // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["flame_head"];
 
-    if (keystates[SDL_SCANCODE_T])
-    {
-        model->position.z += movement_speed * time_delta;
-    }
-    if (keystates[SDL_SCANCODE_G])
-    {
-        model->position.z -= movement_speed * time_delta;
-    }
-    if (keystates[SDL_SCANCODE_Y])
-    {
-        model->position.y += movement_speed * time_delta;
-    }
-    if (keystates[SDL_SCANCODE_H])
-    {
-        model->position.y -= movement_speed * time_delta;
-    }
-    if (keystates[SDL_SCANCODE_U])
-    {
-        model->position.x += movement_speed * time_delta;
-    }
-    if (keystates[SDL_SCANCODE_J])
-    {
-        model->position.x -= movement_speed * time_delta;
-    }
+    // if (keystates[SDL_SCANCODE_T])
+    // {
+    //     model->position.z += movement_speed * time_delta;
+    // }
+    // if (keystates[SDL_SCANCODE_G])
+    // {
+    //     model->position.z -= movement_speed * time_delta;
+    // }
+    // if (keystates[SDL_SCANCODE_Y])
+    // {
+    //     model->position.y += movement_speed * time_delta;
+    // }
+    // if (keystates[SDL_SCANCODE_H])
+    // {
+    //     model->position.y -= movement_speed * time_delta;
+    // }
+    // if (keystates[SDL_SCANCODE_U])
+    // {
+    //     model->position.x += movement_speed * time_delta;
+    // }
+    // if (keystates[SDL_SCANCODE_J])
+    // {
+    //     model->position.x -= movement_speed * time_delta;
+    // }
 
     if (keystates[SDL_SCANCODE_B])
     {
@@ -199,19 +199,19 @@ if (keystates[SDL_SCANCODE_SPACE]) {
         RenderMgr::ptr()->visualize_world_position = 0;
     }
 
-    if (keystates[SDL_SCANCODE_X])
-    {
-        model->pitch(-rotation_speed * time_delta);
-    }
-    if (keystates[SDL_SCANCODE_L])
-    {
-        model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-    }
+    // if (keystates[SDL_SCANCODE_X])
+    // {
+    //     model->pitch(-rotation_speed * time_delta);
+    // }
+    // if (keystates[SDL_SCANCODE_L])
+    // {
+    //     model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
+    // }
 
-    if (keystates[SDL_SCANCODE_K])
-    {
-        model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
-    }
+    // if (keystates[SDL_SCANCODE_K])
+    // {
+    //     model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
+    // }
 
     // if (keystates[SDL_SCANCODE_Z])
     // {

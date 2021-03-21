@@ -323,7 +323,8 @@ void main()
     float roughness = max(unclampedRoughness, 0.5); // Used for calculations since specular highlights will be too fine, and will cause flicker
     float materialAO = texture(materialInfoTexture, TexCoords).b;
     float sceneAO = texture(ssaoTexture, TexCoords).r;
-    float ao = min(materialAO, sceneAO);
+    // float ao = min(materialAO, sceneAO);
+    float ao = materialAO;
 
     vec3 fragPos = FragPos;
 
