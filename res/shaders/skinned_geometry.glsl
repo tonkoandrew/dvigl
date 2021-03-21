@@ -110,7 +110,7 @@ void main()
 
     vec2 a = (v_pos_cam.xy / v_pos_cam.w) * 0.5 + 0.5;
     vec2 b = (v_prev_pos_cam.xy / v_prev_pos_cam.w) * 0.5 + 0.5;
-    vec2 vel = (a - b) * time_delta;
+    vec2 vel = (a - b);
     gb_Velocity = vec3(vel, 1.0);
 }
 

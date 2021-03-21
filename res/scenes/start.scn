@@ -124,7 +124,7 @@ static_models:
   name: plane
   position: {x: 0.0, y: 0.0, z: 0.0}
   rotation: {x: -1.5707963267948966, y: 0, z: 0}
-  scale: 100.0
+  scale: 200.0
 
 # - file: head.dae
 #   format: collada

@@ -213,14 +213,13 @@ bool Application::main_loop()
         ParticleSystemMgr::ptr()->update(time_delta);
         PhysicsMgr::ptr()->update(time_delta);
 
-        VideoMgr::ptr()->update(time_delta);
+        // VideoMgr::ptr()->update(time_delta);
 
         SceneMgr::ptr()->update(time_delta);
         RenderMgr::ptr()->render_frame(time_delta);
 
         /* 16ms each frame for ~60fps */
         int delay = 16.6f - time_delta;
-        /* 33ms each frame for ~30fps */
         // int delay = 33.3f - time_delta;
         // int delay = 260.0f - time_delta;
         if (delay < 0)

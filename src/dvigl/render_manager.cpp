@@ -196,7 +196,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     glDisable(GL_BLEND);
 
-    float dt = time_delta * 500.0f;
+    float dt = time_delta * 1000.0f;
 
     Shader* s;
     glm::mat4 model_m;
@@ -232,7 +232,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     s->uniform1i("material.texture_roughness", 3);
     s->uniform1i("material.texture_ao", 4);
 
-    s->uniform1f("time_delta", dt);
+    // s->uniform1f("time_delta", dt);
 
     int rendered_objects = 0;
 
@@ -271,7 +271,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     s->uniform1i("material.texture_roughness", 3);
     s->uniform1i("material.texture_ao", 4);
 
-    s->uniform1f("time_delta", dt);
+    // s->uniform1f("time_delta", dt);
 
     for (auto element : ModelMgr::ptr()->skinned_models)
     {
@@ -320,6 +320,9 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
 void RenderMgr::deferred_pass(float time_delta, float aspect)
 {
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     Shader* s;
     s = ShaderMgr::ptr()->get_shader("deferred");
     s->bind();
@@ -333,6 +336,11 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
     view_m = camera->get_view_matrix();
     view_proj_m = proj_m * view_m;
+
+    float velocity_scale = 10.0f;
+    // float velocity_scale = 0.1f * time_delta;
+    // LOG("%f\n", velocity_scale);
+    s->uniform1f("uVelocityScale", velocity_scale);
 
     s->uniform3f("viewPos", camera->get_position());
 
@@ -632,6 +640,10 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gAlbedo, 0);
 
     if (initialize)
@@ -689,9 +701,11 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
         glGenTextures(1, &gVelocity);
     }
     glBindTexture(GL_TEXTURE_2D, gVelocity);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, w, h, 0, GL_RG, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, gVelocity, 0);
 
     GLuint attachments[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,

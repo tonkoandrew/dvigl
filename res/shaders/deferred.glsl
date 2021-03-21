@@ -2,21 +2,15 @@
 #version 410 core
 
 layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec2 aTexCoords;
-
-out vec2 TexCoords;
 
 void main()
 {
-    TexCoords = aTexCoords;
     gl_Position = vec4(aPos, 1.0);
 }
 
 #defshader fragment
 #version 410 core
 out vec4 FragColor;
-
-in vec2 TexCoords;
 
 // GBuffer
 uniform sampler2D albedoTexture;
@@ -35,6 +29,7 @@ uniform bool visualize_ao;
 uniform bool visualize_world_position;
 uniform bool visualize_velocity;
 uniform bool visualize_wireframe;
+uniform float uVelocityScale;
 
 // ============================= ++++++++++++++++++++++++++++++++=== ==================
 struct DirLight
@@ -70,6 +65,9 @@ struct SpotLight
 #define MAX_DIR_LIGHTS 10
 #define MAX_POINT_LIGHTS 10
 #define MAX_SPOT_LIGHTS 10
+
+#define MAX_SAMPLES 10
+
 const float PI = 3.14159265359;
 // IBL
 uniform int reflectionProbeMipCount;
@@ -307,6 +305,8 @@ vec3 CalculateSpotLightRadiance(
 
 void main()
 {
+    vec2 texelSize = 1.0 / vec2(textureSize(albedoTexture, 0));
+    vec2 TexCoords = gl_FragCoord.xy * texelSize;
 
     vec3 FragPos = texture(worldPosTexture, TexCoords).xyz;
     // Sample textures
@@ -315,12 +315,12 @@ void main()
         discard;
     normal = normalize(normal);
 
-    vec3 velocity = texture(velocityTexture, TexCoords).rgb;
     vec3 albedo = texture(albedoTexture, TexCoords).rgb;
     float albedoAlpha = texture(albedoTexture, TexCoords).w;
     float metallic = texture(materialInfoTexture, TexCoords).r;
     float unclampedRoughness = texture(materialInfoTexture, TexCoords).g; // Used for indirect specular (reflections)
-    float roughness = max(unclampedRoughness, 0.5); // Used for calculations since specular highlights will be too fine, and will cause flicker
+    // float roughness = max(unclampedRoughness, 0.5); // Used for calculations since specular highlights will be too fine, and will cause flicker
+    float roughness = max(unclampedRoughness, 1.0); // Used for calculations since specular highlights will be too fine, and will cause flicker
     float materialAO = texture(materialInfoTexture, TexCoords).b;
     float sceneAO = texture(ssaoTexture, TexCoords).r;
     // float ao = min(materialAO, sceneAO);
@@ -403,8 +403,20 @@ void main()
 
     if (visualize_velocity)
     {
-        // FragColor = vec4(vec3(length(velocity.xy)*0.5), 1.0);
-        FragColor = vec4(abs(velocity.x), abs(velocity.y), 0.0, 1.0);
+        vec2 velocity = texture(velocityTexture, TexCoords).rg;
+
+        velocity *= uVelocityScale ;
+
+        float speed = length(velocity / texelSize);
+        int nSamples = clamp(int(speed), 1, MAX_SAMPLES);
+        vec4 oResult = texture(albedoTexture, TexCoords);
+        for (int i = 1; i < nSamples; ++i) {
+            vec2 offset = velocity * (float(i) / float(nSamples - 1) - 0.5);
+            oResult += texture(albedoTexture, TexCoords + offset);
+        }
+        oResult /= float(nSamples);
+
+        FragColor = vec4(oResult.rgb, 1.0);
     }
 
 
