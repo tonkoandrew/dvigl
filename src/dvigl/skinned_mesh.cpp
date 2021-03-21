@@ -93,7 +93,9 @@ SkinnedMesh::SkinnedMesh(const aiScene* scene)
     glGenBuffers(ARRAY_SIZE_IN_ELEMENTS(m_Buffers), m_Buffers);
 
     m_GlobalInverseTransform = glm::inverse(aiMatrix4x4ToGlm(&(scene->mRootNode->mTransformation)));
+
     InitFromScene(scene);
+    LOG("Skinned mesh approximate bounding_radius = %f\n", bounding_radius);
 
     // Make sure the VAO is not changed from the outside
     glBindVertexArray(0);
@@ -205,6 +207,24 @@ bool SkinnedMesh::InitFromScene(const aiScene* scene)
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Buffers[INDEX_BUFFER]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices[0]) * Indices.size(), &Indices[0], GL_STATIC_DRAW);
+
+    // Compute simple bounding sphere radius using first frame of animation (time = 0)
+    vector<glm::mat4> Transforms;
+    BoneTransform(0.0f, Transforms);
+    bounding_radius = 0.0f;
+    for (int i = 0; i < Positions.size(); i++)
+    {
+
+        glm::mat4 transform_mat = Transforms[Bones[i].IDs[0]] * Bones[i].Weights[0];
+        transform_mat += Transforms[Bones[i].IDs[1]] * Bones[i].Weights[1];
+        transform_mat += Transforms[Bones[i].IDs[2]] * Bones[i].Weights[2];
+        transform_mat += Transforms[Bones[i].IDs[3]] * Bones[i].Weights[3];
+
+        glm::vec4 transformed = transform_mat * glm::vec4(Positions[i], 1.0);
+        bounding_radius = fmax(bounding_radius, glm::length(transformed));
+    }
+
+    bounding_radius *= 1.5f; // Assume to have no more than twice transformations in animations
 
     for (GLuint i = 0; i < scene->mNumMeshes; i++)
     {

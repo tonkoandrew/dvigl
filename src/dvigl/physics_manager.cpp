@@ -123,12 +123,11 @@ void PhysicsMgr::update(float time_delta)
     }
 
     // ModelNode *m = ModelMgr::ptr()->get_model("yoda");
-    glm::vec3 v = glm::vec3(float(trans.getOrigin().getX()),
-                            float(trans.getOrigin().getY()),
-                            float(trans.getOrigin().getZ()));
+    glm::vec3 v
+        = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
     // m->set_position(v);
 
-    ModelNode *sphere = ModelMgr::ptr()->get_model("sphere");
+    ModelNode* sphere = ModelMgr::ptr()->get_model("sphere");
     sphere->set_position(v);
 
     // LOG("world pos object = %.8f, %.8f, %.8f\n",

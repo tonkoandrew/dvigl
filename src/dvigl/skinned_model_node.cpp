@@ -31,6 +31,8 @@ SkinnedModelNode::SkinnedModelNode(char* content, int content_size, std::string 
 
     meshes.resize(1);
     meshes[0] = new SkinnedMesh(scene);
+
+    bounding_radius = meshes[0]->bounding_radius;
 }
 
 void SkinnedModelNode::draw()
@@ -48,3 +50,5 @@ void SkinnedModelNode::release()
         meshes[i]->release();
     }
 }
+
+float SkinnedModelNode::get_bounding_sphere_radius() { return bounding_radius; }

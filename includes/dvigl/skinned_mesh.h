@@ -23,6 +23,7 @@ public:
     long long m_startTime;
 
     vector<glm::mat4> prev_Transforms;
+    float bounding_radius = 0.0f;
 
 private:
 #define NUM_BONES_PER_VEREX 4

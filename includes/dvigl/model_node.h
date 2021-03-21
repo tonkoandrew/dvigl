@@ -11,7 +11,9 @@ public:
     ModelNode(int w, int h, std::string texture);
     void draw();
     void release();
+    float get_bounding_sphere_radius();
 
 private:
     std::vector<Mesh*> meshes;
+    float bounding_radius = 0.0f;
 };

@@ -177,9 +177,13 @@ Mesh::Mesh(struct aiMesh* mesh)
                     textureCoord_data[tcoord_index + 1] = mesh->mTextureCoords[0][index].y;
                 }
 
-                vertex_data[v_index] = mesh->mVertices[index].x;
-                vertex_data[v_index + 1] = mesh->mVertices[index].y;
-                vertex_data[v_index + 2] = mesh->mVertices[index].z;
+                auto vertex = mesh->mVertices[index];
+
+                vertex_data[v_index] = vertex.x;
+                vertex_data[v_index + 1] = vertex.y;
+                vertex_data[v_index + 2] = vertex.z;
+
+                bounding_radius = fmax(bounding_radius, glm::length(glm::vec3(vertex.x, vertex.y, vertex.z)));
             }
         }
     }

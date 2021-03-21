@@ -84,13 +84,14 @@ void InputMgr::process_input(float time_delta)
         cam->rotate_around_vector(cam->left, -rotation_speed * time_delta);
     }
 
-if (keystates[SDL_SCANCODE_SPACE]) {
+    if (keystates[SDL_SCANCODE_SPACE])
+    {
 
-    btCollisionObject* obj = PhysicsMgr::ptr()->dynamicsWorld->getCollisionObjectArray()[1];
-    btRigidBody* body = btRigidBody::upcast(obj);
-    body->activate(true);
-    body->applyCentralImpulse( btVector3( 0.f, 0.8f, 0.f ) );
-}
+        btCollisionObject* obj = PhysicsMgr::ptr()->dynamicsWorld->getCollisionObjectArray()[1];
+        btRigidBody* body = btRigidBody::upcast(obj);
+        body->activate(true);
+        body->applyCentralImpulse(btVector3(0.f, 0.8f, 0.f));
+    }
     // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("sphere");
@@ -105,7 +106,6 @@ if (keystates[SDL_SCANCODE_SPACE]) {
     // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
     // // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight3"];
     // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-
 
     // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["flame_head"];
 
@@ -179,7 +179,6 @@ if (keystates[SDL_SCANCODE_SPACE]) {
         RenderMgr::ptr()->visualize_ao = 0;
     }
 
-
     if (keystates[SDL_SCANCODE_V])
     {
         RenderMgr::ptr()->visualize_velocity = 1;
@@ -187,7 +186,6 @@ if (keystates[SDL_SCANCODE_SPACE]) {
     else
     {
         RenderMgr::ptr()->visualize_velocity = 0;
-
     }
 
     if (keystates[SDL_SCANCODE_P])
@@ -220,7 +218,9 @@ if (keystates[SDL_SCANCODE_SPACE]) {
     if (keystates[SDL_SCANCODE_C])
     {
         RenderMgr::ptr()->visualize_wireframe = 1;
-    } else {
+    }
+    else
+    {
         RenderMgr::ptr()->visualize_wireframe = 0;
     }
 

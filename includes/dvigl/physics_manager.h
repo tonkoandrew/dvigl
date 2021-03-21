@@ -2,7 +2,7 @@
 #include "btBulletDynamicsCommon.h"
 #include <dvigl/core.h>
 
-class  InputMgr;
+class InputMgr;
 
 class PhysicsMgr : public Singleton<PhysicsMgr>
 {

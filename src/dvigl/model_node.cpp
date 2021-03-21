@@ -65,9 +65,13 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
         }
 
         meshes[m] = new Mesh(scene->mMeshes[m]);
+        bounding_radius = fmax(bounding_radius, meshes[m]->bounding_radius);
+
         meshes[m]->mat_idx = scene->mMeshes[m]->mMaterialIndex;
         // LOG("MATERIAL INDEX: %d\n", scene->mMeshes[m]->mMaterialIndex);
     }
+
+    LOG("bounding_radius = %.2f\n", bounding_radius);
 
     std::string Dir = "../res/materials";
 
@@ -135,3 +139,5 @@ void ModelNode::release()
         meshes[i]->release();
     }
 }
+
+float ModelNode::get_bounding_sphere_radius() { return bounding_radius; }

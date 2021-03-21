@@ -13,6 +13,7 @@ public:
     void release();
     Material* material;
     int mat_idx;
+    float bounding_radius = 0.0f;
 
 protected:
     unsigned int vao;

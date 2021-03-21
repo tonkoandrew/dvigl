@@ -19,12 +19,15 @@
 #include <dvigl/point_light_node.h>
 #include <dvigl/spot_light_node.h>
 
+#include <dvigl/frustum.h>
+
 RenderMgr gRenderMgr;
 
 bool RenderMgr::init()
 {
-    
-    if(SDL_SetRelativeMouseMode(SDL_TRUE)) {
+
+    if (SDL_SetRelativeMouseMode(SDL_TRUE))
+    {
         LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
         return false;
     }
@@ -136,17 +139,16 @@ bool RenderMgr::init()
     // glClearColor(0.01f, 0.1f, 0.01f, 1.0f);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-// glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
-// #ifdef __PLATFORM_ANDROID__
-//   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
-// #endif
+    // glClearColor(0.05f, 0.5f, 0.05f, 1.0f);
+    // #ifdef __PLATFORM_ANDROID__
+    //   glClearColor(0.3f, 0.35f, 0.25f, 1.0f);
+    // #endif
 
-
-int max_tex_size;
-glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &max_tex_size);
-LOG("====================================================\n");
-LOG("Max texture buffer size is %d\n", max_tex_size);
-LOG("====================================================\n");
+    int max_tex_size;
+    glGetIntegerv(GL_MAX_TEXTURE_BUFFER_SIZE, &max_tex_size);
+    LOG("====================================================\n");
+    LOG("Max texture buffer size is %d\n", max_tex_size);
+    LOG("====================================================\n");
 
 #if !defined(__PLATFORM_ANDROID__)
     // LOG("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -187,7 +189,8 @@ LOG("====================================================\n");
 
 void RenderMgr::geometry_pass(float time_delta, float aspect)
 {
-    if(visualize_wireframe){
+    if (visualize_wireframe)
+    {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
@@ -200,13 +203,14 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     glm::mat4 view_m;
     glm::mat4 proj_m;
 
-
     glm::mat4 prev_view_m;
 
     glm::mat4 view_proj_m;
     glm::mat4 prev_view_proj_m;
     glm::mat4 mvp;
     glm::mat4 prev_mvp;
+
+    Frustum f;
 
     proj_m = glm::perspective(fov, aspect, z_near, z_far);
 
@@ -218,6 +222,8 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     view_proj_m = proj_m * view_m;
     prev_view_proj_m = prev_proj_m * prev_view_m;
 
+    f.update(view_proj_m);
+
     s = ShaderMgr::ptr()->get_shader("static_geometry");
     s->bind();
     s->uniform1i("material.texture_albedo", 0);
@@ -228,10 +234,19 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     s->uniform1f("time_delta", dt);
 
+    int rendered_objects = 0;
+
     for (auto element : ModelMgr::ptr()->models)
     {
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
+        float bounding_radius = m->get_bounding_sphere_radius();
+        if (!f.sphere_test(glm::vec3(model_m[3]), bounding_radius))
+        {
+            continue;
+        }
+        rendered_objects += 1;
+
         mvp = view_proj_m * model_m;
         // glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(mvp)));
         glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
@@ -262,6 +277,14 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     {
         SkinnedModelNode* m = (SkinnedModelNode*)element.second;
         model_m = m->get_model_matrix();
+
+        float bounding_radius = m->get_bounding_sphere_radius();
+        if (!f.sphere_test(glm::vec3(model_m[3]), bounding_radius))
+        {
+            continue;
+        }
+        rendered_objects += 1;
+
         mvp = view_proj_m * model_m;
         prev_mvp = prev_view_proj_m * m->prev_model_matrix;
 
@@ -276,6 +299,8 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         m->prev_model_matrix = glm::mat4(model_m);
     }
 
+    // LOG("%d objects rendered\n", rendered_objects);
+
     GLuint err = glGetError();
     if (err != 0)
     {
@@ -287,7 +312,8 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     prev_proj_m = glm::mat4(proj_m);
     camera->prev_view_matrix = glm::mat4(view_m);
 
-    if (visualize_wireframe) {
+    if (visualize_wireframe)
+    {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 }
@@ -374,7 +400,6 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     glActiveTexture(GL_TEXTURE3);
     s->uniform1i("worldPosTexture", 3);
     glBindTexture(GL_TEXTURE_2D, gPos);
-
 
     glActiveTexture(GL_TEXTURE4);
     s->uniform1i("velocityTexture", 4);
@@ -654,7 +679,6 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, gPos, 0);
 
-
     if (initialize)
     {
         glGenTextures(1, &gVelocity);
@@ -670,14 +694,8 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, gVelocity, 0);
 
-
-    GLuint attachments[5] = {
-        GL_COLOR_ATTACHMENT0,
-        GL_COLOR_ATTACHMENT1,
-        GL_COLOR_ATTACHMENT2,
-        GL_COLOR_ATTACHMENT3,
-        GL_COLOR_ATTACHMENT4
-    };
+    GLuint attachments[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,
+        GL_COLOR_ATTACHMENT4 };
     glDrawBuffers(5, attachments);
     // glDrawBuffers(3, attachments);
     glGenRenderbuffers(1, &rboDepth);
