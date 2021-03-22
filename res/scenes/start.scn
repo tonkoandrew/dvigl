@@ -85,19 +85,13 @@ skinned_models:
   position: {x: 100.0, y: 0.0, z: 0.0}
   rotation: {x: 0, y: 0, z: 0.0}
   scale: 30.0
-# - file: bob.dae
-#   format: collada
-#   name: bob
-#   position: {x: -100.0, y: 0.0, z: 0.0}
-#   rotation: {x: 0, y: 0, z: 0}
-#   scale: 1.5
+- file: bob.dae
+  format: collada
+  name: bob
+  position: {x: -100.0, y: 0.0, z: 0.0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: 1.5
 static_models:
-# - file: terrain.dae
-#   format: collada
-#   name: terrain
-#   position: {x: 0.0, y: 0.0, z: 0.0}
-#   rotation: {x: -1.5707963267948966, y: 0, z: 0.0}
-#   scale: 100.0
 
 # - file: flame-head.dae
 #   format: collada
@@ -112,12 +106,6 @@ static_models:
   position: {x: -100.0, y: 0.0, z: 50.0}
   rotation: {x: 0, y: 0, z: 0.0}
   scale: 0.3
-# - file: bob.dae
-#   format: collada
-#   name: bob
-#   position: {x: 100.0, y: 0.0, z: 0.0}
-#   rotation: {x: -1.55, y: 0, z: 0.0}
-#   scale: 1.0
 
 - file: plane.dae
   format: collada
@@ -140,19 +128,19 @@ static_models:
 #   rotation: {x: 0.0, y: 1.5707963267948966, z: 0}
 #   scale: 500.0
 
-- file: base.dae
-  format: collada
-  name: base
-  position: {x: 0.0, y: 3.3, z: 0.0}
-  rotation: {x: 0.0, y: 1.5707963267948966, z: 0}
-  scale: 500.0
+# - file: base.dae
+#   format: collada
+#   name: base
+#   position: {x: 0.0, y: 3.3, z: 0.0}
+#   rotation: {x: 0.0, y: 1.5707963267948966, z: 0}
+#   scale: 500.0
 
-- file: base.dae
-  format: collada
-  name: base2
-  position: {x: 50.0, y: 3.3, z: 0.0}
-  rotation: {x: 0.0, y: 1.5707963267948966, z: 0}
-  scale: 500.0
+# - file: base.dae
+#   format: collada
+#   name: base2
+#   position: {x: 50.0, y: 3.3, z: 0.0}
+#   rotation: {x: 0.0, y: 1.5707963267948966, z: 0}
+#   scale: 500.0
 
 - file: sphere.dae
   format: collada
@@ -161,59 +149,36 @@ static_models:
   rotation: {x: 0, y: 0, z: 0}
   scale: 28.0
 
-# - file: tree.dae
-#   format: collada
-#   name: tree
-#   position: {x: 100.0, y: 0.0, z: 0.0}
-#   rotation: {x: 0, y: 0, z: 0.0}
-#   scale: 30.5
-
 # - file: skinned_tree.dae
 #   format: collada
 #   name: tree2
 #   position: {x: -100.0, y: 0.0, z: 100.0}
-#   rotation: {x: 1.55, y: 0, z: 0.0}
-#   scale: 0.1
+#   rotation: {x: -1.55, y: 0, z: 0.0}
+#   scale: 0.05
 
-# - file: grass.dae
-#   format: collada
-#   name: grass
-#   position: {x: 50.0, y: 0.0, z: 100.0}
-#   rotation: {x: 0, y: 0, z: 0.0}
-#   scale: 20.0
+lod_groups:
 
-# - file: grass.dae
-#   format: collada
-#   name: grass2
-#   position: {x: 0.0, y: 0.0, z: 100.0}
-#   rotation: {x: 0, y: 1.0, z: 0}
-#   scale: 20.0
+- name: suzan
+  position: {x: 0.0, y: 50.0, z: 0.0}
+  rotation: {x: -1.55, y: 0, z: 0.0}
+  scale: 50.0
+  LODs:
+  - level: 0
+    file: suzan_LOD0.dae
+    format: collada
+    name: suzan_LOD0
 
-# - file: grass.dae
-#   format: collada
-#   name: grass3
-#   position: {x: -50.0, y: 0.0, z: 100.0}
-#   rotation: {x: 0, y: 1.5, z: 0}
-#   scale: 20.0
+  - level: 1
+    file: suzan_LOD1.dae
+    format: collada
+    name: suzan_LOD1
 
+  - level: 2
+    file: suzan_LOD2.dae
+    format: collada
+    name: suzan_LOD2
 
-# - file: grass.dae
-#   format: collada
-#   name: grass4
-#   position: {x: 50.0, y: 0.0, z: -50.0}
-#   rotation: {x: 0, y: 0, z: 0.0}
-#   scale: 20.0
-
-# - file: grass.dae
-#   format: collada
-#   name: grass5
-#   position: {x: 0.0, y: 0.0, z: -50.0}
-#   rotation: {x: 0, y: 1.0, z: 0}
-#   scale: 20.0
-
-# - file: grass.dae
-#   format: collada
-#   name: grass6
-#   position: {x: -50.0, y: 0.0, z: -50.0}
-#   rotation: {x: 0, y: 1.5, z: 0}
-#   scale: 20.0
+  - level: 3
+    file: suzan_LOD3.dae
+    format: collada
+    name: suzan_LOD3

@@ -172,7 +172,7 @@ bool RenderMgr::init()
 
     fov = 45.0f;
     z_near = 0.1f;
-    z_far = 1000.0f;
+    z_far = 5000.0f;
 
     GLuint err = glGetError();
     if (err != 0)
@@ -241,11 +241,13 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
         float bounding_radius = m->get_bounding_sphere_radius();
-        if (!f.sphere_test(glm::vec3(model_m[3]), bounding_radius))
+        if (!f.sphere_test(m->position, bounding_radius))
         {
             continue;
         }
         rendered_objects += 1;
+
+        float dist = glm::distance(m->position, camera->position);
 
         mvp = view_proj_m * model_m;
         // glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(mvp)));
@@ -279,11 +281,12 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         model_m = m->get_model_matrix();
 
         float bounding_radius = m->get_bounding_sphere_radius();
-        if (!f.sphere_test(glm::vec3(model_m[3]), bounding_radius))
+        if (!f.sphere_test(m->position, bounding_radius))
         {
             continue;
         }
         rendered_objects += 1;
+        float dist = glm::distance(m->position, camera->position);
 
         mvp = view_proj_m * model_m;
         prev_mvp = prev_view_proj_m * m->prev_model_matrix;
@@ -299,7 +302,12 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         m->prev_model_matrix = glm::mat4(model_m);
     }
 
-    // LOG("%d objects rendered\n", rendered_objects);
+    static int last_count = 0;
+
+    if (last_count != rendered_objects) {
+        last_count = rendered_objects;
+        LOG("%d objects rendered\n", rendered_objects);
+    }
 
     GLuint err = glGetError();
     if (err != 0)
