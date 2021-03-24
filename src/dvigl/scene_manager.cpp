@@ -349,7 +349,9 @@ bool SceneMgr::load_scene(std::string file_name)
     return true;
 }
 
-void SceneMgr::update(float time_delta) {}
+void SceneMgr::update(float time_delta) {
+    LODGroupMgr::ptr()->lod_groups["suzan"]->roll(time_delta*0.001f);
+}
 
 Scene* SceneMgr::get_current_scene() { return current_scene; }
 

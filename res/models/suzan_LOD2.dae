@@ -41,7 +41,7 @@
   </library_effects>
   <library_images>
     <image id="Wall_Cement_Brick_taqgH_3d_Preview_png" name="Wall_Cement_Brick_taqgH_3d_Preview_png">
-      <init_from>sphere.dmtl</init_from>
+      <init_from>suzan_LOD2.dmtl</init_from>
     </image>
   </library_images>
   <library_materials>

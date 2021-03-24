@@ -1,0 +1,9 @@
+shader: 'simple'
+albedo: 'corkboard3b-albedo.png'
+normal: 'suzan_normal_LOD1.png'
+metallic: 'corkboard3b-metalness.png'
+roughness: 'corkboard3b-roughnness.png'
+ao: 'corkboard3b-ao.png'
+uv_params:
+  offset_x: 0.5
+  offset_y: 0.5
