@@ -21,6 +21,10 @@
 
 #include <dvigl/frustum.h>
 
+#include <dvigl/lod_group_manager.h>
+#include <dvigl/lod_group.h>
+
+
 RenderMgr gRenderMgr;
 
 bool RenderMgr::init()
@@ -236,9 +240,29 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     int rendered_objects = 0;
 
+    for (auto element : LODGroupMgr::ptr()->lod_groups)
+    {
+        LODGroup* grp = (LODGroup*)element.second;
+        float bounding_radius = grp->models[0]->get_bounding_sphere_radius();
+        if (!f.sphere_test(grp->position, bounding_radius))
+        {
+            continue;
+        }
+        rendered_objects += 1;
+
+        float dist = glm::distance(grp->position, camera->position);
+
+        grp->update(dist);
+    }
+
     for (auto element : ModelMgr::ptr()->models)
     {
         ModelNode* m = (ModelNode*)element.second;
+        if (!m->visible)
+        {
+            continue;
+        }
+
         model_m = m->get_model_matrix();
         float bounding_radius = m->get_bounding_sphere_radius();
         if (!f.sphere_test(m->position, bounding_radius))
@@ -246,8 +270,6 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
             continue;
         }
         rendered_objects += 1;
-
-        float dist = glm::distance(m->position, camera->position);
 
         mvp = view_proj_m * model_m;
         // glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(mvp)));
@@ -286,7 +308,6 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
             continue;
         }
         rendered_objects += 1;
-        float dist = glm::distance(m->position, camera->position);
 
         mvp = view_proj_m * model_m;
         prev_mvp = prev_view_proj_m * m->prev_model_matrix;

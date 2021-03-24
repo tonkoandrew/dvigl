@@ -21,6 +21,9 @@
 #include <dvigl/point_light_node.h>
 #include <dvigl/spot_light_node.h>
 
+#include <dvigl/lod_group_manager.h>
+#include <dvigl/lod_group.h>
+
 SceneMgr gSceneMgr;
 
 bool SceneMgr::init()
@@ -295,6 +298,41 @@ bool SceneMgr::load_scene(std::string file_name)
             m->set_rotation(rotation);
         }
     }
+
+
+
+    if (!ModelMgr::ptr()->load_model("suzan_LOD0", "suzan_LOD0.dae", "collada", 50.0f))
+    {
+        return false;
+    }
+    if (!ModelMgr::ptr()->load_model("suzan_LOD1", "suzan_LOD1.dae", "collada", 50.0f))
+    {
+        return false;
+    }
+    if (!ModelMgr::ptr()->load_model("suzan_LOD2", "suzan_LOD2.dae", "collada", 50.0f))
+    {
+        return false;
+    }
+    if (!ModelMgr::ptr()->load_model("suzan_LOD3", "suzan_LOD3.dae", "collada", 50.0f))
+    {
+        return false;
+    }
+    ModelNode* lod0 = ModelMgr::ptr()->get_model("suzan_LOD0");
+    ModelNode* lod1 = ModelMgr::ptr()->get_model("suzan_LOD1");
+    ModelNode* lod2 = ModelMgr::ptr()->get_model("suzan_LOD2");
+    ModelNode* lod3 = ModelMgr::ptr()->get_model("suzan_LOD3");
+
+    LODGroup* suzan = LODGroupMgr::ptr()->create_lod_group("suzan", 4);
+
+    suzan->add_model_lod(lod0, 0, 200.0f);
+    suzan->add_model_lod(lod1, 1, 400.0f);
+    suzan->add_model_lod(lod2, 2, 600.0f);
+    suzan->add_model_lod(lod3, 3, 800.0f);
+    glm::vec3 position = glm::vec3(0.0f, 50.0f, 0.0f);
+    glm::vec3 rotation = glm::vec3(-1.55f, 0.0f, 0.0f);
+    suzan->set_position(position);
+    suzan->set_rotation(rotation);
+
 
     current_scene->get_current_camera()->set_position(glm::vec3(0.0f, 40.0f, 200.0f));
     current_scene->get_current_camera()->set_rotation(glm::vec3(1.55, 0, 0));

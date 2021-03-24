@@ -13,6 +13,7 @@
 #include <dvigl/shader_manager.h>
 #include <dvigl/texture_manager.h>
 #include <dvigl/video_manager.h>
+#include <dvigl/lod_group_manager.h>
 
 #include <dvigl/camera_node.h>
 #include <dvigl/scene.h>
@@ -149,6 +150,15 @@ bool Application::init()
     }
     LOG("done\n");
 
+    LOG("initializing LODGroupMgr... ");
+    if (!LODGroupMgr::ptr()->init())
+    {
+        LOG("failed\n");
+        error_code = 20;
+        return false;        
+    }
+    LOG("done\n");
+
     // =============================
     LOG("initializing SceneMgr... ");
     if (!SceneMgr::ptr()->init())
@@ -158,6 +168,7 @@ bool Application::init()
         return false;
     }
     LOG("done\n");
+
 
     if (!SceneMgr::ptr()->load_scene("../res/scenes/start.scn"))
     {
@@ -250,6 +261,7 @@ void Application::release()
     FontMgr::ptr()->release();
     MaterialMgr::ptr()->release();
     ModelMgr::ptr()->release();
+    LODGroupMgr::ptr()->release();
     ShaderMgr::ptr()->release();
     NetworkMgr::ptr()->release();
     RenderMgr::ptr()->release();
