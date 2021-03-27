@@ -8,6 +8,7 @@ add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_CUSTOM=<glad/glad.h>)
 
 include_directories(
     ${IMGUI_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIR}
     )
     
 target_link_libraries(imgui
