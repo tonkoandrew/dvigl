@@ -32,12 +32,10 @@ void LODGroup::update(float distance)
         {
             current_level = i;
         }
-        LOG("level %d = %f\n", i, levels[i]);        
     }
 
     models[current_level]->visible = true;
-    LOG("models size = %d\n", models.size());        
-    LOG("dist: %f, level: %d\n", distance, current_level);
+    // LOG("dist: %f, level: %d\n", distance, current_level);
 }
 
 void LODGroup::release() {}

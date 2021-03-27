@@ -206,16 +206,16 @@ bool Application::main_loop()
                     RenderMgr::ptr()->resize_buffers(new_w, new_h, false);
                 }
             }
-            if (event.type == SDL_MOUSEMOTION)
-            {
+            // if (event.type == SDL_MOUSEMOTION)
+            // {
 
-                CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
+            //     CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
-                float time_delta = 0.005;
+            //     float time_delta = 0.005;
 
-                cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -event.motion.xrel * time_delta);
-                cam->rotate_around_vector(cam->left, event.motion.yrel * time_delta);
-            }
+            //     cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -event.motion.xrel * time_delta);
+            //     cam->rotate_around_vector(cam->left, event.motion.yrel * time_delta);
+            // }
         }
         prev_tick = current_tick;
         current_tick = SDL_GetTicks();
@@ -232,13 +232,16 @@ bool Application::main_loop()
         /* 16ms each frame for ~60fps */
         int delay = 16.6f - time_delta;
         // int delay = 33.3f - time_delta;
+        // int delay = 66.6f - time_delta;
         // int delay = 260.0f - time_delta;
         if (delay < 0)
         {
             delay = 0;
         }
 
-        SDL_Delay(delay);
+        SDL_Delay(0);
+        // SDL_Delay(delay);
+        // LOG("delay %d\n", delay);
     }
     // SDL_Quit();
     return true;

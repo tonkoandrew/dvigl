@@ -16,11 +16,10 @@ out vec3 v_pos;
 out vec4 v_pos_cam;
 out vec4 v_prev_pos_cam;
 
-uniform mat4 mvp;
 uniform mat4 model;
-uniform mat3 normalMatrix;
-
+uniform mat4 mvp;
 uniform mat4 prev_mvp;
+uniform mat3 normalMatrix;
 
 
 uniform mat4 gBones[100];

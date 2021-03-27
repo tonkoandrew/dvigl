@@ -17,17 +17,12 @@ out vec3 v_pos;
 out vec4 v_pos_cam;
 out vec4 v_prev_pos_cam;
 
-uniform vec3 viewPos;
 
 uniform mat3 normalMatrix;
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 mvp;
+uniform mat4 prev_mvp;
 
-
-uniform mat4 prev_model;
-uniform mat4 prev_view;
-uniform mat4 prev_projection;
 
 void main()
 {
@@ -40,8 +35,8 @@ void main()
 
     v_pos = (model * vec4(attr_pos, 1.0)).xyz;
 
-    v_pos_cam = (projection * view * model) * vec4(attr_pos, 1.0);
-    v_prev_pos_cam = (prev_projection * prev_view * prev_model) * vec4(attr_pos, 1.0);
+    v_pos_cam = mvp * vec4(attr_pos, 1.0);
+    v_prev_pos_cam = prev_mvp * vec4(attr_pos, 1.0);
 
     gl_Position = v_pos_cam;
 }

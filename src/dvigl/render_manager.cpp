@@ -30,13 +30,13 @@ RenderMgr gRenderMgr;
 bool RenderMgr::init()
 {
 
-    if (SDL_SetRelativeMouseMode(SDL_TRUE))
-    {
-        LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
-        return false;
-    }
+    // if (SDL_SetRelativeMouseMode(SDL_TRUE))
+    // {
+    //     LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
+    //     return false;
+    // }
     LOG("\n");
-    SDL_GL_SetSwapInterval(0); // set VSync
+
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
@@ -104,6 +104,17 @@ bool RenderMgr::init()
     }
 
     LOG("rendering context: OpenGL %d.%d Core profile\n", GLVersion.major, GLVersion.minor);
+
+    const char *sdl_error = SDL_GetError();
+    if (strlen(sdl_error) != 0) {
+        LOG("*************************\nSDL ERRORS: %s\n", sdl_error);
+    }
+
+
+    // set VSync
+    if (SDL_GL_SetSwapInterval(-1)) {
+        LOG("SDL_GL_SetSwapInterval failed: %s\n", SDL_GetError());
+    }
 
     // if (GLAD_GL_ARB_pipeline_statistics_query)
     // {
@@ -274,17 +285,14 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         mvp = view_proj_m * model_m;
         // glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(mvp)));
         glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
-        s->uniformMatrix4("model", model_m);
-        s->uniformMatrix4("projection", proj_m);
-        s->uniformMatrix4("view", view_m);
-
-        s->uniformMatrix4("prev_model", m->prev_model_matrix);
-        s->uniformMatrix4("prev_projection", prev_proj_m);
-        s->uniformMatrix4("prev_view", prev_view_m);
 
         s->uniformMatrix3("normalMatrix", normalMatrix);
+        s->uniformMatrix4("model", model_m);
+        s->uniformMatrix4("mvp", mvp);
+        s->uniformMatrix4("prev_mvp", m->prev_mvp);
+
         m->draw();
-        m->prev_model_matrix = glm::mat4(model_m);
+        m->prev_mvp = mvp;
     }
 
     s = ShaderMgr::ptr()->get_shader("skinned_geometry");
@@ -310,17 +318,16 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         rendered_objects += 1;
 
         mvp = view_proj_m * model_m;
-        prev_mvp = prev_view_proj_m * m->prev_model_matrix;
 
         glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model_m)));
 
         s->uniformMatrix4("model", model_m);
         s->uniformMatrix4("mvp", mvp);
-        s->uniformMatrix4("prev_mvp", prev_mvp);
+        s->uniformMatrix4("prev_mvp", m->prev_mvp);
         s->uniformMatrix3("normalMatrix", normalMatrix);
         m->draw();
 
-        m->prev_model_matrix = glm::mat4(model_m);
+        m->prev_mvp = mvp;
     }
 
     static int last_count = 0;
@@ -550,6 +557,11 @@ void RenderMgr::render_frame(float time_delta)
     // // LOG("GL_VERTICES_SUBMITTED_ARB = %d\n", elapsedTime);
 
     SDL_GL_SwapWindow(main_window);
+
+    const char *sdl_error = SDL_GetError();
+    if (strlen(sdl_error) != 0) {
+        LOG("*************************\nSDL ERRORS: %s\n", sdl_error);
+    }
 }
 
 void RenderMgr::render_quad()
