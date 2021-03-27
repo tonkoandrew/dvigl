@@ -81,7 +81,7 @@ spot_lights:
 skinned_models:
 - file: elvis.dae
   format: collada
-  name: elvis
+  name: elvis_skinned
   position: {x: 100.0, y: 0.0, z: 0.0}
   rotation: {x: 0, y: 0, z: 0.0}
   scale: 30.0

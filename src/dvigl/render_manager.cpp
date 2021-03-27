@@ -44,6 +44,18 @@ bool RenderMgr::init()
     SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    // SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
+
+#if defined(__PLATFORM_APPLE__)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+#endif
 
     int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
         // | SDL_WINDOW_ALLOW_HIGHDPI
@@ -59,15 +71,9 @@ bool RenderMgr::init()
 #endif
         ;
 
+
     std::string window_title = "Window title";
 
-#if defined(__PLATFORM_APPLE__)
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-#endif
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0);
     // int w = 320;
     // int h = 240;
 
@@ -77,7 +83,7 @@ bool RenderMgr::init()
     // int w = 1920;
     // int h = 1080;
 
-    main_window = SDL_CreateWindow(window_title.c_str(), 100, 100, w, h, flags);
+    main_window = SDL_CreateWindow(window_title.c_str(), 2000, 100, w, h, flags);
 
     if (!main_window)
     {
@@ -135,6 +141,8 @@ bool RenderMgr::init()
     }
 
     SDL_GL_MakeCurrent(main_window, gl_context);
+
+// glEnable(GL_MULTISAMPLE);
 
     glEnable(GL_STENCIL_TEST);
     glEnable(GL_POLYGON_SMOOTH);
@@ -506,6 +514,9 @@ void RenderMgr::forward_pass(float aspect)
         LOG("================\n");
     }
 }
+
+void RenderMgr::shadow_pass()
+{}
 
 void RenderMgr::render_frame(float time_delta)
 {
