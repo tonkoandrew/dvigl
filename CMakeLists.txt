@@ -153,6 +153,11 @@ message(STATUS "YAML_CPP_INCLUDE_DIR at ${YAML_CPP_INCLUDE_DIR}")
 find_package(JPEG REQUIRED)
 message(STATUS "JPEG at ${JPEG_LIBRARIES}")
 
+
+# 3rd party libraries
+include(cmake/3rdparty.cmake)
+
+
 if(WIN32)
     find_package(HARFBUZZ REQUIRED)
     message(STATUS "HARFBUZZ at ${HARFBUZZ_LIBRARIES}")
@@ -359,6 +364,10 @@ target_link_libraries(
 )
 set(LIBS ${LIBS} WEBMPLAY)
 
+set(LIBS ${LIBS} ${IMGUI_LIBRARIES})
+
+message(STATUS "IMGUI included at ${IMGUI_INCLUDE_DIR}")
+
 set(NAME "dvigl")
 
 file(GLOB SOURCE "src/${NAME}/*.h" "src/${NAME}/*.cpp")
@@ -440,7 +449,7 @@ endif()
 # endif()
 # ============================ EDITOR ===========================================
 
-include_directories(${CMAKE_SOURCE_DIR}/includes ${BULLET_INCLUDE_DIRS})
+include_directories(${CMAKE_SOURCE_DIR}/includes ${BULLET_INCLUDE_DIRS} ${IMGUI_INCLUDE_DIR})
 
 ###
 ### Build unit tests

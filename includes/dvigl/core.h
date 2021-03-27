@@ -63,6 +63,12 @@ typedef GLuint GLhandleARB;
 #include <SDL2/SDL_ttf.h>
 #endif
 
+
+#include "imgui.h"
+#include "backends/imgui_impl_sdl.h"
+#include "backends/imgui_impl_opengl3.h"
+
+
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp> //glm::pi<float>()

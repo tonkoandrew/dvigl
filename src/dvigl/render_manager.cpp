@@ -58,7 +58,7 @@ bool RenderMgr::init()
 #endif
 
     int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-        // | SDL_WINDOW_ALLOW_HIGHDPI
+        | SDL_WINDOW_ALLOW_HIGHDPI
         // | SDL_WINDOW_MOUSE_FOCUS
         // | SDL_WINDOW_INPUT_GRABBED
         // | SDL_WINDOW_FULLSCREEN
@@ -117,6 +117,23 @@ bool RenderMgr::init()
     }
 
 
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); //(void)io;
+    io.Fonts->AddFontFromFileTTF("../res/fonts/SourceCodePro-Regular.ttf", 16);
+    // io.Fonts->GetTexDataAsRGBA32()
+
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+
+    // Setup Dear ImGui style
+    // ImGui::StyleColorsDark();
+    ImGui::StyleColorsClassic();
+
+    ImGui_ImplSDL2_InitForOpenGL(main_window, gl_context);
+    ImGui_ImplOpenGL3_Init();
+
+
     // set VSync
     if (SDL_GL_SetSwapInterval(-1)) {
         LOG("SDL_GL_SetSwapInterval failed: %s\n", SDL_GetError());
@@ -145,7 +162,7 @@ bool RenderMgr::init()
 // glEnable(GL_MULTISAMPLE);
 
     glEnable(GL_STENCIL_TEST);
-    glEnable(GL_POLYGON_SMOOTH);
+    glDisable(GL_POLYGON_SMOOTH);
     glEnable(GL_LINE_SMOOTH);
 
     glCullFace(GL_BACK);
@@ -153,7 +170,9 @@ bool RenderMgr::init()
     // glDisable(GL_CULL_FACE);
 
     glDisable(GL_BLEND);
+    // glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -562,10 +581,24 @@ void RenderMgr::render_frame(float time_delta)
         LOG("%d \n", err);
         LOG("================\n");
     }
+
+
+        // Start the Dear ImGui frame
+        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame(main_window);
+        ImGui::NewFrame();
+        static bool show_demo_window = true;
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
     // glEndQuery ( GL_PRIMITIVES_SUBMITTED_ARB );
     // glGetQueryObjectui64v ( query, GL_QUERY_RESULT, &elapsedTime );
     // LOG("GL_PRIMITIVES_SUBMITTED_ARB = %d\n", elapsedTime);
     // // LOG("GL_VERTICES_SUBMITTED_ARB = %d\n", elapsedTime);
+
 
     SDL_GL_SwapWindow(main_window);
 

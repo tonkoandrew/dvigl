@@ -2,6 +2,8 @@
 #include <dvigl/model_node.h>
 #include <dvigl/physics_manager.h>
 #include <dvigl/skinned_model_node.h>
+#include <dvigl/lod_group_manager.h>
+#include <dvigl/lod_group.h>
 
 PhysicsMgr gPhysicsMgr;
 
@@ -105,7 +107,7 @@ void PhysicsMgr::update(float time_delta)
 {
     // LOG("%f\n", time_delta * 0.5f);
     float mm = 0.005f;
-    dynamicsWorld->stepSimulation((time_delta * mm), 10, 1. / 100);
+    dynamicsWorld->stepSimulation((time_delta * mm), 100, 1. / 100);
 
     btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[1];
 
@@ -122,10 +124,10 @@ void PhysicsMgr::update(float time_delta)
         trans = obj->getWorldTransform();
     }
 
-    // ModelNode *m = ModelMgr::ptr()->get_model("yoda");
-    glm::vec3 v
-        = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-    // m->set_position(v);
+    glm::vec3 v = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+
+    // auto renderable = LODGroupMgr::ptr()->lod_groups["suzan"];
+    // renderable->set_position(v);
 
     ModelNode* sphere = ModelMgr::ptr()->get_model("sphere");
     sphere->set_position(v);

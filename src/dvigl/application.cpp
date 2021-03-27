@@ -216,6 +216,8 @@ bool Application::main_loop()
             //     cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -event.motion.xrel * time_delta);
             //     cam->rotate_around_vector(cam->left, event.motion.yrel * time_delta);
             // }
+
+            ImGui_ImplSDL2_ProcessEvent(&event);
         }
         prev_tick = current_tick;
         current_tick = SDL_GetTicks();

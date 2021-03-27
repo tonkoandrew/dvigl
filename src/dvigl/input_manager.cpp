@@ -90,7 +90,7 @@ void InputMgr::process_input(float time_delta)
         btCollisionObject* obj = PhysicsMgr::ptr()->dynamicsWorld->getCollisionObjectArray()[1];
         btRigidBody* body = btRigidBody::upcast(obj);
         body->activate(true);
-        body->applyCentralImpulse(btVector3(0.f, 0.8f, 0.f));
+        body->applyCentralImpulse(btVector3(0.f, 1.0f, 0.f));
     }
     // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
     // Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
