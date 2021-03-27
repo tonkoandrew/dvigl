@@ -11,6 +11,11 @@ sudo apt-get install libsdl2-dev libsdl2-mixer-dev  libsdl2-ttf-dev  libsdl2-net
 And then use cmake to build
 
 ```
+git clone git@github.com:tonkoandrew/dvigl.git
+git submodule update --init --recursive
+git submodule foreach -q --recursive 'branch="$(git config -f <path>.gitmodules submodule.$name.branch)"; git checkout $branch'
+
+
 
 mkdir -p build; cd build
 
