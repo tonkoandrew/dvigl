@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 cmake_policy(VERSION 3.5)
-set(CMAKE_C_COMPILER /usr/bin/clang-10)
-set(CMAKE_CXX_COMPILER /usr/bin/clang++-10)
+# set(CMAKE_C_COMPILER /usr/bin/clang-10)
+# set(CMAKE_CXX_COMPILER /usr/bin/clang++-10)
 project(dvigl)
 
 find_program(CCACHE_FOUND ccache)

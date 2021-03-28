@@ -4,7 +4,6 @@
 
 class ModelNode;
 
-
 class LODGroup : public Node
 {
 public:

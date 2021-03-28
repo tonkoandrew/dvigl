@@ -21,9 +21,8 @@
 
 #include <dvigl/frustum.h>
 
-#include <dvigl/lod_group_manager.h>
 #include <dvigl/lod_group.h>
-
+#include <dvigl/lod_group_manager.h>
 
 RenderMgr gRenderMgr;
 
@@ -57,8 +56,7 @@ bool RenderMgr::init()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #endif
 
-    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-        | SDL_WINDOW_ALLOW_HIGHDPI
+    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI
         // | SDL_WINDOW_MOUSE_FOCUS
         // | SDL_WINDOW_INPUT_GRABBED
         // | SDL_WINDOW_FULLSCREEN
@@ -70,7 +68,6 @@ bool RenderMgr::init()
 // | SDL_WINDOW_RESIZABLE
 #endif
         ;
-
 
     std::string window_title = "Window title";
 
@@ -111,11 +108,11 @@ bool RenderMgr::init()
 
     LOG("rendering context: OpenGL %d.%d Core profile\n", GLVersion.major, GLVersion.minor);
 
-    const char *sdl_error = SDL_GetError();
-    if (strlen(sdl_error) != 0) {
+    const char* sdl_error = SDL_GetError();
+    if (strlen(sdl_error) != 0)
+    {
         LOG("*************************\nSDL ERRORS: %s\n", sdl_error);
     }
-
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -124,7 +121,7 @@ bool RenderMgr::init()
     io.Fonts->AddFontFromFileTTF("../res/fonts/SourceCodePro-Regular.ttf", 16);
     // io.Fonts->GetTexDataAsRGBA32()
 
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
     // Setup Dear ImGui style
     // ImGui::StyleColorsDark();
@@ -133,11 +130,11 @@ bool RenderMgr::init()
     ImGui_ImplSDL2_InitForOpenGL(main_window, gl_context);
     ImGui_ImplOpenGL3_Init();
 
-
     // set VSync
     // if (SDL_GL_SetSwapInterval(0)) {
     // if (SDL_GL_SetSwapInterval(1)) {
-    if (SDL_GL_SetSwapInterval(-1)) {
+    if (SDL_GL_SetSwapInterval(-1))
+    {
         LOG("SDL_GL_SetSwapInterval failed: %s\n", SDL_GetError());
     }
 
@@ -161,7 +158,7 @@ bool RenderMgr::init()
 
     SDL_GL_MakeCurrent(main_window, gl_context);
 
-// glEnable(GL_MULTISAMPLE);
+    // glEnable(GL_MULTISAMPLE);
 
     glEnable(GL_STENCIL_TEST);
     glDisable(GL_POLYGON_SMOOTH);
@@ -174,7 +171,6 @@ bool RenderMgr::init()
     glDisable(GL_BLEND);
     // glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -356,7 +352,8 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     static int last_count = 0;
 
-    if (last_count != rendered_objects) {
+    if (last_count != rendered_objects)
+    {
         last_count = rendered_objects;
         LOG("%d objects rendered\n", rendered_objects);
     }
@@ -380,7 +377,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 void RenderMgr::deferred_pass(float time_delta, float aspect)
 {
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Shader* s;
     s = ShaderMgr::ptr()->get_shader("deferred");
@@ -530,16 +527,10 @@ void RenderMgr::forward_pass(float aspect)
     }
 }
 
-void RenderMgr::shadow_pass()
-{}
+void RenderMgr::shadow_pass() {}
 
 void RenderMgr::render_frame(float time_delta)
 {
-
-    for (auto elem: ModelMgr::ptr()->skinned_models) {
-        elem.second->update(time_delta);
-    }
-
     int w, h;
     SDL_GL_MakeCurrent(main_window, gl_context);
     SDL_GL_GetDrawableSize(main_window, &w, &h);
@@ -583,43 +574,40 @@ void RenderMgr::render_frame(float time_delta)
         LOG("================\n");
     }
 
+    // Start the Dear ImGui frame
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(main_window);
+    ImGui::NewFrame();
+    // static bool show_demo_window = true;
+    // if (show_demo_window)
+    //     ImGui::ShowDemoWindow(&show_demo_window);
 
-        // Start the Dear ImGui frame
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(main_window);
-        ImGui::NewFrame();
-        // static bool show_demo_window = true;
-        // if (show_demo_window)
-        //     ImGui::ShowDemoWindow(&show_demo_window);
+    ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(100.0f, 200.0f), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Settings", NULL, 0);
+    ImGui::Text("Animation speed:");
+    static float animation_speed = 0.05f;
+    ImGui::SliderFloat(" ", &animation_speed, 0.0f, 2.0f);
+    ImGui::Separator();
+    ImGui::Text("Antialiasing technique:");
+    static bool use_fxaa = false;
+    ImGui::Checkbox("FXAA", &use_fxaa);
+    ImGui::End();
 
-            ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_FirstUseEver);
-            ImGui::SetNextWindowSize(ImVec2(100.0f, 200.0f), ImGuiCond_FirstUseEver);
-            ImGui::Begin("Settings", NULL, 0);
-            ImGui::Text("Animation speed:");
-            static float animation_speed = 0.05f;
-            ImGui::SliderFloat(" ", &animation_speed, 0.0f, 2.0f);
-            ImGui::Separator();
-            ImGui::Text("Antialiasing technique:");
-            static bool use_fxaa = false;
-            ImGui::Checkbox("FXAA", &use_fxaa);
-            ImGui::End();
-
-
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     // glEndQuery ( GL_PRIMITIVES_SUBMITTED_ARB );
     // glGetQueryObjectui64v ( query, GL_QUERY_RESULT, &elapsedTime );
     // LOG("GL_PRIMITIVES_SUBMITTED_ARB = %d\n", elapsedTime);
     // // LOG("GL_VERTICES_SUBMITTED_ARB = %d\n", elapsedTime);
 
-
     SDL_GL_SwapWindow(main_window);
 
-    const char *sdl_error = SDL_GetError();
-    if (strlen(sdl_error) != 0) {
+    const char* sdl_error = SDL_GetError();
+    if (strlen(sdl_error) != 0)
+    {
         LOG("*************************\nSDL ERRORS: %s\n", sdl_error);
     }
 }
@@ -805,8 +793,7 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, w, h, 0, GL_RG, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    
-    
+
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, gVelocity, 0);
 
     GLuint attachments[5] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,

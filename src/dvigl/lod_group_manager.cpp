@@ -1,12 +1,9 @@
-#include <dvigl/lod_group_manager.h>
 #include <dvigl/lod_group.h>
+#include <dvigl/lod_group_manager.h>
 
 LODGroupMgr gLODGroupMgr;
 
-bool LODGroupMgr::init()
-{
-    return true;
-}
+bool LODGroupMgr::init() { return true; }
 
 LODGroup* LODGroupMgr::create_lod_group(std::string name, int levels_count)
 {
@@ -14,4 +11,4 @@ LODGroup* LODGroupMgr::create_lod_group(std::string name, int levels_count)
     return lod_groups[name];
 }
 
-void LODGroupMgr::release(){}
+void LODGroupMgr::release() {}

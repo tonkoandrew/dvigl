@@ -3,6 +3,7 @@
 #include <dvigl/file_system_manager.h>
 #include <dvigl/font_manager.h>
 #include <dvigl/input_manager.h>
+#include <dvigl/lod_group_manager.h>
 #include <dvigl/material_manager.h>
 #include <dvigl/model_manager.h>
 #include <dvigl/network_manager.h>
@@ -13,7 +14,6 @@
 #include <dvigl/shader_manager.h>
 #include <dvigl/texture_manager.h>
 #include <dvigl/video_manager.h>
-#include <dvigl/lod_group_manager.h>
 
 #include <dvigl/camera_node.h>
 #include <dvigl/scene.h>
@@ -155,7 +155,7 @@ bool Application::init()
     {
         LOG("failed\n");
         error_code = 20;
-        return false;        
+        return false;
     }
     LOG("done\n");
 
@@ -168,7 +168,6 @@ bool Application::init()
         return false;
     }
     LOG("done\n");
-
 
     if (!SceneMgr::ptr()->load_scene("../res/scenes/start.scn"))
     {
@@ -221,6 +220,7 @@ bool Application::main_loop()
             ImGui_ImplSDL2_ProcessEvent(&event);
         }
 
+        ModelMgr::ptr()->update_animation_timers(time_delta);
         InputMgr::ptr()->process_input(time_delta);
         ParticleSystemMgr::ptr()->update(time_delta);
         PhysicsMgr::ptr()->update(time_delta);
@@ -235,8 +235,8 @@ bool Application::main_loop()
         time_delta = current_tick - prev_tick;
 
         /* 16ms each frame for ~60fps */
-        float delay = 6.6f - time_delta;
-        // float delay = 16.6f - time_delta;
+        // float delay = 6.6f - time_delta;
+        float delay = 16.6f - time_delta;
         // float delay = 33.3f - time_delta;
         // float delay = 66.6f - time_delta;
         // float delay = 260.0f - time_delta;

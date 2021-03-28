@@ -350,7 +350,6 @@ bool SkinnedMesh::InitMaterials(const aiScene* scene)
     return Ret;
 }
 
-
 void SkinnedMesh::draw(float time)
 {
     vector<glm::mat4> Transforms;

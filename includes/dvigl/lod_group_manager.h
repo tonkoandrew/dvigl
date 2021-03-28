@@ -1,7 +1,6 @@
 #pragma once
 #include <dvigl/core.h>
 
-
 class LODGroup;
 
 class LODGroupMgr : public Singleton<LODGroupMgr>

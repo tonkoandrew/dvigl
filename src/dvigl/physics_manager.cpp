@@ -1,9 +1,9 @@
+#include <dvigl/lod_group.h>
+#include <dvigl/lod_group_manager.h>
 #include <dvigl/model_manager.h>
 #include <dvigl/model_node.h>
 #include <dvigl/physics_manager.h>
 #include <dvigl/skinned_model_node.h>
-#include <dvigl/lod_group_manager.h>
-#include <dvigl/lod_group.h>
 
 PhysicsMgr gPhysicsMgr;
 
@@ -124,7 +124,8 @@ void PhysicsMgr::update(float time_delta)
         trans = obj->getWorldTransform();
     }
 
-    glm::vec3 v = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+    glm::vec3 v
+        = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
 
     // auto renderable = LODGroupMgr::ptr()->lod_groups["suzan"];
     // renderable->set_position(v);

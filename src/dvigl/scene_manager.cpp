@@ -21,8 +21,8 @@
 #include <dvigl/point_light_node.h>
 #include <dvigl/spot_light_node.h>
 
-#include <dvigl/lod_group_manager.h>
 #include <dvigl/lod_group.h>
+#include <dvigl/lod_group_manager.h>
 
 SceneMgr gSceneMgr;
 
@@ -299,8 +299,6 @@ bool SceneMgr::load_scene(std::string file_name)
         }
     }
 
-
-
     if (!ModelMgr::ptr()->load_model("suzan_LOD0", "suzan_LOD0.dae", "collada", 50.0f))
     {
         return false;
@@ -333,7 +331,6 @@ bool SceneMgr::load_scene(std::string file_name)
     suzan->set_position(position);
     suzan->set_rotation(rotation);
 
-
     current_scene->get_current_camera()->set_position(glm::vec3(0.0f, 40.0f, 200.0f));
     current_scene->get_current_camera()->set_rotation(glm::vec3(1.55, 0, 0));
     AudioMgr::ptr()->set_volume(MIX_MAX_VOLUME / 2);
@@ -349,8 +346,9 @@ bool SceneMgr::load_scene(std::string file_name)
     return true;
 }
 
-void SceneMgr::update(float time_delta) {
-    LODGroupMgr::ptr()->lod_groups["suzan"]->roll(time_delta*0.001f);
+void SceneMgr::update(float time_delta)
+{
+    LODGroupMgr::ptr()->lod_groups["suzan"]->roll(time_delta * 0.001f);
     current_scene->spot_lights["spotlight3"]->yaw(time_delta * 0.001f);
 }
 

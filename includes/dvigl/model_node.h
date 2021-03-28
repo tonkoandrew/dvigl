@@ -14,6 +14,7 @@ public:
     float get_bounding_sphere_radius();
 
     bool visible = true;
+
 private:
     std::vector<Mesh*> meshes;
     float bounding_radius = 0.0f;

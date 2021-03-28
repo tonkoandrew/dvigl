@@ -92,31 +92,31 @@ skinned_models:
   rotation: {x: 0, y: 0, z: 0.0}
   scale: 30.0
 
-- file: elvis.dae
-  format: collada
-  name: elvis_skinned3
-  position: {x: 100.0, y: 0.0, z: -100.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 30.0
-- file: elvis.dae
-  format: collada
-  name: elvis_skinned4
-  position: {x: 200.0, y: 0.0, z: -100.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 30.0
+# - file: elvis.dae
+#   format: collada
+#   name: elvis_skinned3
+#   position: {x: 100.0, y: 0.0, z: -100.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 30.0
+# - file: elvis.dae
+#   format: collada
+#   name: elvis_skinned4
+#   position: {x: 200.0, y: 0.0, z: -100.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 30.0
 
-- file: elvis.dae
-  format: collada
-  name: elvis_skinned5
-  position: {x: 100.0, y: 0.0, z: -200.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 30.0
-- file: elvis.dae
-  format: collada
-  name: elvis_skinned6
-  position: {x: 200.0, y: 0.0, z: -200.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 30.0
+# - file: elvis.dae
+#   format: collada
+#   name: elvis_skinned5
+#   position: {x: 100.0, y: 0.0, z: -200.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 30.0
+# - file: elvis.dae
+#   format: collada
+#   name: elvis_skinned6
+#   position: {x: 200.0, y: 0.0, z: -200.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 30.0
 
 
 - file: bob.dae
