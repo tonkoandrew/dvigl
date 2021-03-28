@@ -28,12 +28,6 @@ RenderMgr gRenderMgr;
 
 bool RenderMgr::init()
 {
-
-    // if (SDL_SetRelativeMouseMode(SDL_TRUE))
-    // {
-    //     LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
-    //     return false;
-    // }
     LOG("\n");
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);

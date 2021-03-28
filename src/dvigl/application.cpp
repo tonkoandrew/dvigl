@@ -189,8 +189,6 @@ bool Application::main_loop()
 
     while (!quit)
     {
-        // exit();
-
         while (SDL_PollEvent(&event) != 0)
         {
             if (event.type == SDL_QUIT)
@@ -206,16 +204,10 @@ bool Application::main_loop()
                     RenderMgr::ptr()->resize_buffers(new_w, new_h, false);
                 }
             }
-            // if (event.type == SDL_MOUSEMOTION)
-            // {
-
-            //     CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
-
-            //     float time_delta = 0.005;
-
-            //     cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -event.motion.xrel * time_delta);
-            //     cam->rotate_around_vector(cam->left, event.motion.yrel * time_delta);
-            // }
+            if (event.type == SDL_MOUSEMOTION)
+            {
+                InputMgr::ptr()->mouse_motion(&(event.motion));
+            }
 
             ImGui_ImplSDL2_ProcessEvent(&event);
         }

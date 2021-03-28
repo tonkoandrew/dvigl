@@ -1,0 +1,9 @@
+shader: 'simple'
+albedo: 'ground_albedo.jpg'
+normal: 'ground_normal.jpg'
+metallic: 'ground_metallic.jpg'
+roughness: 'ground_roughness.jpg'
+ao: 'ground_ao.jpg'
+uv_params:
+  offset_x: 0.5
+  offset_y: 0.5

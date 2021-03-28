@@ -18,8 +18,6 @@
 
 InputMgr gInputMgr;
 
-bool InputMgr::init() { return true; }
-
 void InputMgr::process_input(float time_delta)
 {
     keystates = SDL_GetKeyboardState(NULL);
@@ -42,7 +40,6 @@ void InputMgr::process_input(float time_delta)
     if (keystates[SDL_SCANCODE_S])
     {
         cam->move_back(movement_speed * time_delta);
-        // cam->position -= glm::normalize(glm::vec3(cam->forward.x, 0, cam->forward.z)) * movement_speed * time_delta;
     }
 
     if (keystates[SDL_SCANCODE_A])
@@ -92,47 +89,6 @@ void InputMgr::process_input(float time_delta)
         body->activate(true);
         body->applyCentralImpulse(btVector3(0.f, 1.0f, 0.f));
     }
-    // Node* model = (Node*)ModelMgr::ptr()->get_skinned_model("elvis");
-    // Node* model = (Node*)ModelMgr::ptr()->get_model("bob");
-    // Node* model = (Node*)ModelMgr::ptr()->get_model("sphere");
-    // Node* model = (Node*)ModelMgr::ptr()->get_model("plane");
-    // Node* model = (Node*)ModelMgr::ptr()->get_model("body");
-    // Node* model = (Node*)ModelMgr::ptr()->get_model("base");
-    // Node* model = (Node*)ModelMgr::ptr()->get_model("flame_head");
-
-    // SpotLightNode* model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight1"];
-    // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-    // // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight2"];
-    // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-    // // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["spotlight3"];
-    // model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-
-    // model = (SpotLightNode*)SceneMgr::ptr()->get_current_scene()->spot_lights["flame_head"];
-
-    // if (keystates[SDL_SCANCODE_T])
-    // {
-    //     model->position.z += movement_speed * time_delta;
-    // }
-    // if (keystates[SDL_SCANCODE_G])
-    // {
-    //     model->position.z -= movement_speed * time_delta;
-    // }
-    // if (keystates[SDL_SCANCODE_Y])
-    // {
-    //     model->position.y += movement_speed * time_delta;
-    // }
-    // if (keystates[SDL_SCANCODE_H])
-    // {
-    //     model->position.y -= movement_speed * time_delta;
-    // }
-    // if (keystates[SDL_SCANCODE_U])
-    // {
-    //     model->position.x += movement_speed * time_delta;
-    // }
-    // if (keystates[SDL_SCANCODE_J])
-    // {
-    //     model->position.x -= movement_speed * time_delta;
-    // }
 
     if (keystates[SDL_SCANCODE_B])
     {
@@ -197,24 +153,6 @@ void InputMgr::process_input(float time_delta)
         RenderMgr::ptr()->visualize_world_position = 0;
     }
 
-    // if (keystates[SDL_SCANCODE_X])
-    // {
-    //     model->pitch(-rotation_speed * time_delta);
-    // }
-    // if (keystates[SDL_SCANCODE_L])
-    // {
-    //     model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), rotation_speed * time_delta);
-    // }
-
-    // if (keystates[SDL_SCANCODE_K])
-    // {
-    //     model->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -rotation_speed * time_delta);
-    // }
-
-    // if (keystates[SDL_SCANCODE_Z])
-    // {
-    //     model->intensity -= 1.0 * time_delta;
-    // }
     if (keystates[SDL_SCANCODE_C])
     {
         RenderMgr::ptr()->visualize_wireframe = 1;
@@ -224,14 +162,6 @@ void InputMgr::process_input(float time_delta)
         RenderMgr::ptr()->visualize_wireframe = 0;
     }
 
-    // if (keystates[SDL_SCANCODE_1])
-    // {
-    //     model->attenuationRadius -= 0.1 * time_delta;
-    // }
-    // if (keystates[SDL_SCANCODE_2])
-    // {
-    //     model->attenuationRadius += 0.1 * time_delta;
-    // }
     if (keystates[SDL_SCANCODE_9])
     {
         RenderMgr::ptr()->fov += 0.001 * time_delta;
@@ -240,6 +170,28 @@ void InputMgr::process_input(float time_delta)
     {
         RenderMgr::ptr()->fov -= 0.001 * time_delta;
     }
+}
+
+void InputMgr::mouse_motion(SDL_MouseMotionEvent* event)
+{
+    LOG("mouse motion %d, %d\n", event->x, event->y);
+    LOG("mouse motion %d, %d\n", event->xrel, event->yrel);
+
+    CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
+
+    float speed = 0.005;
+
+    cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -event->xrel * speed);
+    cam->rotate_around_vector(cam->left, event->yrel * speed);
+}
+
+bool InputMgr::init() {
+    if (SDL_SetRelativeMouseMode(SDL_TRUE))
+    {
+        LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
+        return false;
+    }
+    return true;
 }
 
 void InputMgr::release() {}
