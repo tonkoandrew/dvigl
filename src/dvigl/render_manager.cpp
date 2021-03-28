@@ -366,8 +366,6 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         LOG("================\n");
     }
 
-    prev_proj_m = glm::mat4(proj_m);
-
     if (visualize_wireframe)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

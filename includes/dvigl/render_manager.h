@@ -42,6 +42,4 @@ private:
     GLuint cubeVBO = 0;
 
     GLuint rboDepth;
-
-    glm::mat4 prev_proj_m;
 };
