@@ -135,6 +135,8 @@ bool RenderMgr::init()
 
 
     // set VSync
+    // if (SDL_GL_SetSwapInterval(0)) {
+    // if (SDL_GL_SetSwapInterval(1)) {
     if (SDL_GL_SetSwapInterval(-1)) {
         LOG("SDL_GL_SetSwapInterval failed: %s\n", SDL_GetError());
     }
@@ -245,10 +247,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     glm::mat4 view_m;
     glm::mat4 proj_m;
 
-    glm::mat4 prev_view_m;
-
     glm::mat4 view_proj_m;
-    glm::mat4 prev_view_proj_m;
     glm::mat4 mvp;
     glm::mat4 prev_mvp;
 
@@ -259,10 +258,8 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     CameraNode* camera = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
     view_m = camera->get_view_matrix();
-    prev_view_m = camera->prev_view_matrix;
 
     view_proj_m = proj_m * view_m;
-    prev_view_proj_m = prev_proj_m * prev_view_m;
 
     f.update(view_proj_m);
 
@@ -373,7 +370,6 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     }
 
     prev_proj_m = glm::mat4(proj_m);
-    camera->prev_view_matrix = glm::mat4(view_m);
 
     if (visualize_wireframe)
     {
@@ -400,8 +396,8 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     view_m = camera->get_view_matrix();
     view_proj_m = proj_m * view_m;
 
-    float velocity_scale = 10.0f;
-    // float velocity_scale = 0.1f * time_delta;
+    float velocity_scale = 20.0f;
+    // float velocity_scale = 0.001f + (1.0f * time_delta);
     // LOG("%f\n", velocity_scale);
     s->uniform1f("uVelocityScale", velocity_scale);
 
@@ -539,6 +535,11 @@ void RenderMgr::shadow_pass()
 
 void RenderMgr::render_frame(float time_delta)
 {
+
+    for (auto elem: ModelMgr::ptr()->skinned_models) {
+        elem.second->update(time_delta);
+    }
+
     int w, h;
     SDL_GL_MakeCurrent(main_window, gl_context);
     SDL_GL_GetDrawableSize(main_window, &w, &h);
@@ -588,9 +589,24 @@ void RenderMgr::render_frame(float time_delta)
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(main_window);
         ImGui::NewFrame();
-        static bool show_demo_window = true;
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
+        // static bool show_demo_window = true;
+        // if (show_demo_window)
+        //     ImGui::ShowDemoWindow(&show_demo_window);
+
+            ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_FirstUseEver);
+            ImGui::SetNextWindowSize(ImVec2(100.0f, 200.0f), ImGuiCond_FirstUseEver);
+            ImGui::Begin("Settings", NULL, 0);
+            ImGui::Text("Animation speed:");
+            static float animation_speed = 0.05f;
+            ImGui::SliderFloat(" ", &animation_speed, 0.0f, 2.0f);
+            ImGui::Separator();
+            ImGui::Text("Antialiasing technique:");
+            static bool use_fxaa = false;
+            ImGui::Checkbox("FXAA", &use_fxaa);
+            ImGui::End();
+
+
+
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

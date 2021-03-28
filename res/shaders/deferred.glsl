@@ -405,18 +405,19 @@ void main()
     {
         vec2 velocity = texture(velocityTexture, TexCoords).rg;
 
-        velocity *= uVelocityScale ;
+        velocity *= uVelocityScale;
 
         float speed = length(velocity / texelSize);
-        int nSamples = clamp(int(speed), 1, MAX_SAMPLES);
-        vec4 oResult = texture(albedoTexture, TexCoords);
-        for (int i = 1; i < nSamples; ++i) {
-            vec2 offset = velocity * (float(i) / float(nSamples - 1) - 0.5);
-            oResult += texture(albedoTexture, TexCoords + offset);
-        }
-        oResult /= float(nSamples);
+        // int nSamples = clamp(int(speed), 1, MAX_SAMPLES);
+        // vec4 oResult = texture(albedoTexture, TexCoords);
+        // for (int i = 1; i < nSamples; ++i) {
+        //     vec2 offset = velocity * (float(i) / float(nSamples - 1) - 0.5);
+        //     oResult += texture(albedoTexture, TexCoords + offset);
+        // }
+        // oResult /= float(nSamples);
+        // FragColor = vec4(oResult.rgb, 1.0);
 
-        FragColor = vec4(oResult.rgb, 1.0);
+        FragColor = vec4(vec3(speed*0.01), 1.0);
     }
 
 

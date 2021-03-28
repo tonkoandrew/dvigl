@@ -35,11 +35,16 @@ SkinnedModelNode::SkinnedModelNode(char* content, int content_size, std::string 
     bounding_radius = meshes[0]->bounding_radius;
 }
 
+void SkinnedModelNode::update(float time_delta)
+{
+    m_startTime += time_delta / 1000.0f;
+}
+
 void SkinnedModelNode::draw()
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        meshes[i]->draw();
+        meshes[i]->draw(m_startTime);
     }
 }
 

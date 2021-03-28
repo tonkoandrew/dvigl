@@ -186,6 +186,7 @@ bool Application::main_loop()
 
     Uint32 current_tick = SDL_GetTicks();
     Uint32 prev_tick = current_tick;
+    float time_delta = 0.0f;
 
     while (!quit)
     {
@@ -219,9 +220,7 @@ bool Application::main_loop()
 
             ImGui_ImplSDL2_ProcessEvent(&event);
         }
-        prev_tick = current_tick;
-        current_tick = SDL_GetTicks();
-        float time_delta = current_tick - prev_tick;
+
         InputMgr::ptr()->process_input(time_delta);
         ParticleSystemMgr::ptr()->update(time_delta);
         PhysicsMgr::ptr()->update(time_delta);
@@ -231,18 +230,25 @@ bool Application::main_loop()
         SceneMgr::ptr()->update(time_delta);
         RenderMgr::ptr()->render_frame(time_delta);
 
-        /* 16ms each frame for ~60fps */
-        int delay = 16.6f - time_delta;
-        // int delay = 33.3f - time_delta;
-        // int delay = 66.6f - time_delta;
-        // int delay = 260.0f - time_delta;
-        if (delay < 0)
-        {
-            delay = 0;
-        }
+        prev_tick = current_tick;
+        current_tick = SDL_GetTicks();
+        time_delta = current_tick - prev_tick;
 
-        SDL_Delay(0);
+        /* 16ms each frame for ~60fps */
+        float delay = 6.6f - time_delta;
+        // float delay = 16.6f - time_delta;
+        // float delay = 33.3f - time_delta;
+        // float delay = 66.6f - time_delta;
+        // float delay = 260.0f - time_delta;
+        if (delay < 0.0f)
+        {
+            delay = 0.0f;
+        }
+        // LOG("time_delta = %f delay = %f\n", time_delta, delay);
+
+        SDL_Delay(int(delay));
         // SDL_Delay(delay);
+        // SDL_Delay(100);
         // LOG("delay %d\n", delay);
     }
     // SDL_Quit();

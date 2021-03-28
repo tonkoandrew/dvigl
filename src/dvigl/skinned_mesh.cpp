@@ -84,7 +84,6 @@ SkinnedMesh::SkinnedMesh(const aiScene* scene)
         = (float)(m_pScene->mAnimations[0]->mTicksPerSecond != 0 ? m_pScene->mAnimations[0]->mTicksPerSecond : 25.0f);
     // TicksPerSecond /= 5.0f;
 
-    m_startTime = SDL_GetTicks();
     // Create the VAO
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
@@ -351,21 +350,12 @@ bool SkinnedMesh::InitMaterials(const aiScene* scene)
     return Ret;
 }
 
-float SkinnedMesh::GetRunningTime()
-{
-    float RunningTime = (SDL_GetTicks() - m_startTime) / 1000.0f;
-    return RunningTime;
-}
 
-void SkinnedMesh::draw()
+void SkinnedMesh::draw(float time)
 {
     vector<glm::mat4> Transforms;
 
-    float RunningTime = GetRunningTime();
-
-    // LOG("RUNTIME %f\n", RunningTime);
-
-    BoneTransform(RunningTime, Transforms);
+    BoneTransform(time, Transforms);
 
     Shader* s = ShaderMgr::ptr()->get_shader("skinned_geometry");
     s->bind();
