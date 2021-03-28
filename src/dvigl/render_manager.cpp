@@ -74,7 +74,7 @@ bool RenderMgr::init()
     // int w = 1920;
     // int h = 1080;
 
-    main_window = SDL_CreateWindow(window_title.c_str(), 2000, 100, w, h, flags);
+    main_window = SDL_CreateWindow(window_title.c_str(), 200, 100, w, h, flags);
 
     if (!main_window)
     {
@@ -385,8 +385,8 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     view_m = camera->get_view_matrix();
     view_proj_m = proj_m * view_m;
 
-    float velocity_scale = 20.0f;
-    // float velocity_scale = 0.001f + (1.0f * time_delta);
+    // float velocity_scale = 20.0f;
+    float velocity_scale = 0.001f + (1.0f * time_delta);
     // LOG("%f\n", velocity_scale);
     s->uniform1f("uVelocityScale", velocity_scale);
 
@@ -579,12 +579,66 @@ void RenderMgr::render_frame(float time_delta)
     ImGui::SetNextWindowSize(ImVec2(100.0f, 200.0f), ImGuiCond_FirstUseEver);
     ImGui::Begin("Settings", NULL, 0);
     ImGui::Text("Animation speed:");
-    static float animation_speed = 0.05f;
-    ImGui::SliderFloat(" ", &animation_speed, 0.0f, 2.0f);
+
+    ImGui::SliderFloat(" ", &ModelMgr::ptr()->animation_speed, 0.0f, 2.0f);
     ImGui::Separator();
-    ImGui::Text("Antialiasing technique:");
-    static bool use_fxaa = false;
-    ImGui::Checkbox("FXAA", &use_fxaa);
+    ImGui::Text("Visualization:");
+
+static int visualization;
+static const char* s_ptNames[]
+{
+    "None",
+    "Albedo",
+    "Normals",
+    "Metallic",
+    "Roughness",
+    "AO",
+    "World pos",
+    "Velocity",
+    "Wireframe",
+};
+
+    ImGui::Combo("", &visualization, s_ptNames, COUNTOF(s_ptNames) );
+
+{
+    visualize_albedo = false;
+    visualize_normals = false;
+    visualize_metallic = false;
+    visualize_roughness = false;
+    visualize_ao = false;
+    visualize_world_position = false;
+    visualize_velocity = false;
+    visualize_wireframe = false;
+}
+
+switch (visualization) {
+case 1:
+    visualize_albedo = true;
+    break;
+case 2:
+    visualize_normals = true;
+    break;
+case 3:
+    visualize_metallic = true;
+    break;
+case 4:
+    visualize_roughness = true;
+    break;
+case 5:
+    visualize_ao = true;
+    break;
+case 6:
+    visualize_world_position = true;
+    break;
+case 7:
+    visualize_velocity = true;
+    break;
+case 8:
+    visualize_wireframe = true;
+    break;
+}
+
+
     ImGui::End();
 
     ImGui::Render();

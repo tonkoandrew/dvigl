@@ -151,6 +151,15 @@ typedef GLuint GLhandleARB;
 
 #define INVALID_UNIFORM_LOCATION 0xffffffff
 
+template<typename Ty, size_t Num>
+char(&CountOfRequireArrayArgumentT(const Ty(&)[Num]))[Num];
+
+#define COUNTOF(_x) sizeof(CountOfRequireArrayArgumentT(_x) )
+
+
 extern "C" int dvigl_init();
 extern "C" int dvigl_main();
 extern "C" Uint32 dvigl_get_window_id();
+
+
+

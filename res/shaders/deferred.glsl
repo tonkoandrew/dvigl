@@ -378,7 +378,7 @@ void main()
 
     if (visualize_normals)
     {
-        FragColor = vec4((normal * 0.5 + 0.5), 1.0);
+        FragColor = vec4((normal), 1.0);
     }
 
     if (visualize_metallic)
@@ -405,6 +405,7 @@ void main()
     {
         vec2 velocity = texture(velocityTexture, TexCoords).rg;
 
+        // velocity = velocity * 2.0
         velocity *= uVelocityScale;
 
         float speed = length(velocity / texelSize);

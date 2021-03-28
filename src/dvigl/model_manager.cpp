@@ -101,7 +101,7 @@ void ModelMgr::update_animation_timers(float time_delta)
 {
     for (auto elem : skinned_models)
     {
-        elem.second->update(time_delta);
+        elem.second->update(time_delta * animation_speed);
     }
 }
 

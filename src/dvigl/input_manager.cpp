@@ -90,78 +90,6 @@ void InputMgr::process_input(float time_delta)
         body->applyCentralImpulse(btVector3(0.f, 1.0f, 0.f));
     }
 
-    if (keystates[SDL_SCANCODE_B])
-    {
-        RenderMgr::ptr()->visualize_albedo = 1;
-    }
-    else
-    {
-        RenderMgr::ptr()->visualize_albedo = 0;
-    }
-
-    if (keystates[SDL_SCANCODE_N])
-    {
-        RenderMgr::ptr()->visualize_normals = 1;
-    }
-    else
-    {
-        RenderMgr::ptr()->visualize_normals = 0;
-    }
-
-    if (keystates[SDL_SCANCODE_M])
-    {
-        RenderMgr::ptr()->visualize_metallic = 1;
-    }
-    else
-    {
-        RenderMgr::ptr()->visualize_metallic = 0;
-    }
-
-    if (keystates[SDL_SCANCODE_I])
-    {
-        RenderMgr::ptr()->visualize_roughness = 1;
-    }
-    else
-    {
-        RenderMgr::ptr()->visualize_roughness = 0;
-    }
-
-    if (keystates[SDL_SCANCODE_O])
-    {
-        RenderMgr::ptr()->visualize_ao = 1;
-    }
-    else
-    {
-        RenderMgr::ptr()->visualize_ao = 0;
-    }
-
-    if (keystates[SDL_SCANCODE_V])
-    {
-        RenderMgr::ptr()->visualize_velocity = 1;
-    }
-    else
-    {
-        RenderMgr::ptr()->visualize_velocity = 0;
-    }
-
-    if (keystates[SDL_SCANCODE_P])
-    {
-        RenderMgr::ptr()->visualize_world_position = 1;
-    }
-    else
-    {
-        RenderMgr::ptr()->visualize_world_position = 0;
-    }
-
-    if (keystates[SDL_SCANCODE_C])
-    {
-        RenderMgr::ptr()->visualize_wireframe = 1;
-    }
-    else
-    {
-        RenderMgr::ptr()->visualize_wireframe = 0;
-    }
-
     if (keystates[SDL_SCANCODE_9])
     {
         RenderMgr::ptr()->fov += 0.001 * time_delta;
@@ -174,23 +102,23 @@ void InputMgr::process_input(float time_delta)
 
 void InputMgr::mouse_motion(SDL_MouseMotionEvent* event)
 {
-    LOG("mouse motion %d, %d\n", event->x, event->y);
-    LOG("mouse motion %d, %d\n", event->xrel, event->yrel);
+    // LOG("mouse motion %d, %d\n", event->x, event->y);
+    // LOG("mouse motion %d, %d\n", event->xrel, event->yrel);
 
-    CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
+    // CameraNode* cam = SceneMgr::ptr()->get_current_scene()->get_current_camera();
 
-    float speed = 0.005;
+    // float speed = 0.005;
 
-    cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -event->xrel * speed);
-    cam->rotate_around_vector(cam->left, event->yrel * speed);
+    // cam->rotate_around_vector(glm::vec3(0.0, 1.0, 0.0), -event->xrel * speed);
+    // cam->rotate_around_vector(cam->left, event->yrel * speed);
 }
 
 bool InputMgr::init() {
-    if (SDL_SetRelativeMouseMode(SDL_TRUE))
-    {
-        LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
-        return false;
-    }
+    // if (SDL_SetRelativeMouseMode(SDL_TRUE))
+    // {
+    //     LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());
+    //     return false;
+    // }
     return true;
 }
 

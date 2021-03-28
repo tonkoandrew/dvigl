@@ -9,14 +9,14 @@ public:
     SDL_Window* get_main_window();
     void release();
     void resize_buffers(int new_w, int new_h, bool initialize);
-    int visualize_albedo = 0;
-    int visualize_normals = 0;
-    int visualize_metallic = 0;
-    int visualize_roughness = 0;
-    int visualize_ao = 0;
-    int visualize_world_position = 0;
-    int visualize_velocity = 0;
-    int visualize_wireframe = 0;
+    bool visualize_albedo = false;
+    bool visualize_normals = false;
+    bool visualize_metallic = false;
+    bool visualize_roughness = false;
+    bool visualize_ao = false;
+    bool visualize_world_position = false;
+    bool visualize_velocity = false;
+    bool visualize_wireframe = false;
 
     float z_near;
     float z_far;

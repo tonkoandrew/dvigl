@@ -136,20 +136,19 @@ Mesh::Mesh(struct aiMesh* mesh)
                 int tcoord_index = ((t * 3 + i) * 2);
                 if (mesh->mNormals != NULL)
                 {
-                    // glm::vec3 normal =
-                    // glm::normalize(glm::vec3(mesh->mNormals[index].x,
-                    // mesh->mNormals[index].y, mesh->mNormals[index].z));
-                    // normal_data[n_index] = normal.x;
-                    // normal_data[n_index+1] = normal.y;
-                    // normal_data[n_index+2] = normal.z;
+                    glm::vec3 normal = glm::normalize(glm::vec3(mesh->mNormals[index].x, mesh->mNormals[index].y, mesh->mNormals[index].z));
+                    normal_data[n_index] = normal.x;
+                    normal_data[n_index+1] = normal.y;
+                    normal_data[n_index+2] = normal.z;
 
-                    normal_data[n_index] = mesh->mNormals[index].x;
-                    normal_data[n_index + 1] = mesh->mNormals[index].y;
-                    normal_data[n_index + 2] = mesh->mNormals[index].z;
+                    // normal_data[n_index] = mesh->mNormals[index].x;
+                    // normal_data[n_index + 1] = mesh->mNormals[index].y;
+                    // normal_data[n_index + 2] = mesh->mNormals[index].z;
                 }
                 else
                 {
                     // Sphere normal
+                    LOG("Generating Spherical normals");
                     glm::vec3 normal = glm::normalize(
                         glm::vec3(mesh->mVertices[index].x, mesh->mVertices[index].y, mesh->mVertices[index].z));
                     normal_data[n_index] = normal.x;
