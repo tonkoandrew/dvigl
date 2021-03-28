@@ -299,37 +299,57 @@ bool SceneMgr::load_scene(std::string file_name)
         }
     }
 
-    if (!ModelMgr::ptr()->load_model("suzan_LOD0", "suzan_LOD0.dae", "collada", 50.0f))
+    if (node["lod_groups"])
     {
-        return false;
-    }
-    if (!ModelMgr::ptr()->load_model("suzan_LOD1", "suzan_LOD1.dae", "collada", 50.0f))
-    {
-        return false;
-    }
-    if (!ModelMgr::ptr()->load_model("suzan_LOD2", "suzan_LOD2.dae", "collada", 50.0f))
-    {
-        return false;
-    }
-    if (!ModelMgr::ptr()->load_model("suzan_LOD3", "suzan_LOD3.dae", "collada", 50.0f))
-    {
-        return false;
-    }
-    ModelNode* lod0 = ModelMgr::ptr()->get_model("suzan_LOD0");
-    ModelNode* lod1 = ModelMgr::ptr()->get_model("suzan_LOD1");
-    ModelNode* lod2 = ModelMgr::ptr()->get_model("suzan_LOD2");
-    ModelNode* lod3 = ModelMgr::ptr()->get_model("suzan_LOD3");
+        if (node["lod_groups"].Type() != YAML::NodeType::Sequence)
+        {
+            LOG("lod_groups should be list of objects\n");
+            return false;
+        }
+        for (std::size_t i = 0; i < node["lod_groups"].size(); i++)
+        {
+            YAML::Node lod_group = node["lod_groups"][i];
+            assert(lod_group.Type() == YAML::NodeType::Map);
+            assert(lod_group["name"].Type() == YAML::NodeType::Scalar);
 
-    LODGroup* suzan = LODGroupMgr::ptr()->create_lod_group("suzan", 4);
+            std::string name = lod_group["name"].as<std::string>();
 
-    suzan->add_model_lod(lod0, 0, 200.0f);
-    suzan->add_model_lod(lod1, 1, 400.0f);
-    suzan->add_model_lod(lod2, 2, 600.0f);
-    suzan->add_model_lod(lod3, 3, 800.0f);
-    glm::vec3 position = glm::vec3(0.0f, 50.0f, 0.0f);
-    glm::vec3 rotation = glm::vec3(-1.55f, 0.0f, 0.0f);
-    suzan->set_position(position);
-    suzan->set_rotation(rotation);
+            YAML::Node pos_node = lod_group["position"];
+            glm::vec3 position
+                = glm::vec3(pos_node["x"].as<float>(), pos_node["y"].as<float>(), pos_node["z"].as<float>());
+
+            YAML::Node rot_node = lod_group["rotation"];
+            glm::vec3 rotation
+                = glm::vec3(rot_node["x"].as<float>(), rot_node["y"].as<float>(), rot_node["z"].as<float>());
+
+            float scale = lod_group["scale"].as<float>();
+
+            int count = lod_group["LODs"].size();
+
+            LOG("LOD group name = %s\n", name.c_str());
+            LOG("Levels count = %d\n", count);
+            LODGroup* grp = LODGroupMgr::ptr()->create_lod_group(name, count);
+            grp->set_position(position);
+            grp->set_rotation(rotation);
+
+            for (std::size_t j = 0; j < lod_group["LODs"].size(); j++)
+            {
+                YAML::Node lod = lod_group["LODs"][j];
+                int level = lod["level"].as<int>();
+                std::string fname = lod["file"].as<std::string>();
+                std::string format = lod["format"].as<std::string>();
+                std::string lod_name = lod["name"].as<std::string>();
+                float max_dist = lod["max_dist"].as<float>();
+
+                if (!ModelMgr::ptr()->load_model(lod_name, fname, format, scale))
+                {
+                    return false;
+                }
+                ModelNode* lodX = ModelMgr::ptr()->get_model(lod_name);
+                grp->add_model_lod(lodX, level, max_dist);
+            }
+        }
+    }
 
     current_scene->get_current_camera()->set_position(glm::vec3(0.0f, 40.0f, 200.0f));
     current_scene->get_current_camera()->set_rotation(glm::vec3(1.55, 0, 0));
