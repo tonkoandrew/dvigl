@@ -21,14 +21,8 @@ uniform sampler2D velocityTexture;
 uniform sampler2D ssaoTexture;
 
 
-uniform bool visualize_albedo;
-uniform bool visualize_normals;
-uniform bool visualize_metallic;
-uniform bool visualize_roughness;
-uniform bool visualize_ao;
-uniform bool visualize_world_position;
-uniform bool visualize_velocity;
-uniform bool visualize_wireframe;
+uniform int visualization_type;
+
 uniform float uVelocityScale;
 
 // ============================= ++++++++++++++++++++++++++++++++=== ==================
@@ -303,6 +297,17 @@ vec3 CalculateSpotLightRadiance(
 
 // ============================= ++++++++++++++++++++++++++++++++=== ==================
 
+#define VIS_NONE 0
+#define VIS_ALBEDO 1
+#define VIS_NORMALS 2
+#define VIS_METALLNESS 3
+#define VIS_ROUGHNESS 4
+#define VIS_AMBIENT_OCCLUSION 5
+#define VIS_WORLD_POSITIONS 6
+#define VIS_VELOCITY 7
+#define VIS_WIREFRAME 8
+
+
 void main()
 {
     vec2 texelSize = 1.0 / vec2(textureSize(albedoTexture, 0));
@@ -371,59 +376,46 @@ void main()
     FragColor = vec4(ambient + directLightIrradiance, 1.0);
 
     // =============+++++++++++++++++============
-    if (visualize_albedo)
+    switch (visualization_type)
     {
-        FragColor = vec4(albedo, 1.0);
-    }
+        case VIS_ALBEDO:
+            FragColor = vec4(albedo, 1.0);
+            break;
+        case VIS_NORMALS:
+            FragColor = vec4((normal), 1.0);
+            break;
+        case VIS_METALLNESS:
+            FragColor = vec4(vec3(metallic), 1.0);
+            break;
+        case VIS_ROUGHNESS:
+            FragColor = vec4(vec3(roughness), 1.0);
+            break;
+        case VIS_AMBIENT_OCCLUSION:
+            FragColor = vec4(vec3(ao), 1.0);
+            break;
+        case VIS_WORLD_POSITIONS:
+            FragColor = vec4(fragPos / 100.0, 1.0);
+            break;
+        case VIS_VELOCITY:
+            vec2 velocity = texture(velocityTexture, TexCoords).rg;
 
-    if (visualize_normals)
-    {
-        FragColor = vec4((normal), 1.0);
-    }
+            // velocity = velocity * 2.0
+            velocity *= uVelocityScale;
 
-    if (visualize_metallic)
-    {
-        FragColor = vec4(vec3(metallic), 1.0);
-    }
+            float speed = length(velocity / texelSize);
+            // int nSamples = clamp(int(speed), 1, MAX_SAMPLES);
+            // vec4 oResult = texture(albedoTexture, TexCoords);
+            // for (int i = 1; i < nSamples; ++i) {
+            //     vec2 offset = velocity * (float(i) / float(nSamples - 1) - 0.5);
+            //     oResult += texture(albedoTexture, TexCoords + offset);
+            // }
+            // oResult /= float(nSamples);
+            // FragColor = vec4(oResult.rgb, 1.0);
 
-    if (visualize_roughness)
-    {
-        FragColor = vec4(vec3(roughness), 1.0);
-    }
-
-    if (visualize_ao)
-    {
-        FragColor = vec4(vec3(ao), 1.0);
-    }
-
-    if (visualize_world_position)
-    {
-        FragColor = vec4(fragPos / 100.0, 1.0);
-    }
-
-    if (visualize_velocity)
-    {
-        vec2 velocity = texture(velocityTexture, TexCoords).rg;
-
-        // velocity = velocity * 2.0
-        velocity *= uVelocityScale;
-
-        float speed = length(velocity / texelSize);
-        // int nSamples = clamp(int(speed), 1, MAX_SAMPLES);
-        // vec4 oResult = texture(albedoTexture, TexCoords);
-        // for (int i = 1; i < nSamples; ++i) {
-        //     vec2 offset = velocity * (float(i) / float(nSamples - 1) - 0.5);
-        //     oResult += texture(albedoTexture, TexCoords + offset);
-        // }
-        // oResult /= float(nSamples);
-        // FragColor = vec4(oResult.rgb, 1.0);
-
-        FragColor = vec4(vec3(speed*0.01), 1.0);
-    }
-
-
-    if (visualize_wireframe)
-    {
-        FragColor = vec4(1.0);
+            FragColor = vec4(vec3(speed*0.01), 1.0);
+            break;
+        case VIS_WIREFRAME:
+            FragColor = vec4(1.0);
+            break;
     }
 }

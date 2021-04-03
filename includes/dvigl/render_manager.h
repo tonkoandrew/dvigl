@@ -1,6 +1,21 @@
 #pragma once
 #include <dvigl/core.h>
 
+
+enum VisualizationType
+{
+    VIS_NONE,
+    VIS_ALBEDO,
+    VIS_NORMALS,
+    VIS_METALLNESS,
+    VIS_ROUGHNESS,
+    VIS_AMBIENT_OCCLUSION,
+    VIS_WORLD_POSITIONS,
+    VIS_VELOCITY,
+    VIS_WIREFRAME
+};
+
+
 class RenderMgr : public Singleton<RenderMgr>
 {
 public:
@@ -9,14 +24,7 @@ public:
     SDL_Window* get_main_window();
     void release();
     void resize_buffers(int new_w, int new_h, bool initialize);
-    bool visualize_albedo = false;
-    bool visualize_normals = false;
-    bool visualize_metallic = false;
-    bool visualize_roughness = false;
-    bool visualize_ao = false;
-    bool visualize_world_position = false;
-    bool visualize_velocity = false;
-    bool visualize_wireframe = false;
+    VisualizationType vis_type = VIS_NONE;
 
     float z_near;
     float z_far;

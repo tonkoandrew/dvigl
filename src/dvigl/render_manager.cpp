@@ -223,7 +223,7 @@ bool RenderMgr::init()
 
 void RenderMgr::geometry_pass(float time_delta, float aspect)
 {
-    if (visualize_wireframe)
+    if (vis_type == VIS_WIREFRAME)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -360,7 +360,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         LOG("================\n");
     }
 
-    if (visualize_wireframe)
+    if (vis_type == VIS_WIREFRAME)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
@@ -392,14 +392,7 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
 
     s->uniform3f("viewPos", camera->get_position());
 
-    s->uniform1i("visualize_albedo", visualize_albedo);
-    s->uniform1i("visualize_normals", visualize_normals);
-    s->uniform1i("visualize_metallic", visualize_metallic);
-    s->uniform1i("visualize_roughness", visualize_roughness);
-    s->uniform1i("visualize_ao", visualize_ao);
-    s->uniform1i("visualize_world_position", visualize_world_position);
-    s->uniform1i("visualize_velocity", visualize_velocity);
-    s->uniform1i("visualize_wireframe", visualize_wireframe);
+    s->uniform1i("visualization_type", vis_type);
 
     s->uniform3i("numDirPointSpotLights", glm::ivec3((int)SceneMgr::ptr()->get_current_scene()->dir_lights.size(),
                                               (int)SceneMgr::ptr()->get_current_scene()->point_lights.size(),
@@ -584,7 +577,6 @@ void RenderMgr::render_frame(float time_delta)
     ImGui::Separator();
     ImGui::Text("Visualization:");
 
-static int visualization;
 static const char* s_ptNames[]
 {
     "None",
@@ -598,46 +590,7 @@ static const char* s_ptNames[]
     "Wireframe",
 };
 
-    ImGui::Combo("", &visualization, s_ptNames, COUNTOF(s_ptNames) );
-
-{
-    visualize_albedo = false;
-    visualize_normals = false;
-    visualize_metallic = false;
-    visualize_roughness = false;
-    visualize_ao = false;
-    visualize_world_position = false;
-    visualize_velocity = false;
-    visualize_wireframe = false;
-}
-
-switch (visualization) {
-case 1:
-    visualize_albedo = true;
-    break;
-case 2:
-    visualize_normals = true;
-    break;
-case 3:
-    visualize_metallic = true;
-    break;
-case 4:
-    visualize_roughness = true;
-    break;
-case 5:
-    visualize_ao = true;
-    break;
-case 6:
-    visualize_world_position = true;
-    break;
-case 7:
-    visualize_velocity = true;
-    break;
-case 8:
-    visualize_wireframe = true;
-    break;
-}
-
+    ImGui::Combo("", (int*)&vis_type, s_ptNames, COUNTOF(s_ptNames) );
 
     ImGui::End();
 
