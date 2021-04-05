@@ -559,6 +559,25 @@ void RenderMgr::render_frame(float time_delta)
         LOG("================\n");
     }
 
+    gui_pass();
+
+    // glEndQuery ( GL_PRIMITIVES_SUBMITTED_ARB );
+    // glGetQueryObjectui64v ( query, GL_QUERY_RESULT, &elapsedTime );
+    // LOG("GL_PRIMITIVES_SUBMITTED_ARB = %d\n", elapsedTime);
+    // // LOG("GL_VERTICES_SUBMITTED_ARB = %d\n", elapsedTime);
+
+    SDL_GL_SwapWindow(main_window);
+
+    const char* sdl_error = SDL_GetError();
+    if (strlen(sdl_error) != 0)
+    {
+        LOG("*************************\nSDL ERRORS: %s\n", sdl_error);
+    }
+}
+
+void RenderMgr::gui_pass()
+{
+
     // Start the Dear ImGui frame
     // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     ImGui_ImplOpenGL3_NewFrame();
@@ -577,18 +596,18 @@ void RenderMgr::render_frame(float time_delta)
     ImGui::Separator();
     ImGui::Text("Visualization:");
 
-static const char* s_ptNames[]
-{
-    "None",
-    "Albedo",
-    "Normals",
-    "Metallic",
-    "Roughness",
-    "AO",
-    "World pos",
-    "Velocity",
-    "Wireframe",
-};
+    static const char* s_ptNames[]
+    {
+        "None",
+        "Albedo",
+        "Normals",
+        "Metallic",
+        "Roughness",
+        "AO",
+        "World pos",
+        "Velocity",
+        "Wireframe",
+    };
 
     ImGui::Combo("", (int*)&vis_type, s_ptNames, COUNTOF(s_ptNames) );
 
@@ -596,19 +615,6 @@ static const char* s_ptNames[]
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    // glEndQuery ( GL_PRIMITIVES_SUBMITTED_ARB );
-    // glGetQueryObjectui64v ( query, GL_QUERY_RESULT, &elapsedTime );
-    // LOG("GL_PRIMITIVES_SUBMITTED_ARB = %d\n", elapsedTime);
-    // // LOG("GL_VERTICES_SUBMITTED_ARB = %d\n", elapsedTime);
-
-    SDL_GL_SwapWindow(main_window);
-
-    const char* sdl_error = SDL_GetError();
-    if (strlen(sdl_error) != 0)
-    {
-        LOG("*************************\nSDL ERRORS: %s\n", sdl_error);
-    }
 }
 
 void RenderMgr::render_quad()

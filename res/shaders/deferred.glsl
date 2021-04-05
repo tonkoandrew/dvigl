@@ -323,9 +323,7 @@ void main()
     vec3 albedo = texture(albedoTexture, TexCoords).rgb;
     float albedoAlpha = texture(albedoTexture, TexCoords).w;
     float metallic = texture(materialInfoTexture, TexCoords).r;
-    float unclampedRoughness = texture(materialInfoTexture, TexCoords).g; // Used for indirect specular (reflections)
-    // float roughness = max(unclampedRoughness, 0.5); // Used for calculations since specular highlights will be too fine, and will cause flicker
-    float roughness = max(unclampedRoughness, 1.0); // Used for calculations since specular highlights will be too fine, and will cause flicker
+    float roughness = texture(materialInfoTexture, TexCoords).g; // Used for indirect specular (reflections)
     float materialAO = texture(materialInfoTexture, TexCoords).b;
     float sceneAO = texture(ssaoTexture, TexCoords).r;
     // float ao = min(materialAO, sceneAO);
@@ -366,7 +364,7 @@ void main()
         vec3 indirectDiffuse = texture(irradianceMap, normal).rgb * albedo * diffuseRatio;
 
         vec3 prefilterColour
-            = textureLod(prefilterMap, reflectionVec, unclampedRoughness * (reflectionProbeMipCount - 1)).rgb;
+            = textureLod(prefilterMap, reflectionVec, roughness * (reflectionProbeMipCount - 1)).rgb;
         vec2 brdfIntegration = texture(brdfLUT, vec2(max(dot(normal, fragToView), 0.0), roughness)).rg;
         vec3 indirectSpecular = prefilterColour * (specularRatio * brdfIntegration.x + brdfIntegration.y);
 

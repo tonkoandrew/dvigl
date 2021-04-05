@@ -35,6 +35,7 @@ private:
     void geometry_pass(float time_delta, float aspect);
     void deferred_pass(float time_delta, float aspect);
     void forward_pass(float aspect);
+    void gui_pass();
     void render_quad();
     void render_cube();
 

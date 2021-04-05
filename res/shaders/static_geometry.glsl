@@ -78,6 +78,7 @@ void main()
     vec3 normal = texture(material.texture_normal, textureCoordinates).rgb;
     float metallic = texture(material.texture_metallic, textureCoordinates).r;
     float roughness = max(texture(material.texture_roughness, textureCoordinates).r, 0.04);
+    roughness = max(roughness, 0.0) + 0.5;
     float ao = texture(material.texture_ao, textureCoordinates).r;
 
     gb_Albedo = albedo;
