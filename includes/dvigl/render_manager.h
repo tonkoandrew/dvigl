@@ -41,8 +41,15 @@ private:
 
     SDL_Window* main_window;
     SDL_GLContext gl_context;
-    GLuint gBuffer;
-    GLuint gAlbedo, gNormal, gMaterialInfo, gPos, gVelocity;
+    GLuint gBuffer; // framebuffer for deferred rendering pass
+    GLuint gAlbedo, gNormal, gMaterialInfo, gPos, gVelocity; // gBuffer textures
+
+
+    GLuint depthMapFBO; // Shadow map framebuffer
+    GLuint depthMap;
+    const GLuint SHADOW_WIDTH = 1024;
+    const GLuint SHADOW_HEIGHT = 1024;
+
 
     GLuint quadVAO = 0;
     GLuint quadVBO;
@@ -53,4 +60,11 @@ private:
     GLuint rboDepth;
 
     bool reload_shaders = false;
+
+    float sun_pos_x = 0.0f;
+    float sun_pos_y = 400.0f;
+    float sun_pos_z = -1.0f;
+    float shadow_near_plane = 0.1f;
+    float shadow_far_plane = 500.0f;
+    float shadow_frustum_size = 200.0f;
 };

@@ -218,6 +218,22 @@ bool RenderMgr::init()
 
     resize_buffers(w, h, true);
 
+glGenFramebuffers(1, &depthMapFBO); 
+glGenTextures(1, &depthMap);
+glBindTexture(GL_TEXTURE_2D, depthMap);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
+             SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);  
+
+glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+glDrawBuffer(GL_NONE);
+glReadBuffer(GL_NONE);
+glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+
     return true;
 }
 
@@ -512,7 +528,45 @@ void RenderMgr::forward_pass(float aspect)
     }
 }
 
-void RenderMgr::shadow_pass() {}
+void RenderMgr::shadow_pass()
+{
+    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    // ConfigureShaderAndMatrices();
+
+    glm::mat4 lightProjection = glm::ortho(
+        -shadow_frustum_size, shadow_frustum_size,
+        -shadow_frustum_size, shadow_frustum_size,
+        shadow_near_plane,
+        shadow_far_plane
+    );
+    glm::mat4 lightView = glm::lookAt(
+        glm::vec3( sun_pos_x, sun_pos_y, sun_pos_z), 
+        glm::vec3( 0.0f, 0.0f,  0.0f), 
+        glm::vec3( 0.0f, 1.0f,  0.0f)
+    );
+    glm::mat4 lightSpaceMatrix = lightProjection * lightView; 
+
+    glm::mat4 model_m;
+
+    Shader* s = ShaderMgr::ptr()->get_shader("shadowmap");
+    s->bind();
+    s->uniformMatrix4("lightSpaceMatrix", lightSpaceMatrix);
+ 
+    for (auto element : ModelMgr::ptr()->models)
+    {
+        ModelNode* m = (ModelNode*)element.second;
+        model_m = m->get_model_matrix();
+        s->uniformMatrix4("model", model_m);
+        m->draw();
+    }
+
+    // RenderScene();
+    render_quad();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
 void RenderMgr::render_frame(float time_delta)
 {
@@ -522,12 +576,15 @@ void RenderMgr::render_frame(float time_delta)
         ShaderMgr::ptr()->load_shader("skinned_geometry", "../res/shaders/skinned_geometry.glsl");
         ShaderMgr::ptr()->load_shader("deferred", "../res/shaders/deferred.glsl");
         ShaderMgr::ptr()->load_shader("forward", "../res/shaders/forward.glsl");
+        ShaderMgr::ptr()->load_shader("shadowmap", "../res/shaders/shadowmap.glsl");
         LOG("SHADERS RELOADED...\n");
         reload_shaders = false;
     }
     int w, h;
     SDL_GL_MakeCurrent(main_window, gl_context);
     SDL_GL_GetDrawableSize(main_window, &w, &h);
+
+    shadow_pass();
     float aspect = (float)w / (float)(h > 1 ? h : 1);
 
     glViewport(0, 0, w, h);
@@ -625,6 +682,17 @@ void RenderMgr::gui_pass()
     {
         reload_shaders = true;
     }
+
+    ImGui::SliderFloat("sun_pos_x", &sun_pos_x, -400.0f, 400.0f);
+    ImGui::SliderFloat("sun_pos_y", &sun_pos_y, -400.0f, 400.0f);
+    ImGui::SliderFloat("sun_pos_z", &sun_pos_z, -400.0f, 400.0f);
+
+
+    ImGui::SliderFloat("shadow_near_plane", &shadow_near_plane, 0.1f, 100.0f);
+    ImGui::SliderFloat("shadow_far_plane", &shadow_far_plane, 1.0f, 5000.0f);
+    ImGui::SliderFloat("shadow_frustum_size", &shadow_frustum_size, 1.0f, 1000.0f);
+ 
+    ImGui::Image((void*)(intptr_t)depthMap, ImVec2(300, 300), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
 
     ImGui::End();
 

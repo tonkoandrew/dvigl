@@ -61,6 +61,11 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
+    if (!ShaderMgr::ptr()->load_shader("shadowmap", "../res/shaders/shadowmap.glsl"))
+    {
+        return false;
+    }
+
     if (!FontMgr::ptr()->load_font("FreeSans_150", "../res/fonts/Magician.ttf", 150))
     {
         return false;
