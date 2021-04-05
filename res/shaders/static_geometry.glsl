@@ -69,16 +69,19 @@ in vec4 v_prev_pos_cam;
 uniform Material material;
 uniform float time_delta;
 
-vec3 UnpackNormal(vec3 textureNormal);
+// Unpacks the normal from the texture and returns the normal in tangent space
+vec3 UnpackNormal(vec3 textureNormal) {
+    return normalize(textureNormal * 2.0 - 1.0);
+}
 
 void main()
 {
     vec2 textureCoordinates = v_texcoord;
     vec4 albedo = texture(material.texture_albedo, textureCoordinates);
     vec3 normal = texture(material.texture_normal, textureCoordinates).rgb;
+
     float metallic = texture(material.texture_metallic, textureCoordinates).r;
     float roughness = max(texture(material.texture_roughness, textureCoordinates).r, 0.04);
-    roughness = max(roughness, 0.0) + 0.5;
     float ao = texture(material.texture_ao, textureCoordinates).r;
 
     gb_Albedo = albedo;
@@ -91,11 +94,5 @@ void main()
     vec2 a = (v_pos_cam.xy / v_pos_cam.w) * 0.5 + 0.5;
     vec2 b = (v_prev_pos_cam.xy / v_prev_pos_cam.w) * 0.5 + 0.5;
     vec2 vel = (a - b);
-    vel = clamp(vel, 0.0, 100.0);
     gb_Velocity = vec3(vel, 1.0);
-}
-
-// Unpacks the normal from the texture and returns the normal in tangent space
-vec3 UnpackNormal(vec3 textureNormal) {
-    return normalize(textureNormal * 2.0 - 1.0);
 }

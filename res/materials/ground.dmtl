@@ -1,8 +1,8 @@
 shader: 'simple'
 albedo: 'ground_albedo.jpg'
 normal: 'ground_normal.jpg'
-metallic: 'ground_metallic.jpg'
-roughness: 'ground_roughness.jpg'
+metallic: 'corkboard3b-metalness.png'
+roughness: 'plasticpattern1-roughness2.png'
 ao: 'ground_ao.jpg'
 uv_params:
   offset_x: 0.5

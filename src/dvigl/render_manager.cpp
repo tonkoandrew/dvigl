@@ -257,8 +257,8 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     s->bind();
     s->uniform1i("material.texture_albedo", 0);
     s->uniform1i("material.texture_normal", 1);
-    s->uniform1i("material.texture_metallic", 2);
-    s->uniform1i("material.texture_roughness", 3);
+    s->uniform1i("material.texture_roughness", 2);
+    s->uniform1i("material.texture_metallic", 3);
     s->uniform1i("material.texture_ao", 4);
 
     // s->uniform1f("time_delta", dt);
@@ -313,8 +313,8 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
     s->bind();
     s->uniform1i("material.texture_albedo", 0);
     s->uniform1i("material.texture_normal", 1);
-    s->uniform1i("material.texture_metallic", 2);
-    s->uniform1i("material.texture_roughness", 3);
+    s->uniform1i("material.texture_roughness", 2);
+    s->uniform1i("material.texture_metallic", 3);
     s->uniform1i("material.texture_ao", 4);
 
     // s->uniform1f("time_delta", dt);
@@ -516,6 +516,15 @@ void RenderMgr::shadow_pass() {}
 
 void RenderMgr::render_frame(float time_delta)
 {
+    if (reload_shaders)
+    {
+        ShaderMgr::ptr()->load_shader("static_geometry", "../res/shaders/static_geometry.glsl");
+        ShaderMgr::ptr()->load_shader("skinned_geometry", "../res/shaders/skinned_geometry.glsl");
+        ShaderMgr::ptr()->load_shader("deferred", "../res/shaders/deferred.glsl");
+        ShaderMgr::ptr()->load_shader("forward", "../res/shaders/forward.glsl");
+        LOG("SHADERS RELOADED...\n");
+        reload_shaders = false;
+    }
     int w, h;
     SDL_GL_MakeCurrent(main_window, gl_context);
     SDL_GL_GetDrawableSize(main_window, &w, &h);
@@ -610,6 +619,12 @@ void RenderMgr::gui_pass()
     };
 
     ImGui::Combo("", (int*)&vis_type, s_ptNames, COUNTOF(s_ptNames) );
+    ImGui::Separator();
+    
+    if (ImGui::Button("Reload shaders"))
+    {
+        reload_shaders = true;
+    }
 
     ImGui::End();
 
@@ -765,7 +780,7 @@ void RenderMgr::resize_buffers(int w, int h, bool initialize)
         glGenTextures(1, &gMaterialInfo);
     }
     glBindTexture(GL_TEXTURE_2D, gMaterialInfo);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, w, h, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, w, h, 0, GL_RGB, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gMaterialInfo, 0);

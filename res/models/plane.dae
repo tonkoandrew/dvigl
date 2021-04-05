@@ -103,7 +103,8 @@
   </library_lights>
   <library_images>
     <image id="ground_albedo_jpg" name="ground_albedo_jpg">
-      <init_from>ground.dmtl</init_from>
+      <!-- <init_from>ground.dmtl</init_from> -->
+      <init_from>rust.dmtl</init_from>
     </image>
   </library_images>
   <library_effects>

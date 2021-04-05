@@ -84,7 +84,7 @@ bool MaterialMgr::load_material(std::string name, std::string file_name)
     Texture* albedo_tex = TextureMgr::ptr()->get_texture(albedo_map);
     Texture* normal_tex = TextureMgr::ptr()->get_texture(normal_map);
     Texture* metallic_tex = TextureMgr::ptr()->get_texture(metallic_map);
-    Texture* roughness_tex = TextureMgr::ptr()->get_texture(metallic_map);
+    Texture* roughness_tex = TextureMgr::ptr()->get_texture(roughness_map);
     Texture* ao_tex = TextureMgr::ptr()->get_texture(ao_map);
     materials[name] = new Material(albedo_tex, normal_tex, metallic_tex, roughness_tex, ao_tex);
     return true;

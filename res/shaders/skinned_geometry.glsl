@@ -74,8 +74,8 @@ struct Material
 {
     sampler2D texture_albedo;
     sampler2D texture_normal;
-    sampler2D texture_metallic;
     sampler2D texture_roughness;
+    sampler2D texture_metallic;
     sampler2D texture_ao;
 };
 
@@ -89,7 +89,10 @@ in vec4 v_prev_pos_cam;
 uniform Material material;
 uniform float time_delta;
 
-vec3 UnpackNormal(vec3 textureNormal);
+// Unpacks the normal from the texture and returns the normal in tangent space
+vec3 UnpackNormal(vec3 textureNormal) {
+    return normalize(textureNormal * 2.0 - 1.0);
+}
 
 void main()
 {
@@ -111,9 +114,4 @@ void main()
     vec2 b = (v_prev_pos_cam.xy / v_prev_pos_cam.w) * 0.5 + 0.5;
     vec2 vel = (a - b);
     gb_Velocity = vec3(vel, 1.0);
-}
-
-// Unpacks the normal from the texture and returns the normal in tangent space
-vec3 UnpackNormal(vec3 textureNormal) {
-    return normalize(textureNormal * 2.0 - 1.0);
 }

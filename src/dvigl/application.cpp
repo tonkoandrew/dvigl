@@ -238,7 +238,7 @@ bool Application::main_loop()
         }
         // LOG("time_delta = %f delay = %f\n", time_delta, delay);
 
-        SDL_Delay(int(delay));
+        // SDL_Delay(int(delay));
         // SDL_Delay(delay);
         // SDL_Delay(100);
         // LOG("delay %d\n", delay);

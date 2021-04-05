@@ -2,7 +2,7 @@ shader: 'simple'
 albedo: 'face_texture.png'
 normal: 'normal.jpg'
 metallic: 'corkboard3b-metalness.png'
-roughness: 'face_ao.png'
+roughness: 'plasticpattern1-roughness2.png'
 ao: 'face_ao.png'
 uv_params:
   offset_x: 0.05

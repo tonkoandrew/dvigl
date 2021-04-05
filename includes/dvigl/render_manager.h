@@ -51,4 +51,6 @@ private:
     GLuint cubeVBO = 0;
 
     GLuint rboDepth;
+
+    bool reload_shaders = false;
 };

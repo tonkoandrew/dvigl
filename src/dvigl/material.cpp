@@ -13,11 +13,11 @@ Material::Material(
 
 void Material::bind()
 {
-    albedo->bind(GL_TEXTURE0);
-    normal->bind(GL_TEXTURE1);
-    metallic->bind(GL_TEXTURE2);
-    roughness->bind(GL_TEXTURE3);
     ao->bind(GL_TEXTURE4);
+    metallic->bind(GL_TEXTURE3);
+    roughness->bind(GL_TEXTURE2);
+    normal->bind(GL_TEXTURE1);
+    albedo->bind(GL_TEXTURE0);
 }
 
 void Material::release() {}

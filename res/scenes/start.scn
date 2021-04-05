@@ -16,35 +16,35 @@ dir_lights:
 
 point_lights:
 - name: pointlight1
-  position: {x: -80.0, y: 20.0, z: 10.0}
+  position: {x: -80.0, y: 30.0, z: 10.0}
   color: {r: 1.0, g: 1.0, b: 1.0}
   intensity: 500.0
   attenuationRadius: 100.0
 - name: pointlight2
-  position: {x: -80.0, y: 20.0, z: 50.0}
+  position: {x: -80.0, y: 30.0, z: 50.0}
   color: {r: 1.0, g: 1.0, b: 1.0}
   intensity: 500.0
   attenuationRadius: 100.0
 - name: pointlight3
-  position: {x: -80.0, y: 20.0, z: -50.0}
+  position: {x: -80.0, y: 30.0, z: -50.0}
   color: {r: 1.0, g: 1.0, b: 1.0}
   intensity: 500.0
   attenuationRadius: 100.0
 
 - name: pointlight4
-  position: {x: 0.0, y: 20.0, z: 30.0}
+  position: {x: 0.0, y: 30.0, z: 30.0}
   color: {r: 1.0, g: 1.0, b: 1.0}
   intensity: 500.0
   attenuationRadius: 100.0
 
 - name: pointlight5
-  position: {x: 0.0, y: 20.0, z: 50.0}
+  position: {x: 0.0, y: 30.0, z: 50.0}
   color: {r: 1.0, g: 1.0, b: 1.0}
   intensity: 500.0
   attenuationRadius: 100.0
 
 - name: pointlight6
-  position: {x: 0.0, y: 20.0, z: -50.0}
+  position: {x: 0.0, y: 30.0, z: -50.0}
   color: {r: 1.0, g: 1.0, b: 1.0}
   intensity: 500.0
   attenuationRadius: 100.0
@@ -148,12 +148,14 @@ static_models:
   position: {x: 0.0, y: 0.0, z: 0.0}
   rotation: {x: -1.5707963267948966, y: 0, z: 0}
   scale: 200.0
-- file: plane.dae
-  format: collada
-  name: plane2
-  position: {x: 200.0, y: 0.0, z: 0.0}
-  rotation: {x: -1.5707963267948966, y: 0.0, z: 1.5707963267948966}
-  scale: 200.0
+
+# - file: plane.dae
+#   format: collada
+#   name: plane2
+#   position: {x: 200.0, y: 0.0, z: 0.0}
+#   rotation: {x: -1.5707963267948966, y: 0.0, z: 1.5707963267948966}
+#   scale: 200.0
+
 # - file: plane.dae
 #   format: collada
 #   name: plane3
