@@ -61,11 +61,11 @@ private:
 
     bool reload_shaders = false;
 
-    float sun_pos_x = 0.0f;
-    float sun_pos_y = 300.0f;
-    float sun_pos_z = 100.0f;
+    float sun_pos_x = 255.0f;
+    float sun_pos_y = 355.0f;
+    float sun_pos_z = -5.0f;
     float shadow_near_plane = 100.0f;
-    float shadow_far_plane = 500.0f;
-    float shadow_frustum_size = 250.0f;
+    float shadow_far_plane = 5000.0f;
+    float shadow_frustum_size = 310.0f;
     glm::mat4 lightSpaceMatrix;
 };

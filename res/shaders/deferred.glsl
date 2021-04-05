@@ -136,19 +136,19 @@ float CalculateShadow(vec3 fragPos, vec3 normal, vec3 fragToLight)
     float currentDepth = depthmapCoords.z;
 
     // Add shadow bias to avoid shadow acne. However too much bias can cause peter panning
-    float shadowBias = 0.03;
+    float shadowBias = 0.001;
 
     // Perform Percentage Closer Filtering (PCF) in order to produce soft shadows
     vec2 texelSize = 1.0 / textureSize(shadowmapTexture, 0);
-    for (int y = -5; y <= 5; ++y)
+    for (int y = -3; y <= 3; ++y)
     {
-        for (int x = -5; x <= 5; ++x)
+        for (int x = -3; x <= 3; ++x)
         {
             float sampledDepthPCF = texture(shadowmapTexture, depthmapCoords.xy + (texelSize * vec2(x, y))).r;
             shadow += currentDepth > sampledDepthPCF + shadowBias ? 1.0 : 0.0;
         }
     }
-    // shadow /= 9.0;
+    shadow /= 49.0;
 
     if (currentDepth > 1.0)
         shadow = 0.0;
