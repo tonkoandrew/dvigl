@@ -47,8 +47,8 @@ private:
 
     GLuint depthMapFBO; // Shadow map framebuffer
     GLuint depthMap;
-    const GLuint SHADOW_WIDTH = 1024;
-    const GLuint SHADOW_HEIGHT = 1024;
+    const GLuint SHADOW_WIDTH = 2048;
+    const GLuint SHADOW_HEIGHT = 2048;
 
 
     GLuint quadVAO = 0;
@@ -62,9 +62,10 @@ private:
     bool reload_shaders = false;
 
     float sun_pos_x = 0.0f;
-    float sun_pos_y = 400.0f;
-    float sun_pos_z = -1.0f;
-    float shadow_near_plane = 0.1f;
+    float sun_pos_y = 300.0f;
+    float sun_pos_z = 100.0f;
+    float shadow_near_plane = 100.0f;
     float shadow_far_plane = 500.0f;
-    float shadow_frustum_size = 200.0f;
+    float shadow_frustum_size = 250.0f;
+    glm::mat4 lightSpaceMatrix;
 };

@@ -223,8 +223,8 @@ glGenTextures(1, &depthMap);
 glBindTexture(GL_TEXTURE_2D, depthMap);
 glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
              SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);  
 
@@ -470,6 +470,13 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     s->uniform1i("velocityTexture", 4);
     glBindTexture(GL_TEXTURE_2D, gVelocity);
 
+
+    glActiveTexture(GL_TEXTURE5);
+    s->uniform1i("shadowmapTexture", 5);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+
+    s->uniformMatrix4("lightSpaceMatrix", lightSpaceMatrix);
+
     render_quad();
     GLuint err = glGetError();
     if (err != 0)
@@ -546,19 +553,22 @@ void RenderMgr::shadow_pass()
         glm::vec3( 0.0f, -100.0f,  0.0f), 
         glm::vec3( 0.0f, 1.0f,  0.0f)
     );
-    glm::mat4 lightSpaceMatrix = lightProjection * lightView; 
+    lightSpaceMatrix = lightProjection * lightView; 
 
     glm::mat4 model_m, light_mvp;
 
     Shader* s = ShaderMgr::ptr()->get_shader("shadowmap");
     s->bind();
- 
+
+    glDisable(GL_CULL_FACE);
+
     for (auto element : ModelMgr::ptr()->models)
     {
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
         light_mvp = lightSpaceMatrix * model_m;
         s->uniformMatrix4("light_mvp", light_mvp);
+
         m->draw();
     }
 
@@ -566,6 +576,7 @@ void RenderMgr::shadow_pass()
     // render_quad();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+     glEnable(GL_CULL_FACE);
 }
 
 void RenderMgr::render_frame(float time_delta)
@@ -683,9 +694,9 @@ void RenderMgr::gui_pass()
         reload_shaders = true;
     }
 
-    ImGui::SliderFloat("sun_pos_x", &sun_pos_x, -400.0f, 400.0f);
-    ImGui::SliderFloat("sun_pos_y", &sun_pos_y, -400.0f, 400.0f);
-    ImGui::SliderFloat("sun_pos_z", &sun_pos_z, -400.0f, 400.0f);
+    ImGui::SliderFloat("sun_pos_x", &sun_pos_x, -500.0f, 500.0f);
+    ImGui::SliderFloat("sun_pos_y", &sun_pos_y, 0.0f, 2000.0f);
+    ImGui::SliderFloat("sun_pos_z", &sun_pos_z, -500.0f, 500.0f);
 
 
     ImGui::SliderFloat("shadow_near_plane", &shadow_near_plane, 0.1f, 100.0f);

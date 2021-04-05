@@ -18,6 +18,7 @@ uniform sampler2D normalTexture;
 uniform sampler2D materialInfoTexture;
 uniform sampler2D worldPosTexture;
 uniform sampler2D velocityTexture;
+uniform sampler2D shadowmapTexture;
 uniform sampler2D ssaoTexture;
 
 
@@ -71,8 +72,6 @@ uniform samplerCube prefilterMap;
 uniform sampler2D brdfLUT;
 
 // Lighting
-uniform sampler2D shadowmap;
-
 uniform DirLight dirLights[MAX_DIR_LIGHTS];
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
@@ -80,7 +79,7 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform vec3 viewPos;
 // uniform mat4 viewInverse;
 // uniform mat4 projectionInverse;
-uniform mat4 lightSpaceViewProjectionMatrix;
+uniform mat4 lightSpaceMatrix;
 
 uniform ivec3 numDirPointSpotLights;
 
@@ -129,7 +128,7 @@ vec3 FresnelSchlick(float cosTheta, vec3 baseReflectivity)
 
 float CalculateShadow(vec3 fragPos, vec3 normal, vec3 fragToLight)
 {
-    vec4 fragPosLightClipSpace = lightSpaceViewProjectionMatrix * vec4(fragPos, 1.0);
+    vec4 fragPosLightClipSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
     vec3 ndcCoords = fragPosLightClipSpace.xyz / fragPosLightClipSpace.w;
     vec3 depthmapCoords = ndcCoords * 0.5 + 0.5;
 
@@ -137,23 +136,23 @@ float CalculateShadow(vec3 fragPos, vec3 normal, vec3 fragToLight)
     float currentDepth = depthmapCoords.z;
 
     // Add shadow bias to avoid shadow acne. However too much bias can cause peter panning
-    float shadowBias = 0.003;
+    float shadowBias = 0.03;
 
     // Perform Percentage Closer Filtering (PCF) in order to produce soft shadows
-    vec2 texelSize = 1.0 / textureSize(shadowmap, 0);
-    for (int y = -1; y <= 1; ++y)
+    vec2 texelSize = 1.0 / textureSize(shadowmapTexture, 0);
+    for (int y = -5; y <= 5; ++y)
     {
-        for (int x = -1; x <= 1; ++x)
+        for (int x = -5; x <= 5; ++x)
         {
-            float sampledDepthPCF = texture(shadowmap, depthmapCoords.xy + (texelSize * vec2(x, y))).r;
+            float sampledDepthPCF = texture(shadowmapTexture, depthmapCoords.xy + (texelSize * vec2(x, y))).r;
             shadow += currentDepth > sampledDepthPCF + shadowBias ? 1.0 : 0.0;
         }
     }
-    shadow /= 9.0;
+    // shadow /= 9.0;
 
     if (currentDepth > 1.0)
         shadow = 0.0;
-    shadow = 0.0;
+    // shadow = 0.0;
     return shadow;
 }
 
@@ -192,6 +191,8 @@ vec3 CalculateDirectionalLightRadiance(
         // Add the light's radiance to the irradiance sum
         directLightIrradiance += (diffuse + specular) * radiance * max(dot(normal, lightDir), 0.0)
             * (1.0 - CalculateShadow(fragPos, normal, lightDir));
+        // directLightIrradiance += (1.0 - CalculateShadow(fragPos, normal, lightDir));
+
     }
 
     return directLightIrradiance;
