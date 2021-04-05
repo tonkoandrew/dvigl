@@ -543,27 +543,27 @@ void RenderMgr::shadow_pass()
     );
     glm::mat4 lightView = glm::lookAt(
         glm::vec3( sun_pos_x, sun_pos_y, sun_pos_z), 
-        glm::vec3( 0.0f, 0.0f,  0.0f), 
+        glm::vec3( 0.0f, -100.0f,  0.0f), 
         glm::vec3( 0.0f, 1.0f,  0.0f)
     );
     glm::mat4 lightSpaceMatrix = lightProjection * lightView; 
 
-    glm::mat4 model_m;
+    glm::mat4 model_m, light_mvp;
 
     Shader* s = ShaderMgr::ptr()->get_shader("shadowmap");
     s->bind();
-    s->uniformMatrix4("lightSpaceMatrix", lightSpaceMatrix);
  
     for (auto element : ModelMgr::ptr()->models)
     {
         ModelNode* m = (ModelNode*)element.second;
         model_m = m->get_model_matrix();
-        s->uniformMatrix4("model", model_m);
+        light_mvp = lightSpaceMatrix * model_m;
+        s->uniformMatrix4("light_mvp", light_mvp);
         m->draw();
     }
 
     // RenderScene();
-    render_quad();
+    // render_quad();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

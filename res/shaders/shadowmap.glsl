@@ -2,12 +2,11 @@
 #version 410 core
 layout(location = 0) in vec3 attr_pos;
 
-uniform mat4 lightSpaceMatrix;
-uniform mat4 model;
+uniform mat4 light_mvp;
 
 void main()
 {
-    gl_Position = lightSpaceMatrix * model * vec4(attr_pos, 1.0);
+    gl_Position = light_mvp * vec4(attr_pos, 1.0);
 }
 
 #defshader fragment
