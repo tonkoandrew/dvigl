@@ -84,6 +84,8 @@ typedef GLuint GLhandleARB;
 #include <assimp/postprocess.h> // Post processing flags
 #include <assimp/scene.h> // Output data structure
 
+#include <entt/entt.hpp>
+
 // ---- include STL ----
 
 #include <dvigl/singleton.h>
@@ -151,15 +153,10 @@ typedef GLuint GLhandleARB;
 
 #define INVALID_UNIFORM_LOCATION 0xffffffff
 
-template<typename Ty, size_t Num>
-char(&CountOfRequireArrayArgumentT(const Ty(&)[Num]))[Num];
+template <typename Ty, size_t Num> char (&CountOfRequireArrayArgumentT(const Ty (&)[Num]))[Num];
 
-#define COUNTOF(_x) sizeof(CountOfRequireArrayArgumentT(_x) )
-
+#define COUNTOF(_x) sizeof(CountOfRequireArrayArgumentT(_x))
 
 extern "C" int dvigl_init();
 extern "C" int dvigl_main();
 extern "C" Uint32 dvigl_get_window_id();
-
-
-

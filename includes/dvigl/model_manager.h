@@ -22,5 +22,6 @@ public:
     std::unordered_map<std::string, SkinnedModelNode*> skinned_models;
 
     float animation_speed = 1.0f;
+
 private:
 };

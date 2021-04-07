@@ -20,6 +20,8 @@
 
 Application gApplication;
 
+static void DoMath(glm::mat4& transform) {}
+
 bool Application::init()
 {
     error_code = 0;
@@ -175,6 +177,50 @@ bool Application::init()
         error_code = 16;
         return false;
     }
+
+    struct TransformComponent
+    {
+        glm::mat4 Transform;
+        TransformComponent() = default;
+        TransformComponent(const TransformComponent&) = default;
+        TransformComponent(const glm::mat4& transform)
+            : Transform(transform)
+        {
+        }
+        operator glm::mat4&() { return Transform; }
+        operator const glm::mat4&() const { return Transform; }
+    };
+
+    struct MeshComponent
+    {
+        MeshComponent() = default;
+    };
+
+    TransformComponent transform;
+
+    DoMath(transform);
+
+    entt::entity entity = m_Registry.create();
+    auto transf = m_Registry.emplace<TransformComponent>(entity, glm::mat4(1.0f));
+    // m_Registry.remove<TransformComponent>(entity);
+    // m_Registry.clear();
+    // if(m_Registry.has<TransformComponent>(entity))
+    {
+        TransformComponent& tr = m_Registry.get<TransformComponent>(entity);
+    }
+
+    auto view = m_Registry.view<TransformComponent>();
+    for (auto entity : view)
+    {
+        TransformComponent& tr = view.get<TransformComponent>(entity);
+    }
+
+    // auto v = m_Registry.view<TransformComponent, MeshComponent>();
+    // for (auto entity: v)
+    // {
+    //     auto trans , mesh = v.get<TransformComponent, MeshComponent>(entity);
+    // }
+
     return true;
 }
 
@@ -187,8 +233,13 @@ bool Application::main_loop()
     Uint32 prev_tick = current_tick;
     float time_delta = 0.0f;
 
+    Uint32 frameStart;
+    int frameTime;
+
     while (!quit)
     {
+        frameStart = SDL_GetTicks();
+
         while (SDL_PollEvent(&event) != 0)
         {
             if (event.type == SDL_QUIT)
@@ -226,22 +277,17 @@ bool Application::main_loop()
         current_tick = SDL_GetTicks();
         time_delta = current_tick - prev_tick;
 
-        /* 16ms each frame for ~60fps */
-        // float delay = 6.6f - time_delta;
-        float delay = 16.6f - time_delta;
-        // float delay = 33.3f - time_delta;
-        // float delay = 66.6f - time_delta;
-        // float delay = 260.0f - time_delta;
-        if (delay < 0.0f)
-        {
-            delay = 0.0f;
-        }
-        // LOG("time_delta = %f delay = %f\n", time_delta, delay);
+        // const int fixed_FPS = 60;
+        // const int fixed_FPS = 30;
+        const int fixed_FPS = 24;
+        const int frameDelay = 1000 / fixed_FPS;
 
-        // SDL_Delay(int(delay));
-        // SDL_Delay(delay);
-        // SDL_Delay(100);
-        // LOG("delay %d\n", delay);
+        frameTime = SDL_GetTicks() - frameStart;
+
+        if (frameDelay > frameTime)
+        {
+            SDL_Delay(frameDelay - frameTime);
+        }
     }
     // SDL_Quit();
     return true;

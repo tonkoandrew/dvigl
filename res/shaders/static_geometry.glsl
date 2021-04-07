@@ -15,13 +15,13 @@ out vec3 v_pos;
 
 
 out vec4 v_pos_cam;
-out vec4 v_prev_pos_cam;
+// out vec4 v_prev_pos_cam;
 
 
 uniform mat3 normalMatrix;
 uniform mat4 model;
 uniform mat4 mvp;
-uniform mat4 prev_mvp;
+// uniform mat4 prev_mvp;
 
 
 void main()
@@ -36,7 +36,7 @@ void main()
     v_pos = (model * vec4(attr_pos, 1.0)).xyz;
 
     v_pos_cam = mvp * vec4(attr_pos, 1.0);
-    v_prev_pos_cam = prev_mvp * vec4(attr_pos, 1.0);
+    // v_prev_pos_cam = prev_mvp * vec4(attr_pos, 1.0);
 
     gl_Position = v_pos_cam;
 }
@@ -64,7 +64,7 @@ in vec2 v_texcoord;
 in vec3 v_pos;
 
 in vec4 v_pos_cam;
-in vec4 v_prev_pos_cam;
+// in vec4 v_prev_pos_cam;
 
 uniform Material material;
 uniform float time_delta;
@@ -91,8 +91,9 @@ void main()
 
     gb_WorldPos = v_pos;
 
-    vec2 a = (v_pos_cam.xy / v_pos_cam.w) * 0.5 + 0.5;
-    vec2 b = (v_prev_pos_cam.xy / v_prev_pos_cam.w) * 0.5 + 0.5;
-    vec2 vel = (a - b);
-    gb_Velocity = vec3(vel, 1.0);
+    // vec2 a = (v_pos_cam.xy / v_pos_cam.w) * 0.5 + 0.5;
+    // vec2 b = (v_prev_pos_cam.xy / v_prev_pos_cam.w) * 0.5 + 0.5;
+    // vec2 vel = (a - b);
+    // gb_Velocity = vec3(vel, 1.0);
+    gb_Velocity = vec3(1.0);
 }

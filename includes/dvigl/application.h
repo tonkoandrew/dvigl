@@ -9,8 +9,10 @@ public:
     void exit();
     int get_error_code();
     void release();
+    entt::registry m_Registry;
+
+    bool quit;
 
 private:
-    bool quit;
     int error_code;
 };

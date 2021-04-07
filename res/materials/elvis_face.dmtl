@@ -4,7 +4,7 @@ shader: 'skinned'
 albedo: 'FatElvis_diffuse.jpg'
 normal: 'rustediron2_normal.png'
 metallic: 'rustediron2_metallic.png'
-roughness: 'rustediron2_roughness.png'
+roughness: 'needle.png'
 ao: 'ground_ao.jpg'
 
 

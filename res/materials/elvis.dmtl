@@ -3,7 +3,7 @@ shader: 'skinned'
 albedo: 'FatElvis_diffuse.jpg'
 normal: 'FatElvis_normal.jpg'
 metallic: 'plasticpattern1-metalness.png'
-roughness: 'rustediron2_roughness.png'
+roughness: 'needle.png'
 ao: 'ground_ao.jpg'
 
 uv_params:

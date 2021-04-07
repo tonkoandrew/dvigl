@@ -1,6 +1,6 @@
 shader: 'simple'
 albedo: 'corkboard3b-albedo.png'
-normal: 'normal.jpg'
+normal: 'corkboard3b-normal.png'
 metallic: 'corkboard3b-metalness.png'
 roughness: 'corkboard3b-roughnness.png'
 ao: 'corkboard3b-ao.png'

@@ -25,6 +25,7 @@ uniform sampler2D ssaoTexture;
 uniform int visualization_type;
 
 uniform float uVelocityScale;
+uniform float u_shadowBias;
 
 // ============================= ++++++++++++++++++++++++++++++++=== ==================
 struct DirLight
@@ -126,6 +127,19 @@ vec3 FresnelSchlick(float cosTheta, vec3 baseReflectivity)
     return max(baseReflectivity + (1.0 - baseReflectivity) * pow(2, (-5.55473 * cosTheta - 6.98316) * cosTheta), 0.0);
 }
 
+float sample_ShadowMap(vec2 uv)
+{
+    if (uv.x < 0.001)
+        return 1.0;
+    if (uv.x > 0.999)
+        return 1.0;
+    if (uv.y < 0.001)
+        return 1.0;
+    if (uv.y > 0.999)
+        return 1.0;
+    return texture(shadowmapTexture, uv).r;
+}
+
 float CalculateShadow(vec3 fragPos, vec3 normal, vec3 fragToLight)
 {
     vec4 fragPosLightClipSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
@@ -136,19 +150,23 @@ float CalculateShadow(vec3 fragPos, vec3 normal, vec3 fragToLight)
     float currentDepth = depthmapCoords.z;
 
     // Add shadow bias to avoid shadow acne. However too much bias can cause peter panning
-    float shadowBias = 0.001;
+    // float u_shadowBias = 0.0001;
 
     // Perform Percentage Closer Filtering (PCF) in order to produce soft shadows
     vec2 texelSize = 1.0 / textureSize(shadowmapTexture, 0);
-    for (int y = -3; y <= 3; ++y)
+
+    for (int y = -1; y <= 1; ++y)
     {
-        for (int x = -3; x <= 3; ++x)
+        for (int x = -1; x <= 1; ++x)
         {
-            float sampledDepthPCF = texture(shadowmapTexture, depthmapCoords.xy + (texelSize * vec2(x, y))).r;
-            shadow += currentDepth > sampledDepthPCF + shadowBias ? 1.0 : 0.0;
+            vec2 uv = depthmapCoords.xy + (texelSize * vec2(x, y));
+            float sampledDepthPCF = sample_ShadowMap(uv);
+            shadow += currentDepth > sampledDepthPCF + u_shadowBias ? 1.0 : 0.0;
         }
     }
-    shadow /= 49.0;
+    // shadow /= 81.0;
+    // shadow /= 49.0;
+    shadow /= 9.0;
 
     if (currentDepth > 1.0)
         shadow = 0.0;
@@ -309,115 +327,143 @@ vec3 CalculateSpotLightRadiance(
 #define VIS_WIREFRAME 8
 
 
-void main()
+vec3 sample_WorldPos(vec2 uv)
 {
-    vec2 texelSize = 1.0 / vec2(textureSize(albedoTexture, 0));
-    vec2 TexCoords = gl_FragCoord.xy * texelSize;
+    return texture(worldPosTexture, uv).xyz;
+}
 
-    vec3 fragPos = texture(worldPosTexture, TexCoords).xyz;
-    // Sample textures
-    vec3 normal = texture(normalTexture, TexCoords).rgb;
+vec3 sample_Normal(vec2 uv)
+{
+    vec3 normal = texture(normalTexture, uv).rgb;
     if (length(normal) < 0.5)
         discard;
     normal = normalize(normal);
+    return normal;
+}
 
-    vec3 albedo = texture(albedoTexture, TexCoords).rgb;
-    float albedoAlpha = texture(albedoTexture, TexCoords).w;
-    float metallic = texture(materialInfoTexture, TexCoords).r;
-    float roughness = texture(materialInfoTexture, TexCoords).g; // Used for indirect specular (reflections)
-    // roughness = 0.99;
-    float materialAO = texture(materialInfoTexture, TexCoords).b;
-    float sceneAO = texture(ssaoTexture, TexCoords).r;
-    // float ao = min(materialAO, sceneAO);
-    float ao = materialAO;
-    ao = 0.99;
+vec4 sample_Albedo(vec2 uv)
+{
+    return texture(albedoTexture, uv);
+}
 
-    vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 reflectionVec = reflect(-viewDir, normal);
+vec4 sample_MaterialInfo(vec2 uv)
+{
+    return texture(materialInfoTexture, uv);
+}
 
-    // Dielectrics have an average base specular reflectivity around 0.04, and metals absorb all of their diffuse
-    // (refraction) lighting so their albedo is used instead for their specular lighting (reflection)
-    vec3 baseReflectivity = vec3(0.04);
-    baseReflectivity = mix(baseReflectivity, albedo, metallic);
-
-    // Calculate per light radiance for all of the direct lighting
-    vec3 directLightIrradiance = vec3(0.0);
-    directLightIrradiance += CalculateDirectionalLightRadiance(
-        albedo, normal, metallic, roughness, fragPos, viewDir, baseReflectivity);
-    directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
-
-    directLightIrradiance
-        += CalculatePointLightRadiance(albedo, normal, metallic, roughness, fragPos, viewDir, baseReflectivity);
-    directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
-
-    directLightIrradiance
-        += CalculateSpotLightRadiance(albedo, normal, metallic, roughness, fragPos, viewDir, baseReflectivity);
-    directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
-
-    // Calcualte ambient IBL for both diffuse and specular
-    vec3 ambient = vec3(0.1) * albedo * ao;
-    // if (computeIBL)
-    // {
-    //     vec3 specularRatio = FresnelSchlick(max(dot(normal, viewDir), 0.0), baseReflectivity);
-    //     vec3 diffuseRatio = vec3(1.0) - specularRatio;
-    //     diffuseRatio *= 1.0 - metallic;
-
-    //     vec3 indirectDiffuse = texture(irradianceMap, normal).rgb * albedo * diffuseRatio;
-
-    //     vec3 prefilterColour
-    //         = textureLod(prefilterMap, reflectionVec, roughness * (reflectionProbeMipCount - 1)).rgb;
-    //     vec2 brdfIntegration = texture(brdfLUT, vec2(max(dot(normal, viewDir), 0.0), roughness)).rg;
-    //     vec3 indirectSpecular = prefilterColour * (specularRatio * brdfIntegration.x + brdfIntegration.y);
-
-    //     ambient = (indirectDiffuse + indirectSpecular) * ao;
-    // }
-
-    FragColor = vec4(ambient + directLightIrradiance, 1.0);
+void main()
+{
 
     // =============+++++++++++++++++============
+    vec2 texelSize = 1.0 / vec2(textureSize(albedoTexture, 0));
+    vec2 uv = gl_FragCoord.xy * texelSize;
+
     switch (visualization_type)
     {
+        case VIS_NONE:
+            vec3 fragPos = sample_WorldPos(uv);
+            vec3 normal = sample_Normal(uv);
+            vec4 alb = sample_Albedo(uv);
+            vec3 albedo = alb.rgb;
+
+            vec4 matInfo = sample_MaterialInfo(uv);
+            float metallic = matInfo.r;
+            float roughness = matInfo.g;
+            float materialAO = matInfo.b;
+
+            float sceneAO = texture(ssaoTexture, uv).r;
+            float ao = min(materialAO, sceneAO) * 0.02;
+
+            vec3 viewDir = normalize(viewPos - fragPos);
+            vec3 reflectionVec = reflect(-viewDir, normal);
+
+            // Dielectrics have an average base specular reflectivity around 0.04, and metals absorb all of their diffuse
+            // (refraction) lighting so their albedo is used instead for their specular lighting (reflection)
+            vec3 baseReflectivity = vec3(0.04);
+            baseReflectivity = mix(baseReflectivity, albedo, metallic);
+
+            // Calculate per light radiance for all of the direct lighting
+            vec3 directLightIrradiance = vec3(0.0);
+            directLightIrradiance += CalculateDirectionalLightRadiance(
+                albedo, normal, metallic, roughness, fragPos, viewDir, baseReflectivity);
+            directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
+
+            directLightIrradiance
+                += CalculatePointLightRadiance(albedo, normal, metallic, roughness, fragPos, viewDir, baseReflectivity);
+            directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
+
+            directLightIrradiance
+                += CalculateSpotLightRadiance(albedo, normal, metallic, roughness, fragPos, viewDir, baseReflectivity);
+            directLightIrradiance = clamp(directLightIrradiance, 0.0, 1.0);
+
+            // Calcualte ambient IBL for both diffuse and specular
+            vec3 ambient = vec3(ao) * albedo;
+            // if (computeIBL)
+            // {
+            //     vec3 specularRatio = FresnelSchlick(max(dot(normal, viewDir), 0.0), baseReflectivity);
+            //     vec3 diffuseRatio = vec3(1.0) - specularRatio;
+            //     diffuseRatio *= 1.0 - metallic;
+
+            //     vec3 indirectDiffuse = texture(irradianceMap, normal).rgb * albedo * diffuseRatio;
+
+            //     vec3 prefilterColour
+            //         = textureLod(prefilterMap, reflectionVec, roughness * (reflectionProbeMipCount - 1)).rgb;
+            //     vec2 brdfIntegration = texture(brdfLUT, vec2(max(dot(normal, viewDir), 0.0), roughness)).rg;
+            //     vec3 indirectSpecular = prefilterColour * (specularRatio * brdfIntegration.x + brdfIntegration.y);
+
+            //     ambient = (indirectDiffuse + indirectSpecular) * ao;
+            // }
+
+            FragColor = vec4(ambient + directLightIrradiance, 1.0);
+            break;
         case VIS_ALBEDO:
-            FragColor = vec4(albedo, 1.0);
+            FragColor = vec4(sample_Albedo(uv).rgb, 1.0);
             break;
+
         case VIS_NORMALS:
-            FragColor = vec4((normal), 1.0);
-            // float x = normal.x;
-            // float y = 0.0; //normal.y;
-            // float z = 0.0; //normal.z;
-            // FragColor = vec4(x,y,z, 1.0);
+            FragColor = vec4(sample_Normal(uv), 1.0);
             break;
+
         case VIS_METALLNESS:
-            FragColor = vec4(vec3(metallic), 1.0);
+            FragColor = vec4(vec3(sample_MaterialInfo(uv).r), 1.0);
             break;
+
         case VIS_ROUGHNESS:
-            FragColor = vec4(vec3(roughness), 1.0);
+            FragColor = vec4(vec3(sample_MaterialInfo(uv).g), 1.0);
             break;
+
         case VIS_AMBIENT_OCCLUSION:
-            FragColor = vec4(vec3(ao), 1.0);
+            FragColor = vec4(vec3(sample_MaterialInfo(uv).b), 1.0);
             break;
+
         case VIS_WORLD_POSITIONS:
-            FragColor = vec4(fragPos / 100.0, 1.0);
+            FragColor = vec4(sample_WorldPos(uv) / 100.0, 1.0);
             break;
+
         case VIS_VELOCITY:
-            vec2 velocity = texture(velocityTexture, TexCoords).rg;
+            vec2 velocity = texture(velocityTexture, uv).rg;
 
             // velocity = velocity * 2.0
             velocity *= uVelocityScale;
 
             float speed = length(velocity / texelSize);
             // int nSamples = clamp(int(speed), 1, MAX_SAMPLES);
-            // vec4 oResult = texture(albedoTexture, TexCoords);
+            // vec4 oResult = texture(albedoTexture, uv);
             // for (int i = 1; i < nSamples; ++i) {
             //     vec2 offset = velocity * (float(i) / float(nSamples - 1) - 0.5);
-            //     oResult += texture(albedoTexture, TexCoords + offset);
+            //     oResult += texture(albedoTexture, uv + offset);
             // }
             // oResult /= float(nSamples);
             // FragColor = vec4(oResult.rgb, 1.0);
 
             FragColor = vec4(vec3(speed*0.01), 1.0);
             break;
+
         case VIS_WIREFRAME:
+
+            vec3 nn = texture(normalTexture, uv).rgb;
+            if (length(nn) < 0.5)
+                discard;
             FragColor = vec4(1.0);
             break;
     }

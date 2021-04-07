@@ -113,7 +113,8 @@ void InputMgr::mouse_motion(SDL_MouseMotionEvent* event)
     // cam->rotate_around_vector(cam->left, event->yrel * speed);
 }
 
-bool InputMgr::init() {
+bool InputMgr::init()
+{
     // if (SDL_SetRelativeMouseMode(SDL_TRUE))
     // {
     //     LOG("SDL_SetRelativeMouseMode failed: %s\n", SDL_GetError());

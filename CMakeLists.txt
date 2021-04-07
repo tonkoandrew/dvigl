@@ -62,17 +62,17 @@ option(SANITIZE "Enable memory sanitizer" OFF)
 set(CMAKE_BUILD_TYPE "Release")
 
 if(APPLE)
-    list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -pedantic")
+    list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -pedantic")
 else()
     if(SANITIZE)
-        # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic -fsanitize=address")
-        list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -g -pedantic")
+        # list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -g -pedantic -fsanitize=address")
+        list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -g -pedantic")
     else()
-        # list(APPEND CMAKE_CXX_FLAGS "-std=c++11 -s -pedantic -fno-exceptions")
+        # list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -s -pedantic -fno-exceptions")
         list(
             APPEND
             CMAKE_CXX_FLAGS
-            "-std=c++14 -s -pedantic -fno-data-sections -fno-function-sections"
+            "-std=c++17 -s -pedantic -fno-data-sections -fno-function-sections"
         )
     endif()
 endif()
@@ -154,6 +154,8 @@ find_package(JPEG REQUIRED)
 message(STATUS "JPEG at ${JPEG_LIBRARIES}")
 
 
+find_package(EnTT REQUIRED)
+message(STATUS "EnTT version ${EnTT_VERSION}")
 # 3rd party libraries
 include(cmake/3rdparty.cmake)
 

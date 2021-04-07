@@ -1,7 +1,6 @@
 #pragma once
 #include <dvigl/core.h>
 
-
 enum VisualizationType
 {
     VIS_NONE,
@@ -14,7 +13,6 @@ enum VisualizationType
     VIS_VELOCITY,
     VIS_WIREFRAME
 };
-
 
 class RenderMgr : public Singleton<RenderMgr>
 {
@@ -44,12 +42,10 @@ private:
     GLuint gBuffer; // framebuffer for deferred rendering pass
     GLuint gAlbedo, gNormal, gMaterialInfo, gPos, gVelocity; // gBuffer textures
 
-
-    GLuint depthMapFBO; // Shadow map framebuffer
-    GLuint depthMap;
+    GLuint shadowMapFBO; // Shadow map framebuffer
+    GLuint shadowMap;
     const GLuint SHADOW_WIDTH = 2048;
     const GLuint SHADOW_HEIGHT = 2048;
-
 
     GLuint quadVAO = 0;
     GLuint quadVBO;
@@ -62,10 +58,12 @@ private:
     bool reload_shaders = false;
 
     float sun_pos_x = 255.0f;
-    float sun_pos_y = 355.0f;
+    float sun_pos_y = 378.0f;
     float sun_pos_z = -5.0f;
     float shadow_near_plane = 100.0f;
-    float shadow_far_plane = 5000.0f;
-    float shadow_frustum_size = 310.0f;
+    float shadow_far_plane = 1000.0f;
+    float shadow_frustum_size = 250.0f;
+
+    float shadowBias = 0.0005;
     glm::mat4 lightSpaceMatrix;
 };

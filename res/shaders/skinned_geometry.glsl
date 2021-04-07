@@ -14,16 +14,16 @@ out vec2 v_texcoord;
 out vec3 v_pos;
 
 out vec4 v_pos_cam;
-out vec4 v_prev_pos_cam;
+// out vec4 v_prev_pos_cam;
 
 uniform mat4 model;
 uniform mat4 mvp;
-uniform mat4 prev_mvp;
+// uniform mat4 prev_mvp;
 uniform mat3 normalMatrix;
 
 
 uniform mat4 gBones[100];
-uniform mat4 prev_gBones[100];
+// uniform mat4 prev_gBones[100];
 
 void main()
 {
@@ -34,14 +34,14 @@ void main()
     BoneTransform += gBones[BoneIDs[2]] * Weights[2];
     BoneTransform += gBones[BoneIDs[3]] * Weights[3];
 
-    mat4 prev_BoneTransform = prev_gBones[BoneIDs[0]] * Weights[0];
-    prev_BoneTransform += prev_gBones[BoneIDs[1]] * Weights[1];
-    prev_BoneTransform += prev_gBones[BoneIDs[2]] * Weights[2];
-    prev_BoneTransform += prev_gBones[BoneIDs[3]] * Weights[3];
+    // mat4 prev_BoneTransform = prev_gBones[BoneIDs[0]] * Weights[0];
+    // prev_BoneTransform += prev_gBones[BoneIDs[1]] * Weights[1];
+    // prev_BoneTransform += prev_gBones[BoneIDs[2]] * Weights[2];
+    // prev_BoneTransform += prev_gBones[BoneIDs[3]] * Weights[3];
 
 
     mat4 mvpb = mvp * BoneTransform;
-    mat4 prev_mvpb = prev_mvp * prev_BoneTransform;
+    // mat4 prev_mvpb = prev_mvp * prev_BoneTransform;
 
     v_pos = (model * (BoneTransform * vec4(attr_pos, 1.0))).xyz;
 
@@ -56,7 +56,7 @@ void main()
     TBN = mat3(T, B, N);
 
     v_pos_cam = mvpb * vec4(attr_pos, 1.0);
-    v_prev_pos_cam = prev_mvpb * vec4(attr_pos, 1.0);
+    // v_prev_pos_cam = prev_mvpb * vec4(attr_pos, 1.0);
 
     gl_Position = v_pos_cam;
 }
@@ -84,7 +84,7 @@ in vec2 v_texcoord;
 in vec3 v_pos;
 
 in vec4 v_pos_cam;
-in vec4 v_prev_pos_cam;
+// in vec4 v_prev_pos_cam;
 
 uniform Material material;
 uniform float time_delta;
@@ -110,8 +110,9 @@ void main()
 
     gb_WorldPos = v_pos;
 
-    vec2 a = (v_pos_cam.xy / v_pos_cam.w) * 0.5 + 0.5;
-    vec2 b = (v_prev_pos_cam.xy / v_prev_pos_cam.w) * 0.5 + 0.5;
-    vec2 vel = (a - b);
-    gb_Velocity = vec3(vel, 1.0);
+    // vec2 a = (v_pos_cam.xy / v_pos_cam.w) * 0.5 + 0.5;
+    // vec2 b = (v_prev_pos_cam.xy / v_prev_pos_cam.w) * 0.5 + 0.5;
+    // vec2 vel = (a - b);
+    // gb_Velocity = vec3(vel, 1.0);
+    gb_Velocity = vec3(1.0);
 }

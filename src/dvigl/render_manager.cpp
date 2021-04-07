@@ -218,21 +218,21 @@ bool RenderMgr::init()
 
     resize_buffers(w, h, true);
 
-glGenFramebuffers(1, &depthMapFBO); 
-glGenTextures(1, &depthMap);
-glBindTexture(GL_TEXTURE_2D, depthMap);
-glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
-             SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);  
+    glGenFramebuffers(1, &shadowMapFBO);
+    glGenTextures(1, &shadowMap);
+    glBindTexture(GL_TEXTURE_2D, shadowMap);
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-glDrawBuffer(GL_NONE);
-glReadBuffer(GL_NONE);
-glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     return true;
 }
@@ -255,7 +255,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
     glm::mat4 view_proj_m;
     glm::mat4 mvp;
-    glm::mat4 prev_mvp;
+    // glm::mat4 prev_mvp;
 
     Frustum f;
 
@@ -319,10 +319,10 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         s->uniformMatrix3("normalMatrix", normalMatrix);
         s->uniformMatrix4("model", model_m);
         s->uniformMatrix4("mvp", mvp);
-        s->uniformMatrix4("prev_mvp", m->prev_mvp);
+        // s->uniformMatrix4("prev_mvp", m->prev_mvp);
 
         m->draw();
-        m->prev_mvp = mvp;
+        // m->prev_mvp = mvp;
     }
 
     s = ShaderMgr::ptr()->get_shader("skinned_geometry");
@@ -353,11 +353,11 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
 
         s->uniformMatrix4("model", model_m);
         s->uniformMatrix4("mvp", mvp);
-        s->uniformMatrix4("prev_mvp", m->prev_mvp);
+        // s->uniformMatrix4("prev_mvp", m->prev_mvp);
         s->uniformMatrix3("normalMatrix", normalMatrix);
         m->draw();
 
-        m->prev_mvp = mvp;
+        // m->prev_mvp = mvp;
     }
 
     static int last_count = 0;
@@ -405,6 +405,7 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     float velocity_scale = 0.001f + (1.0f * time_delta);
     // LOG("%f\n", velocity_scale);
     s->uniform1f("uVelocityScale", velocity_scale);
+    s->uniform1f("u_shadowBias", shadowBias);
 
     s->uniform3f("viewPos", camera->get_position());
 
@@ -470,10 +471,9 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     s->uniform1i("velocityTexture", 4);
     glBindTexture(GL_TEXTURE_2D, gVelocity);
 
-
     glActiveTexture(GL_TEXTURE5);
     s->uniform1i("shadowmapTexture", 5);
-    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glBindTexture(GL_TEXTURE_2D, shadowMap);
 
     s->uniformMatrix4("lightSpaceMatrix", lightSpaceMatrix);
 
@@ -538,22 +538,15 @@ void RenderMgr::forward_pass(float aspect)
 void RenderMgr::shadow_pass()
 {
     glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
     glClear(GL_DEPTH_BUFFER_BIT);
     // ConfigureShaderAndMatrices();
 
-    glm::mat4 lightProjection = glm::ortho(
-        -shadow_frustum_size, shadow_frustum_size,
-        -shadow_frustum_size, shadow_frustum_size,
-        shadow_near_plane,
-        shadow_far_plane
-    );
+    glm::mat4 lightProjection = glm::ortho(-shadow_frustum_size, shadow_frustum_size, -shadow_frustum_size,
+        shadow_frustum_size, shadow_near_plane, shadow_far_plane);
     glm::mat4 lightView = glm::lookAt(
-        glm::vec3( sun_pos_x, sun_pos_y, sun_pos_z), 
-        glm::vec3( 0.0f, -100.0f,  0.0f), 
-        glm::vec3( 0.0f, 1.0f,  0.0f)
-    );
-    lightSpaceMatrix = lightProjection * lightView; 
+        glm::vec3(sun_pos_x, sun_pos_y, sun_pos_z), glm::vec3(0.0f, -100.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    lightSpaceMatrix = lightProjection * lightView;
 
     glm::mat4 model_m, light_mvp;
 
@@ -576,7 +569,7 @@ void RenderMgr::shadow_pass()
     // render_quad();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-     glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 }
 
 void RenderMgr::render_frame(float time_delta)
@@ -667,28 +660,33 @@ void RenderMgr::gui_pass()
     ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(100.0f, 200.0f), ImGuiCond_FirstUseEver);
     ImGui::Begin("Settings", NULL, 0);
-    ImGui::Text("Animation speed:");
 
+    if (ImGui::Button("Quit"))
+    {
+        Application::ptr()->quit = true;
+    }
+
+    if (ImGui::Button("Reload scene"))
+    {
+        SceneMgr::ptr()->load_scene("../res/scenes/start.scn");
+    }
+
+    ImGui::Text("Animation speed:");
     ImGui::SliderFloat(" ", &ModelMgr::ptr()->animation_speed, 0.0f, 2.0f);
+
+    // ImGui::SliderFloat("shadowBias", &shadowBias, 0.0f, 0.005f);
+    ImGui::SliderFloat("shadowBias", &shadowBias, 0.0f, 0.01f, "%.4f", ImGuiSliderFlags_None);
+
     ImGui::Separator();
     ImGui::Text("Visualization:");
 
-    static const char* s_ptNames[]
-    {
-        "None",
-        "Albedo",
-        "Normals",
-        "Metallic",
-        "Roughness",
-        "AO",
-        "World pos",
-        "Velocity",
-        "Wireframe",
+    static const char* s_ptNames[]{
+        "None", "Albedo", "Normals", "Metallic", "Roughness", "AO", "World pos", "Velocity", "Wireframe",
     };
 
-    ImGui::Combo("", (int*)&vis_type, s_ptNames, COUNTOF(s_ptNames) );
+    ImGui::Combo("", (int*)&vis_type, s_ptNames, COUNTOF(s_ptNames));
     ImGui::Separator();
-    
+
     if (ImGui::Button("Reload shaders"))
     {
         reload_shaders = true;
@@ -698,12 +696,12 @@ void RenderMgr::gui_pass()
     ImGui::SliderFloat("sun_pos_y", &sun_pos_y, 0.0f, 2000.0f);
     ImGui::SliderFloat("sun_pos_z", &sun_pos_z, -500.0f, 500.0f);
 
-
     ImGui::SliderFloat("shadow_near_plane", &shadow_near_plane, 0.1f, 100.0f);
     ImGui::SliderFloat("shadow_far_plane", &shadow_far_plane, 1.0f, 5000.0f);
     ImGui::SliderFloat("shadow_frustum_size", &shadow_frustum_size, 1.0f, 1000.0f);
- 
-    ImGui::Image((void*)(intptr_t)depthMap, ImVec2(300, 300), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
+
+    ImGui::Text("Shadow map:");
+    ImGui::Image((void*)(intptr_t)shadowMap, ImVec2(300, 300), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f));
 
     ImGui::End();
 
