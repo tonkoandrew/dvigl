@@ -373,7 +373,7 @@ bool SceneMgr::load_scene(std::string file_name)
 
 void SceneMgr::update(float time_delta)
 {
-    LODGroupMgr::ptr()->lod_groups["suzan"]->roll(time_delta * 0.001f);
+    // LODGroupMgr::ptr()->lod_groups["suzan"]->roll(time_delta * 0.001f);
     current_scene->spot_lights["spotlight3"]->yaw(time_delta * 0.001f);
 }
 

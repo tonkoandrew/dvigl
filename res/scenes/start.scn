@@ -86,12 +86,12 @@ skinned_models:
   position: {x: 100.0, y: 0.0, z: 0.0}
   rotation: {x: 0, y: 0, z: 0.0}
   scale: 30.0
-- file: elvis.dae
-  format: collada
-  name: elvis_skinned2
-  position: {x: 200.0, y: 0.0, z: 0.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 30.0
+# - file: elvis.dae
+#   format: collada
+#   name: elvis_skinned2
+#   position: {x: 200.0, y: 0.0, z: 0.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 30.0
 
 # - file: elvis.dae
 #   format: collada
@@ -120,27 +120,27 @@ skinned_models:
 #   scale: 30.0
 
 
-- file: bob.dae
-  format: collada
-  name: bob
-  position: {x: -100.0, y: 0.0, z: -100.0}
-  rotation: {x: 0, y: 0, z: 0}
-  scale: 1.5
+# - file: bob.dae
+#   format: collada
+#   name: bob
+#   position: {x: -100.0, y: 0.0, z: -100.0}
+#   rotation: {x: 0, y: 0, z: 0}
+#   scale: 1.5
 static_models:
 
-- file: flame-head.dae
-  format: collada
-  name: flame_head
-  position: {x: 0.0, y: 50.0, z: 100.0}
-  rotation: {x: 0.0, y: 0.0, z: 0.0}
-  scale: 100.0
+# - file: flame-head.dae
+#   format: collada
+#   name: flame_head
+#   position: {x: 0.0, y: 50.0, z: 100.0}
+#   rotation: {x: 0.0, y: 0.0, z: 0.0}
+#   scale: 100.0
 
-- file: elvis.dae
-  format: collada
-  name: elvis
-  position: {x: -100.0, y: 0.0, z: 50.0}
-  rotation: {x: 0, y: 0, z: 0.0}
-  scale: 0.3
+# - file: elvis.dae
+#   format: collada
+#   name: elvis
+#   position: {x: -100.0, y: 0.0, z: 50.0}
+#   rotation: {x: 0, y: 0, z: 0.0}
+#   scale: 0.3
 
 - file: plane.dae
   format: collada
@@ -149,12 +149,12 @@ static_models:
   rotation: {x: -1.5707963267948966, y: 0, z: 0}
   scale: 200.0
 
-- file: plane.dae
-  format: collada
-  name: plane2
-  position: {x: 200.0, y: 0.0, z: 0.0}
-  rotation: {x: -1.5707963267948966, y: 0.0, z: 1.5707963267948966}
-  scale: 200.0
+# - file: plane.dae
+#   format: collada
+#   name: plane2
+#   position: {x: 200.0, y: 0.0, z: 0.0}
+#   rotation: {x: -1.5707963267948966, y: 0.0, z: 1.5707963267948966}
+#   scale: 200.0
 
 
 # - file: plane.dae
@@ -215,33 +215,33 @@ static_models:
 #   rotation: {x: -1.55, y: 0, z: 0.0}
 #   scale: 0.05
 
-lod_groups:
+# lod_groups:
 
-- name: suzan
-  position: {x: 0.0, y: 50.0, z: 0.0}
-  rotation: {x: -1.55, y: 0, z: 0.0}
-  scale: 50.0
-  LODs:
-  - level: 0
-    file: suzan_LOD0.dae
-    format: collada
-    name: suzan_LOD0
-    max_dist: 600.0
+# - name: suzan
+#   position: {x: 0.0, y: 50.0, z: 0.0}
+#   rotation: {x: -1.55, y: 0, z: 0.0}
+#   scale: 50.0
+#   LODs:
+#   - level: 0
+#     file: suzan_LOD0.dae
+#     format: collada
+#     name: suzan_LOD0
+#     max_dist: 600.0
 
-  - level: 1
-    file: suzan_LOD1.dae
-    format: collada
-    name: suzan_LOD1
-    max_dist: 900.0
+#   - level: 1
+#     file: suzan_LOD1.dae
+#     format: collada
+#     name: suzan_LOD1
+#     max_dist: 900.0
 
-  - level: 2
-    file: suzan_LOD2.dae
-    format: collada
-    name: suzan_LOD2
-    max_dist: 1200.0
+#   - level: 2
+#     file: suzan_LOD2.dae
+#     format: collada
+#     name: suzan_LOD2
+#     max_dist: 1200.0
 
-  - level: 3
-    file: suzan_LOD3.dae
-    format: collada
-    name: suzan_LOD3
-    max_dist: 2000.0
+#   - level: 3
+#     file: suzan_LOD3.dae
+#     format: collada
+#     name: suzan_LOD3
+#     max_dist: 2000.0

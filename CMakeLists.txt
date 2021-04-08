@@ -281,9 +281,8 @@ elseif(UNIX AND NOT APPLE)
         opusfile
         theora
         cairo
+        # Qt5::Widgets
     )
-    # set(LIBS Qt5::Widgets ${OPUS_LIBRARIES} ${VPX_LIBRARIES} ${THEORA_LIBRARIES} ${VORBIS_LIBRARIES} ${OGG_LIBRARY} ${YAML_CPP_LIBRARIES} ${ASSIMP_LIBRARY} ${BULLET_LIBRARIES} ${SDL2_LIBRARIES} ${IRRXML_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${SDL2_MIXER_LIBRARIES} sndio ${SDL2_TTF_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${SDL2_NET_LIBRARIES} X11 Xext Xrandr Xinerama Xi Xxf86vm Xcursor GL dl asound pthread FLAC ${JPEG_LIBRARIES} )
-    # execute_process(COMMAND sdl2-config --static-libs OUTPUT_VARIABLE SDL_VARS)
     set(SDL_VARS
         "-L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -ldbus-1 -ldl -lm -Wl,--no-undefined -pthread -lSDL2"
     )
@@ -422,7 +421,7 @@ elseif(APPLE)
     )
 endif()
 
-# ============================ EDITOR ===========================================
+# # ============================ EDITOR ===========================================
 # if(UNIX AND NOT APPLE)
 #   ###
 #   ### Build editor
@@ -436,20 +435,16 @@ endif()
 #       "src/${NAME}/*.cpp"
 #   )
 
-#   qt5_wrap_cpp(SOURCE src/${NAME}/mainwindow.h)
+#   qt5_wrap_cpp(SOURCE src/${NAME}/mainwindow.h src/${NAME}/workerthread.h)
 #   qt5_wrap_ui(SOURCE src/${NAME}/mainwindow.ui)
 
 #   add_executable(${NAME} ${SOURCE})
 #   # set_target_properties(${NAME} PROPERTIES AUTOMOC TRUE)
 #   target_link_libraries(${NAME} ${LIBS})
 
-#   if(WIN32)
-#       set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
-#   elseif(UNIX AND NOT APPLE)
-#       set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
-#   endif()
+#   set_target_properties(${NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 # endif()
-# ============================ EDITOR ===========================================
+# # ============================ EDITOR ===========================================
 
 include_directories(${CMAKE_SOURCE_DIR}/includes ${BULLET_INCLUDE_DIRS} ${IMGUI_INCLUDE_DIR})
 
