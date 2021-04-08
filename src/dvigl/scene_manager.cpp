@@ -66,6 +66,11 @@ bool SceneMgr::load_scene(std::string file_name)
         return false;
     }
 
+    if (!ShaderMgr::ptr()->load_shader("skinned_shadows", "../res/shaders/skinned_shadows.glsl"))
+    {
+        return false;
+    }
+
     if (!FontMgr::ptr()->load_font("FreeSans_150", "../res/fonts/Magician.ttf", 150))
     {
         return false;
@@ -356,6 +361,7 @@ bool SceneMgr::load_scene(std::string file_name)
         }
     }
 
+    current_scene->current_camera = new CameraNode();
     current_scene->get_current_camera()->set_position(glm::vec3(0.0f, 40.0f, 200.0f));
     current_scene->get_current_camera()->set_rotation(glm::vec3(1.55, 0, 0));
     AudioMgr::ptr()->set_volume(MIX_MAX_VOLUME / 2);

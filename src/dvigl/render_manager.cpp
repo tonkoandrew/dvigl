@@ -222,7 +222,7 @@ bool RenderMgr::init()
     glGenTextures(1, &shadowMap);
     glBindTexture(GL_TEXTURE_2D, shadowMap);
     glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -355,7 +355,7 @@ void RenderMgr::geometry_pass(float time_delta, float aspect)
         s->uniformMatrix4("mvp", mvp);
         // s->uniformMatrix4("prev_mvp", m->prev_mvp);
         s->uniformMatrix3("normalMatrix", normalMatrix);
-        m->draw();
+        m->draw(s);
 
         // m->prev_mvp = mvp;
     }
@@ -405,7 +405,7 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     float velocity_scale = 0.001f + (1.0f * time_delta);
     // LOG("%f\n", velocity_scale);
     s->uniform1f("uVelocityScale", velocity_scale);
-    s->uniform1f("u_shadowBias", shadowBias);
+    // s->uniform1f("u_shadowBias", shadowBias);
 
     s->uniform3f("viewPos", camera->get_position());
 
@@ -543,7 +543,7 @@ void RenderMgr::shadow_pass()
     // ConfigureShaderAndMatrices();
 
     glm::mat4 lightProjection = glm::ortho(-shadow_frustum_size, shadow_frustum_size, -shadow_frustum_size,
-        shadow_frustum_size, shadow_near_plane, shadow_far_plane);
+        shadow_frustum_size, shadow_near_plane, shadow_far_plane*2);
     glm::mat4 lightView = glm::lookAt(
         glm::vec3(sun_pos_x, sun_pos_y, sun_pos_z), glm::vec3(0.0f, -100.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     lightSpaceMatrix = lightProjection * lightView;
@@ -565,8 +565,31 @@ void RenderMgr::shadow_pass()
         m->draw();
     }
 
-    // RenderScene();
-    // render_quad();
+
+
+
+
+
+
+
+    s = ShaderMgr::ptr()->get_shader("skinned_shadows");
+    s->bind();
+
+    for (auto element : ModelMgr::ptr()->skinned_models)
+    {
+        SkinnedModelNode* m = (SkinnedModelNode*)element.second;
+        model_m = m->get_model_matrix();
+
+        light_mvp = lightSpaceMatrix * model_m;
+        s->uniformMatrix4("light_mvp", light_mvp);
+        m->draw(s);
+    }
+
+
+
+
+
+
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glEnable(GL_CULL_FACE);
@@ -581,6 +604,7 @@ void RenderMgr::render_frame(float time_delta)
         ShaderMgr::ptr()->load_shader("deferred", "../res/shaders/deferred.glsl");
         ShaderMgr::ptr()->load_shader("forward", "../res/shaders/forward.glsl");
         ShaderMgr::ptr()->load_shader("shadowmap", "../res/shaders/shadowmap.glsl");
+        ShaderMgr::ptr()->load_shader("skinned_shadows", "../res/shaders/skinned_shadows.glsl");
         LOG("SHADERS RELOADED...\n");
         reload_shaders = false;
     }

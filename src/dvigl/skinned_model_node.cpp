@@ -2,6 +2,8 @@
 #include <dvigl/skinned_model_node.h>
 #include <dvigl/texture.h>
 #include <dvigl/texture_manager.h>
+#include <dvigl/shader.h>
+
 
 SkinnedModelNode::SkinnedModelNode(char* content, int content_size, std::string format, float scale)
 {
@@ -37,11 +39,11 @@ SkinnedModelNode::SkinnedModelNode(char* content, int content_size, std::string 
 
 void SkinnedModelNode::update(float time_delta) { m_startTime += time_delta / 1000.0f; }
 
-void SkinnedModelNode::draw()
+void SkinnedModelNode::draw(Shader* s)
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        meshes[i]->draw(m_startTime);
+        meshes[i]->draw(m_startTime, s);
     }
 }
 

@@ -120,12 +120,12 @@ skinned_models:
 #   scale: 30.0
 
 
-# - file: bob.dae
-#   format: collada
-#   name: bob
-#   position: {x: -100.0, y: 0.0, z: -100.0}
-#   rotation: {x: 0, y: 0, z: 0}
-#   scale: 1.5
+- file: bob.dae
+  format: collada
+  name: bob
+  position: {x: -100.0, y: 0.0, z: -100.0}
+  rotation: {x: 0, y: 0, z: 0}
+  scale: 1.5
 static_models:
 
 # - file: flame-head.dae

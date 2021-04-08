@@ -4,6 +4,7 @@
 using namespace std;
 
 class Material;
+class Shader;
 
 class SkinnedMesh
 {
@@ -12,7 +13,7 @@ public:
 
     ~SkinnedMesh();
 
-    void draw(float time);
+    void draw(float time, Shader* s);
     void BoneTransform(float TimeInSeconds, vector<glm::mat4>& Transforms);
     void release();
 

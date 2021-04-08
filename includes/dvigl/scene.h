@@ -15,6 +15,6 @@ public:
     std::unordered_map<std::string, PointLightNode*> point_lights;
     std::unordered_map<std::string, SpotLightNode*> spot_lights;
 
-private:
     CameraNode* current_camera;
+// private:
 };

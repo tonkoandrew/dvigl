@@ -350,13 +350,12 @@ bool SkinnedMesh::InitMaterials(const aiScene* scene)
     return Ret;
 }
 
-void SkinnedMesh::draw(float time)
+void SkinnedMesh::draw(float time, Shader* s)
 {
     vector<glm::mat4> Transforms;
 
     BoneTransform(time, Transforms);
 
-    Shader* s = ShaderMgr::ptr()->get_shader("skinned_geometry");
     s->bind();
     s->uniformMatrix4("gBones", &Transforms);
     // s->uniformMatrix4("prev_gBones", &prev_Transforms);
