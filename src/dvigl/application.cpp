@@ -98,14 +98,14 @@ bool Application::init()
     }
     LOG("done\n");
 
-    LOG("initializing VideoMgr... ");
-    if (!VideoMgr::ptr()->init())
-    {
-        LOG("failed\n");
-        error_code = 15;
-        return false;
-    }
-    LOG("done\n");
+    // LOG("initializing VideoMgr... ");
+    // if (!VideoMgr::ptr()->init())
+    // {
+    //     LOG("failed\n");
+    //     error_code = 15;
+    //     return false;
+    // }
+    // LOG("done\n");
 
     LOG("initializing FontMgr... ");
     if (!FontMgr::ptr()->init())
@@ -309,7 +309,7 @@ void Application::release()
     InputMgr::ptr()->release();
     FileSystemMgr::ptr()->release();
     SceneMgr::ptr()->release();
-    VideoMgr::ptr()->release();
+    // VideoMgr::ptr()->release();
     AudioMgr::ptr()->release();
     TextureMgr::ptr()->release();
     ParticleSystemMgr::ptr()->release();

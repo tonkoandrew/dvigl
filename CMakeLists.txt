@@ -277,14 +277,28 @@ elseif(UNIX AND NOT APPLE)
         fluidsynth
         modplug
         mpg123
+        pulse
         opus
         opusfile
         theora
         cairo
+        wayland-client
+        wayland-egl
+        wayland-cursor
+        xkbcommon
+        X11
+        Xext
+        Xcursor
+        Xinerama
+        Xi
+        Xrandr
+        Xss
+        Xxf86vm
         # Qt5::Widgets
     )
+        # "-L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -ldbus-1 -ldl -lm -Wl,--no-undefined -pthread -lSDL2"
     set(SDL_VARS
-        "-L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -ldbus-1 -ldl -lm -Wl,--no-undefined -pthread -lSDL2"
+        "-L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -lglib-2.0 -lgobject-2.0 -lgio-2.0 -libus-1.0 -ldbus-1 -ldl -lm -Wl,--no-undefined -pthread -lSDL2"
     )
 
     set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE}  ${SDL_VARS}")
@@ -342,15 +356,15 @@ add_library(GLAD STATIC "src/glad.c")
 
 set(LIBS ${LIBS} GLAD)
 
-add_library(THEORAPLAY STATIC "src/theoraplay.c")
+# add_library(THEORAPLAY STATIC "src/theoraplay.c")
 
-target_link_libraries(
-    THEORAPLAY
-    ${VORBIS_LIBRARIES}
-    ${OGG_LIBRARY}
-    ${THEORA_LIBRARIES}
-)
-set(LIBS ${LIBS} THEORAPLAY)
+# target_link_libraries(
+#     THEORAPLAY
+#     ${VORBIS_LIBRARIES}
+#     ${OGG_LIBRARY}
+#     ${THEORA_LIBRARIES}
+# )
+# set(LIBS ${LIBS} THEORAPLAY)
 
 file(GLOB SOURCE "src/webmplay/*.cpp")
 
