@@ -171,9 +171,9 @@ else()
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 endif()
 
-# if (UNIX AND NOT APPLE)
-#   find_package(Qt5 COMPONENTS Widgets REQUIRED)
-# endif(UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
+  find_package(Qt5 COMPONENTS Widgets REQUIRED)
+endif(UNIX AND NOT APPLE)
 
 if(WIN32)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
@@ -294,7 +294,7 @@ elseif(UNIX AND NOT APPLE)
         Xrandr
         Xss
         Xxf86vm
-        # Qt5::Widgets
+        Qt5::Widgets
     )
         # "-L/usr/local/lib -Wl,-rpath,/usr/local/lib -Wl,--enable-new-dtags -ldbus-1 -ldl -lm -Wl,--no-undefined -pthread -lSDL2"
     set(SDL_VARS
