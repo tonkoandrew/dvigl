@@ -34,14 +34,15 @@ find_package(ZLIB REQUIRED)
 #     ${CMAKE_MODULE_PATH}
 #     "${CMAKE_SOURCE_DIR}/cmake/modules/;${CMAKE_MODULE_PATH}"
 # )
+# https://habr.com/ru/post/226421/
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-# if(WIN32)
-#     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-# endif(WIN32)
+if(WIN32)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+endif(WIN32)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
@@ -370,6 +371,11 @@ if(WIN32)
         ${NAME}
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
     )
+    set_target_properties(
+        ${NAME}
+        PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    )
 elseif(UNIX AND NOT APPLE)
     set_target_properties(
         ${NAME}
@@ -428,17 +434,11 @@ file(GLOB SOURCE "src/tests/*.h" "src/tests/*.cpp")
 enable_testing()
 add_executable(${NAME} ${SOURCE})
 target_link_libraries(${NAME} ${LIBS})
-if(WIN32)
-    set_target_properties(
-        ${NAME}
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
-    )
-elseif(UNIX AND NOT APPLE)
-    set_target_properties(
-        ${NAME}
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    )
-endif()
+set_target_properties(
+    ${NAME}
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+)
+
 
 get_target_property(BINARY_PATH ${NAME} RUNTIME_OUTPUT_DIRECTORY)
 
