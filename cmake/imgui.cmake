@@ -11,7 +11,7 @@ include_directories(
     ${SDL2_INCLUDE_DIR}
     )
     
-target_link_libraries(imgui
+target_link_libraries(imgui  SDL2::SDL2 SDL2::SDL2main
     )
     
 set_target_properties(imgui PROPERTIES LINKER_LANGUAGE CXX)

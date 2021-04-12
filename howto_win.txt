@@ -1,0 +1,11 @@
+./vcpkg.exe install zlib freetype sdl2 libpng sdl2-image[libjpeg-turbo] sdl2-mixer sdl2-ttf sdl2-net bullet3 glm assimp libogg libvorbis libtheora opus[avx] opusfile yaml-cpp entt
+
+
+cmake .. -DCMAKE_TOOLCHAIN_FILE=~/proj/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+cmake --build . --target ALL_BUILD --config MinSizeRel
+
+cmake --install . --config MinSizeRel
+
+
+

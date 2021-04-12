@@ -26,26 +26,14 @@ else()
     set_property(CACHE OpenGL_GL_PREFERENCE PROPERTY STRINGS GLVND LEGACY)
 endif()
 
-if(WIN32)
-    set(CMAKE_INCLUDE_PATH
-        "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32"
-    )
-    set(CMAKE_LIBRARY_PATH
-        "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32"
-    )
-    set(CMAKE_PREFIX_PATH
-        "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32"
-    )
-endif()
-
 find_package(Threads REQUIRED)
 
 find_package(ZLIB REQUIRED)
 
-set(CMAKE_MODULE_PATH
-    ${CMAKE_MODULE_PATH}
-    "${CMAKE_SOURCE_DIR}/cmake/modules/;${CMAKE_MODULE_PATH}"
-)
+# set(CMAKE_MODULE_PATH
+#     ${CMAKE_MODULE_PATH}
+#     "${CMAKE_SOURCE_DIR}/cmake/modules/;${CMAKE_MODULE_PATH}"
+# )
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
@@ -60,6 +48,9 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 option(SANITIZE "Enable memory sanitizer" OFF)
 
 set(CMAKE_BUILD_TYPE "Release")
+
+set(CMAKE_CXX_STANDARD 17)
+
 
 if(APPLE)
     list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -pedantic")
@@ -78,13 +69,17 @@ else()
 endif()
 
 # find the required packages
+if(WIN32)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+else()
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+endif()
 
 find_package(SDL2 REQUIRED)
 message(STATUS "SDL 2 included at ${SDL2_INCLUDE_DIRS}")
 
-find_package(Freetype REQUIRED)
-message(STATUS "Freetype at ${FREETYPE_LIBRARIES}")
+find_package(freetype CONFIG REQUIRED)
+message(STATUS "freetype at ${FREETYPE_LIBRARIES}")
 
 if(APPLE)
     include(FindPkgConfig)
@@ -103,67 +98,61 @@ if(APPLE)
         set(PNG_LIBRARIES "${LIBPNG_LIBRARIES}")
     endif()
 else()
-    find_package(PNG REQUIRED)
+    find_package(libpng CONFIG REQUIRED)
     message(STATUS "PNG at ${PNG_LIBRARIES}")
 endif()
 
-find_package(SDL2_image REQUIRED)
+find_package(sdl2-image CONFIG REQUIRED)
 message(STATUS "SDL2_image included at ${SDL2_IMAGE_INCLUDE_DIRS}")
 
-find_package(SDL2_mixer REQUIRED)
+find_package(sdl2-mixer CONFIG REQUIRED)
 message(STATUS "SDL2_mixer included at ${SDL2_MIXER_INCLUDE_DIRS}")
 
-find_package(SDL2_ttf REQUIRED)
+find_package(sdl2-ttf CONFIG REQUIRED)
 message(STATUS "SDL2_ttf included at ${SDL2_TTF_INCLUDE_DIRS}")
 
-find_package(SDL2_net REQUIRED)
+find_package(sdl2-net CONFIG REQUIRED)
 message(STATUS "SDL2_net included at ${SDL2_NET_INCLUDE_DIRS}")
 
-find_package(Bullet REQUIRED)
+find_package(Bullet CONFIG REQUIRED)
 message(STATUS "Found Bullet in ${BULLET_INCLUDE_DIRS}")
 
-find_package(GLM REQUIRED)
+find_package(glm CONFIG REQUIRED)
 message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
 
-find_package(ASSIMP REQUIRED)
+find_package(assimp CONFIG REQUIRED)
 message(STATUS "Found ASSIMP in ${ASSIMP_INCLUDE_DIR}")
 
-find_package(IrrXML REQUIRED)
-message(STATUS "Found IrrXML in ${IRRXML_INCLUDE_DIR}")
+# find_package(IrrXML REQUIRED)
+# message(STATUS "Found IrrXML in ${IRRXML_INCLUDE_DIR}")
 
-find_package(OGG REQUIRED)
+find_package(Ogg CONFIG REQUIRED)
 message(STATUS "Found OGG in ${OGG_LIBRARY}")
 
-find_package(Vorbis REQUIRED)
+find_package(Vorbis CONFIG REQUIRED)
 message(STATUS "Found VORBIS_LIBRARIES in ${VORBIS_LIBRARIES}")
 
-find_package(THEORA REQUIRED)
+find_package(unofficial-theora CONFIG REQUIRED)
 message(STATUS "Found THEORA in ${THEORA_LIBRARIES}")
 
-find_package(Opus REQUIRED)
+find_package(Opus CONFIG REQUIRED)
 message(STATUS "Found Opus in ${OPUS_LIBRARIES}")
 
-find_package(VPX REQUIRED)
-message(STATUS "Found VPX in ${VPX_LIBRARIES}")
+# find_package(unofficial-libvpx CONFIG REQUIRED)
+# message(STATUS "Found VPX in ${VPX_LIBRARIES}")
 
 # yaml-cpp-0.6.3
-find_package(yaml-cpp REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 message(STATUS "YAML_CPP_INCLUDE_DIR at ${YAML_CPP_INCLUDE_DIR}")
 
-find_package(JPEG REQUIRED)
-message(STATUS "JPEG at ${JPEG_LIBRARIES}")
+# find_package(JPEG REQUIRED)
+# message(STATUS "JPEG at ${JPEG_LIBRARIES}")
 
 
-find_package(EnTT REQUIRED)
+find_package(EnTT CONFIG REQUIRED)
 message(STATUS "EnTT version ${EnTT_VERSION}")
 # 3rd party libraries
 include(cmake/3rdparty.cmake)
-
-
-if(WIN32)
-    find_package(HARFBUZZ REQUIRED)
-    message(STATUS "HARFBUZZ at ${HARFBUZZ_LIBRARIES}")
-endif()
 
 if(WIN32)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
@@ -185,53 +174,18 @@ if(WIN32)
         ${THEORA_LIBRARIES}
         ${VORBIS_LIBRARIES}
         ${OGG_LIBRARY}
-        yaml-cpp.a
-        ${ASSIMP_LIBRARY}
+        yaml-cpp
+        assimp::assimp
         ${BULLET_LIBRARIES}
-        ${SDL2_LIBRARIES}
-        ${IRRXML_LIBRARY}
-        ${SDL2_IMAGE_LIBRARIES}
-        ${SDL2_MIXER_LIBRARIES}
-        ${SDL2_TTF_LIBRARIES}
-        ${FREETYPE_LIBRARIES}
-        ${HARFBUZZ_LIBRARIES}
-        graphite2.a
-        bz2
-        rpcrt4
-        ${PNG_LIBRARIES}
-        ${SDL2_NET_LIBRARIES}
-        pthread
+        SDL2::SDL2 SDL2::SDL2main
+        SDL2::SDL2_image
+        SDL2::SDL2_mixer
+        SDL2::SDL2_ttf
+        freetype
+        png
+        SDL2::SDL2_net
         ${JPEG_LIBRARIES}
-        opengl32.dll
-        m
-        user32
-        gdi32
-        winmm
-        imm32
-        ole32
-        oleaut32
-        version
-        uuid
-        advapi32
-        setupapi
-        shell32
-        dinput8
-        dxerr8
-        mingw32
-        ws2_32
-        wsock32
-        shlwapi
-        lzma.a
-        zstd.a
-        mpg123.a
-        FLAC.a
-        tiff.a
-        webp.a
-        Iphlpapi
-        vorbisfile.a
-        vorbis.a
-        ogg.a
-        opusfile.a
+        EnTT::EnTT
     )
     set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -mwindows")
 elseif(UNIX AND NOT APPLE)
@@ -371,11 +325,12 @@ file(GLOB SOURCE "src/webmplay/*.cpp")
 add_library(WEBMPLAY STATIC ${SOURCE})
 target_link_libraries(
     WEBMPLAY
+    PRIVATE
     ${VORBIS_LIBRARIES}
     ${OGG_LIBRARY}
     ${OPUS_LIBRARIES}
     ${VPX_LIBRARIES}
-    pthread
+    # pthread
 )
 set(LIBS ${LIBS} WEBMPLAY)
 
@@ -394,7 +349,7 @@ add_library(${NAME} STATIC ${SOURCE})
 # add_library(${NAME} SHARED ${SOURCE})
 
 # target_link_libraries(${NAME} c SDL2 dl asound dl pthread pulse-simple pulse X11 Xext Xcursor Xinerama Xi Xrandr Xss Xxf86vm wayland-egl wayland-client wayland-cursor xkbcommon pthread rt ${LIBS})
-target_link_libraries(${NAME} m ${LIBS})
+target_link_libraries(${NAME} PRIVATE ${LIBS})
 
 set(LIBS ${NAME} ${LIBS})
 
@@ -406,7 +361,9 @@ set(NAME "game")
 file(GLOB SOURCE "src/${NAME}/*.h" "src/${NAME}/*.cpp")
 
 add_executable(${NAME} ${SOURCE})
-target_link_libraries(${NAME} ${LIBS})
+target_link_libraries(${NAME} PRIVATE ${LIBS})
+# target_compile_options(${NAME} PRIVATE /MT)
+# target_link_options(${NAME} PRIVATE /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT)
 
 if(WIN32)
     set_target_properties(

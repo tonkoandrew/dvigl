@@ -128,12 +128,12 @@ skinned_models:
   scale: 1.5
 static_models:
 
-# - file: flame-head.dae
-#   format: collada
-#   name: flame_head
-#   position: {x: 0.0, y: 50.0, z: 100.0}
-#   rotation: {x: 0.0, y: 0.0, z: 0.0}
-#   scale: 100.0
+- file: flame-head.dae
+  format: collada
+  name: flame_head
+  position: {x: 0.0, y: 50.0, z: 100.0}
+  rotation: {x: 0.0, y: 0.0, z: 0.0}
+  scale: 100.0
 
 # - file: elvis.dae
 #   format: collada
