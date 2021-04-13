@@ -60,12 +60,14 @@ else()
         # list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -g -pedantic -fsanitize=address")
         list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -g -pedantic")
     else()
-        # list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -s -pedantic -fno-exceptions")
-        list(
-            APPEND
-            CMAKE_CXX_FLAGS
-            "-std=c++17 -s -pedantic -fno-data-sections -fno-function-sections"
-        )
+        if (UNIX AND NOT APPLE)
+            # list(APPEND CMAKE_CXX_FLAGS "-std=c++17 -s -pedantic -fno-exceptions")
+            list(
+                APPEND
+                CMAKE_CXX_FLAGS
+                "-std=c++17 -s -pedantic -fno-data-sections -fno-function-sections"
+            )
+        endif()
     endif()
 endif()
 
@@ -155,6 +157,8 @@ message(STATUS "EnTT version ${EnTT_VERSION}")
 # 3rd party libraries
 include(cmake/3rdparty.cmake)
 
+add_subdirectory("C:\\Users\\yoda\\proj\\ozz-animation" "ozz-animation/")
+
 if(WIN32)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll")
 else()
@@ -187,6 +191,8 @@ if(WIN32)
         SDL2::SDL2_net
         ${JPEG_LIBRARIES}
         EnTT::EnTT
+        ozz_animation
+        ozz_geometry
     )
     set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -mwindows")
 elseif(UNIX AND NOT APPLE)

@@ -677,9 +677,9 @@ void RenderMgr::gui_pass()
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(main_window);
     ImGui::NewFrame();
-    // static bool show_demo_window = true;
-    // if (show_demo_window)
-    //     ImGui::ShowDemoWindow(&show_demo_window);
+    static bool show_demo_window = true;
+    if (show_demo_window)
+        ImGui::ShowDemoWindow(&show_demo_window);
 
     ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(100.0f, 200.0f), ImGuiCond_FirstUseEver);

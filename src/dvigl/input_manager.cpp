@@ -81,14 +81,14 @@ void InputMgr::process_input(float time_delta)
         cam->rotate_around_vector(cam->left, -rotation_speed * time_delta);
     }
 
-    if (keystates[SDL_SCANCODE_SPACE])
-    {
+    // if (keystates[SDL_SCANCODE_SPACE])
+    // {
 
-        btCollisionObject* obj = PhysicsMgr::ptr()->dynamicsWorld->getCollisionObjectArray()[1];
-        btRigidBody* body = btRigidBody::upcast(obj);
-        body->activate(true);
-        body->applyCentralImpulse(btVector3(0.f, 5.0f, 0.f));
-    }
+    //     btCollisionObject* obj = PhysicsMgr::ptr()->dynamicsWorld->getCollisionObjectArray()[1];
+    //     btRigidBody* body = btRigidBody::upcast(obj);
+    //     body->activate(true);
+    //     body->applyCentralImpulse(btVector3(0.f, 5.0f, 0.f));
+    // }
 
     if (keystates[SDL_SCANCODE_9])
     {

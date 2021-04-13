@@ -8,7 +8,7 @@
 #include <dvigl/model_manager.h>
 #include <dvigl/network_manager.h>
 #include <dvigl/particle_system_manager.h>
-#include <dvigl/physics_manager.h>
+// #include <dvigl/physics_manager.h>
 #include <dvigl/render_manager.h>
 #include <dvigl/scene_manager.h>
 #include <dvigl/shader_manager.h>
@@ -125,14 +125,14 @@ bool Application::init()
     }
     LOG("done\n");
 
-    LOG("initializing PhysicsMgr... ");
-    if (!PhysicsMgr::ptr()->init())
-    {
-        LOG("failed\n");
-        error_code = 13;
-        return false;
-    }
-    LOG("done\n");
+    // LOG("initializing PhysicsMgr... ");
+    // if (!PhysicsMgr::ptr()->init())
+    // {
+    //     LOG("failed\n");
+    //     error_code = 13;
+    //     return false;
+    // }
+    // LOG("done\n");
 
     LOG("initializing NetworkMgr... ");
     if (!NetworkMgr::ptr()->init())
@@ -273,7 +273,7 @@ bool Application::main_loop()
         ModelMgr::ptr()->update_animation_timers(time_delta);
         InputMgr::ptr()->process_input(time_delta);
         ParticleSystemMgr::ptr()->update(time_delta);
-        PhysicsMgr::ptr()->update(time_delta);
+        // PhysicsMgr::ptr()->update(time_delta);
 
         // VideoMgr::ptr()->update(time_delta);
 
@@ -284,9 +284,10 @@ bool Application::main_loop()
         current_tick = SDL_GetTicks();
         time_delta = current_tick - prev_tick;
 
+        // const int fixed_FPS = 500;
         // const int fixed_FPS = 60;
-        // const int fixed_FPS = 30;
-        const int fixed_FPS = 24;
+        const int fixed_FPS = 30;
+        // const int fixed_FPS = 24;
         const int frameDelay = 1000 / fixed_FPS;
 
         frameTime = SDL_GetTicks() - frameStart;
@@ -313,7 +314,7 @@ void Application::release()
     AudioMgr::ptr()->release();
     TextureMgr::ptr()->release();
     ParticleSystemMgr::ptr()->release();
-    PhysicsMgr::ptr()->release();
+    // PhysicsMgr::ptr()->release();
     FontMgr::ptr()->release();
     MaterialMgr::ptr()->release();
     ModelMgr::ptr()->release();

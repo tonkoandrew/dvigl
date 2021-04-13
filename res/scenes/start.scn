@@ -126,14 +126,14 @@ skinned_models:
   position: {x: -100.0, y: 0.0, z: -100.0}
   rotation: {x: 0, y: 0, z: 0}
   scale: 1.5
-static_models:
+# static_models:
 
-- file: flame-head.dae
-  format: collada
-  name: flame_head
-  position: {x: 0.0, y: 50.0, z: 100.0}
-  rotation: {x: 0.0, y: 0.0, z: 0.0}
-  scale: 100.0
+# - file: flame-head.dae
+#   format: collada
+#   name: flame_head
+#   position: {x: 0.0, y: 50.0, z: 100.0}
+#   rotation: {x: 0.0, y: 0.0, z: 0.0}
+#   scale: 100.0
 
 # - file: elvis.dae
 #   format: collada
@@ -142,12 +142,12 @@ static_models:
 #   rotation: {x: 0, y: 0, z: 0.0}
 #   scale: 0.3
 
-- file: plane.dae
-  format: collada
-  name: plane
-  position: {x: 0.0, y: 0.0, z: 0.0}
-  rotation: {x: -1.5707963267948966, y: 0, z: 0}
-  scale: 200.0
+# - file: plane.dae
+#   format: collada
+#   name: plane
+#   position: {x: 0.0, y: 0.0, z: 0.0}
+#   rotation: {x: -1.5707963267948966, y: 0, z: 0}
+#   scale: 200.0
 
 # - file: plane.dae
 #   format: collada
@@ -201,12 +201,12 @@ static_models:
 #   rotation: {x: 0.0, y: 1.5707963267948966, z: 0}
 #   scale: 500.0
 
-- file: sphere.dae
-  format: collada
-  name: sphere
-  position: {x: -50.0, y: 20.0, z: 0.0}
-  rotation: {x: 0, y: 0, z: 0}
-  scale: 28.0
+# - file: sphere.dae
+#   format: collada
+#   name: sphere
+#   position: {x: -50.0, y: 20.0, z: 0.0}
+#   rotation: {x: 0, y: 0, z: 0}
+#   scale: 28.0
 
 # - file: skinned_tree.dae
 #   format: collada
