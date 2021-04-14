@@ -17,7 +17,12 @@ public:
     GLint get_uniform_location(std::string name);
     void release();
 
+    bool FindAttribLocation(std::string name);
+    GLint attrib(std::string name);
+
+    std::unordered_map<std::string, GLint> attribs_;
 private:
     GLuint compile(GLenum type, std::string content);
     GLuint program_object;
+
 };
