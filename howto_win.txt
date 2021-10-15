@@ -1,8 +1,7 @@
 ./vcpkg.exe install  yasm-tool:x86-windows
 ./vcpkg.exe install --recurse sdl2-mixer[libvorbis,mpg123,libmodplug,opusfile,libflac]
 ./vcpkg.exe install --recurse sdl2-image[libjpeg-turbo,libwebp,tiff]
-
-./vcpkg.exe install zlib freetype sdl2 libpng sdl2-image[libjpeg-turbo,libwebp,tiff] sdl2-mixer[libvorbis,mpg123,libmodplug,opusfile,libflac] sdl2-ttf sdl2-net bullet3 glm assimp libogg libvorbis libtheora opus[avx] opusfile yaml-cpp entt mpg123
+./vcpkg.exe install --recurse  zlib freetype sdl2 libpng sdl2-image[libjpeg-turbo,libwebp,tiff] sdl2-mixer[libvorbis,mpg123,libmodplug,opusfile,libflac] sdl2-ttf sdl2-net bullet3 glm assimp libogg libvorbis libtheora opus[avx] opusfile yaml-cpp entt mpg123 spdlog imgui[opengl3-binding,sdl2-binding]
 
 cmake .. -DCMAKE_TOOLCHAIN_FILE=~/proj/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -Dozz_build_simd_ref=ON -Dozz_build_msvc_rt_dll=OFF -Dozz_build_tools=OFF  -Dozz_build_samples=OFF -Dozz_build_tests=OFF -Dozz_build_howtos=OFF
 
@@ -15,6 +14,7 @@ cmake --install . --config MinSizeRel
 
 
 
+# BUILDING BGFX FROM SOURCE
 
 WindowsSDKVersion=10.0 ../bx/tools/bin/windows/genie.exe --with-examples vs2019 --with-windows=10.0 --with-sdl  --platform=x64
 
@@ -22,4 +22,27 @@ start .build/projects/vs2019/bgfx.sln
 
 Visual Studio -> Release, x64 -> build solution
 
+
+
+
+
+
+
+
+
+
+cmake .. -DCMAKE_TOOLCHAIN_FILE=~/proj/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -Dozz_build_simd_ref=ON -Dozz_build_msvc_rt_dll=OFF -Dozz_build_tools=OFF  -Dozz_build_samples=OFF -Dozz_build_tests=OFF -Dozz_build_howtos=OFF
+cmake --build .  --target dvigl --parallel --config MinSizeRel
+../../upx-3.96-win64/upx.exe bin/dvigl.dll --best --ultra-brute
+cmake --build .  --target example_01 --parallel --config MinSizeRel
+./bin/example_01
+
+
+
+
+
+
+AXE:
+
 cmake .. -DCMAKE_TOOLCHAIN_FILE=~/proj/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static
+cmake --build . --target ALL_BUILD --config MinSizeRel

@@ -26,9 +26,6 @@ else()
     set_property(CACHE OpenGL_GL_PREFERENCE PROPERTY STRINGS GLVND LEGACY)
 endif()
 
-find_package(Threads REQUIRED)
-
-find_package(ZLIB REQUIRED)
 
 # set(CMAKE_MODULE_PATH
 #     ${CMAKE_MODULE_PATH}
@@ -77,6 +74,10 @@ set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
 else()
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 endif()
+
+find_package(Threads REQUIRED)
+
+find_package(ZLIB REQUIRED)
 
 find_package(SDL2 REQUIRED)
 message(STATUS "SDL 2 included at ${SDL2_INCLUDE_DIRS}")
@@ -155,7 +156,12 @@ message(STATUS "YAML_CPP_INCLUDE_DIR at ${YAML_CPP_INCLUDE_DIR}")
 find_package(EnTT CONFIG REQUIRED)
 message(STATUS "EnTT version ${EnTT_VERSION}")
 # 3rd party libraries
-include(cmake/3rdparty.cmake)
+# include(cmake/3rdparty.cmake)
+
+
+
+find_package(imgui CONFIG REQUIRED)
+
 
 add_subdirectory("C:\\Users\\yoda\\proj\\ozz-animation" "ozz-animation/")
 
@@ -174,20 +180,26 @@ if(WIN32)
     find_package(OpenGL REQUIRED)
     add_definitions(${OPENGL_DEFINITIONS})
     set(LIBS
-        ${OPUS_LIBRARIES}
+        shlwapi
+        Opus::opus
         ${VPX_LIBRARIES}
-        ${THEORA_LIBRARIES}
-        ${VORBIS_LIBRARIES}
+        # ${THEORA_LIBRARIES}
+        unofficial::theora::theora unofficial::theora::theoradec unofficial::theora::theoraenc
+        # ${VORBIS_LIBRARIES}
+        Vorbis::vorbis Vorbis::vorbisenc Vorbis::vorbisfile
         ${OGG_LIBRARY}
         yaml-cpp
         assimp::assimp
-        ${BULLET_LIBRARIES}
-        SDL2::SDL2 SDL2::SDL2main
+        # ${BULLET_LIBRARIES}
+        LinearMath Bullet3Common BulletDynamics BulletSoftBody
+        SDL2::SDL2-static SDL2::SDL2main
         SDL2::SDL2_image
         SDL2::SDL2_mixer
         SDL2::SDL2_ttf
         freetype
-        png
+        ZLIB::ZLIB
+        glm::glm
+        png_static
         SDL2::SDL2_net
         ${JPEG_LIBRARIES}
         EnTT::EnTT
@@ -327,23 +339,23 @@ set(LIBS ${LIBS} GLAD)
 # )
 # set(LIBS ${LIBS} THEORAPLAY)
 
-file(GLOB SOURCE "src/webmplay/*.cpp")
+# file(GLOB SOURCE "src/webmplay/*.cpp")
 
-add_library(WEBMPLAY STATIC ${SOURCE})
-target_link_libraries(
-    WEBMPLAY
-    PRIVATE
-    ${VORBIS_LIBRARIES}
-    ${OGG_LIBRARY}
-    ${OPUS_LIBRARIES}
-    ${VPX_LIBRARIES}
-    # pthread
-)
-set(LIBS ${LIBS} WEBMPLAY)
+# add_library(WEBMPLAY STATIC ${SOURCE})
+# target_link_libraries(
+#     WEBMPLAY
+#     PRIVATE
+#     ${VORBIS_LIBRARIES}
+#     ${OGG_LIBRARY}
+#     ${OPUS_LIBRARIES}
+#     ${VPX_LIBRARIES}
+#     # pthread
+# )
+# set(LIBS ${LIBS} WEBMPLAY)
 
-set(LIBS ${LIBS} ${IMGUI_LIBRARIES})
+set(LIBS ${LIBS} imgui::imgui)
 
-message(STATUS "IMGUI included at ${IMGUI_INCLUDE_DIR}")
+message(STATUS "IMGUI included at ${LIBS}")
 
 set(NAME "dvigl")
 
@@ -357,6 +369,7 @@ add_library(${NAME} STATIC ${SOURCE})
 
 # target_link_libraries(${NAME} c SDL2 dl asound dl pthread pulse-simple pulse X11 Xext Xcursor Xinerama Xi Xrandr Xss Xxf86vm wayland-egl wayland-client wayland-cursor xkbcommon pthread rt ${LIBS})
 target_link_libraries(${NAME} PRIVATE ${LIBS})
+target_compile_options(${NAME} PRIVATE /MT)
 
 set(LIBS ${NAME} ${LIBS})
 
@@ -369,8 +382,14 @@ file(GLOB SOURCE "src/${NAME}/*.h" "src/${NAME}/*.cpp")
 
 add_executable(${NAME} ${SOURCE})
 target_link_libraries(${NAME} PRIVATE ${LIBS})
-# target_compile_options(${NAME} PRIVATE /MT)
-# target_link_options(${NAME} PRIVATE /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT)
+
+if(WIN32)
+    target_compile_options(${NAME} PRIVATE /MT)
+    # set_property(TARGET game PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:MinSizeRel>:MinSizeRel>")
+    target_link_options(${NAME} PRIVATE /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT)
+endif()
+
+
 
 if(WIN32)
     set_target_properties(
@@ -429,7 +448,7 @@ endif()
 # endif()
 # # ============================ EDITOR ===========================================
 
-include_directories(${CMAKE_SOURCE_DIR}/includes ${BULLET_INCLUDE_DIRS} ${IMGUI_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/includes ${BULLET_INCLUDE_DIRS} ${IMGUI_INCLUDE_DIRS})
 
 ###
 ### Build unit tests

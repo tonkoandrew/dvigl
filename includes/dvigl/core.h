@@ -63,8 +63,8 @@ typedef GLuint GLhandleARB;
 #include <SDL2/SDL_ttf.h>
 #endif
 
-#include "backends/imgui_impl_opengl3.h"
-#include "backends/imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_sdl.h"
 #include "imgui.h"
 
 #define GLM_FORCE_RADIANS

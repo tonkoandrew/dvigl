@@ -126,8 +126,8 @@ skinned_models:
   position: {x: -100.0, y: 0.0, z: -100.0}
   rotation: {x: 0, y: 0, z: 0}
   scale: 1.5
-# static_models:
 
+static_models:
 # - file: flame-head.dae
 #   format: collada
 #   name: flame_head
@@ -142,12 +142,12 @@ skinned_models:
 #   rotation: {x: 0, y: 0, z: 0.0}
 #   scale: 0.3
 
-# - file: plane.dae
-#   format: collada
-#   name: plane
-#   position: {x: 0.0, y: 0.0, z: 0.0}
-#   rotation: {x: -1.5707963267948966, y: 0, z: 0}
-#   scale: 200.0
+- file: plane.dae
+  format: collada
+  name: plane
+  position: {x: 0.0, y: 0.0, z: 0.0}
+  rotation: {x: -1.5707963267948966, y: 0, z: 0}
+  scale: 200.0
 
 # - file: plane.dae
 #   format: collada
@@ -215,33 +215,33 @@ skinned_models:
 #   rotation: {x: -1.55, y: 0, z: 0.0}
 #   scale: 0.05
 
-# lod_groups:
+lod_groups:
 
-# - name: suzan
-#   position: {x: 0.0, y: 50.0, z: 0.0}
-#   rotation: {x: -1.55, y: 0, z: 0.0}
-#   scale: 50.0
-#   LODs:
-#   - level: 0
-#     file: suzan_LOD0.dae
-#     format: collada
-#     name: suzan_LOD0
-#     max_dist: 600.0
+- name: suzan
+  position: {x: 0.0, y: 50.0, z: 0.0}
+  rotation: {x: -1.55, y: 0, z: 0.0}
+  scale: 50.0
+  LODs:
+  - level: 0
+    file: suzan_LOD0.dae
+    format: collada
+    name: suzan_LOD0
+    max_dist: 600.0
 
-#   - level: 1
-#     file: suzan_LOD1.dae
-#     format: collada
-#     name: suzan_LOD1
-#     max_dist: 900.0
+  - level: 1
+    file: suzan_LOD1.dae
+    format: collada
+    name: suzan_LOD1
+    max_dist: 900.0
 
-#   - level: 2
-#     file: suzan_LOD2.dae
-#     format: collada
-#     name: suzan_LOD2
-#     max_dist: 1200.0
+  - level: 2
+    file: suzan_LOD2.dae
+    format: collada
+    name: suzan_LOD2
+    max_dist: 1200.0
 
-#   - level: 3
-#     file: suzan_LOD3.dae
-#     format: collada
-#     name: suzan_LOD3
-#     max_dist: 2000.0
+  - level: 3
+    file: suzan_LOD3.dae
+    format: collada
+    name: suzan_LOD3
+    max_dist: 2000.0
