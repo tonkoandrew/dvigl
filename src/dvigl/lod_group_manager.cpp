@@ -11,4 +11,4 @@ LODGroup* LODGroupMgr::create_lod_group(std::string name, int levels_count)
     return lod_groups[name];
 }
 
-void LODGroupMgr::release() {}
+void LODGroupMgr::release() { }

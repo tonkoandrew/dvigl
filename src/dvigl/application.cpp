@@ -20,7 +20,7 @@
 
 Application gApplication;
 
-static void DoMath(glm::mat4& transform) {}
+static void DoMath(glm::mat4& transform) { }
 
 bool Application::init()
 {
@@ -183,7 +183,10 @@ bool Application::init()
         glm::mat4 Transform;
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
-        TransformComponent(const glm::mat4& transform) : Transform(transform) {}
+        TransformComponent(const glm::mat4& transform)
+            : Transform(transform)
+        {
+        }
         operator glm::mat4&() { return Transform; }
         operator const glm::mat4&() const { return Transform; }
     };
@@ -194,10 +197,12 @@ bool Application::init()
         MeshComponent() = default;
         MeshComponent(const MeshComponent&) = default;
 
-        MeshComponent(const int id) : mesh_id(id) {}
+        MeshComponent(const int id)
+            : mesh_id(id)
+        {
+        }
         // operator int&() { return mesh_id; }
         // operator const int&() const { return mesh_id; }
-
     };
 
     TransformComponent transform;
@@ -222,10 +227,10 @@ bool Application::init()
     }
 
     auto v = m_Registry.view<TransformComponent, MeshComponent>();
-    for (auto entity: v)
+    for (auto entity : v)
     {
         auto [ttt, mmm] = v.get<TransformComponent, MeshComponent>(entity);
-        LOG("Entity: %d, transform[0][0]: %f, mesh_id: %d\n", (int) entity, ttt.Transform[0][0], mmm.mesh_id);
+        LOG("Entity: %d, transform[0][0]: %f, mesh_id: %d\n", (int)entity, ttt.Transform[0][0], mmm.mesh_id);
     }
 
     return true;

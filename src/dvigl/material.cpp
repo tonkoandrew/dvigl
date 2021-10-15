@@ -20,4 +20,4 @@ void Material::bind()
     albedo->bind(GL_TEXTURE0);
 }
 
-void Material::release() {}
+void Material::release() { }

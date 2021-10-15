@@ -5,16 +5,19 @@ bool contains(std::unordered_map<std::string, std::string> dict, std::string key
     return dict.find(key) != dict.end();
 }
 
-bool Shader::FindAttribLocation(std::string name) {
-  if (!program_object) {
-    return false;
-  }
-  GLint location = glGetAttribLocation(program_object, name.c_str());
-  if (glGetError() != GL_NO_ERROR || location == -1) {  // name not found.
-    return false;
-  }
-  attribs_[name] = location;
-  return true;
+bool Shader::FindAttribLocation(std::string name)
+{
+    if (!program_object)
+    {
+        return false;
+    }
+    GLint location = glGetAttribLocation(program_object, name.c_str());
+    if (glGetError() != GL_NO_ERROR || location == -1)
+    { // name not found.
+        return false;
+    }
+    attribs_[name] = location;
+    return true;
 }
 
 GLint Shader::attrib(std::string name)

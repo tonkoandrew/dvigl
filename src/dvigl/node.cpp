@@ -104,4 +104,4 @@ void Node::set_rotation(glm::vec3 V)
     rotate_around_vector(glm::vec3(0.0, 0.0, 1.0), V.z);
 }
 
-void Node::release() {}
+void Node::release() { }

@@ -1,6 +1,6 @@
 #include <dvigl/mesh.h>
 
-Mesh::Mesh() {}
+Mesh::Mesh() { }
 Mesh::Mesh(int w, int h)
 {
     vertex_count = 6;

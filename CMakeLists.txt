@@ -458,11 +458,40 @@ set(NAME "test_runner")
 file(GLOB SOURCE "src/tests/*.h" "src/tests/*.cpp")
 enable_testing()
 add_executable(${NAME} ${SOURCE})
+
+target_compile_options(${NAME} PRIVATE /MT)
+if(WIN32)
+    target_compile_options(${NAME} PRIVATE /MT)
+    # set_property(TARGET game PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:MinSizeRel>:MinSizeRel>")
+    target_link_options(${NAME} PRIVATE /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT)
+endif()
+
 target_link_libraries(${NAME} ${LIBS})
 set_target_properties(
     ${NAME}
     PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 get_target_property(BINARY_PATH ${NAME} RUNTIME_OUTPUT_DIRECTORY)

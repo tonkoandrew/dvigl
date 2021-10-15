@@ -36,4 +36,4 @@ void LODGroup::update(float distance)
     // LOG("dist: %f, level: %d\n", distance, current_level);
 }
 
-void LODGroup::release() {}
+void LODGroup::release() { }

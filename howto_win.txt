@@ -1,7 +1,7 @@
 ./vcpkg.exe install  yasm-tool:x86-windows
 ./vcpkg.exe install --recurse sdl2-mixer[libvorbis,mpg123,libmodplug,opusfile,libflac]
 ./vcpkg.exe install --recurse sdl2-image[libjpeg-turbo,libwebp,tiff]
-./vcpkg.exe install --recurse  zlib freetype sdl2 libpng sdl2-image[libjpeg-turbo,libwebp,tiff] sdl2-mixer[libvorbis,mpg123,libmodplug,opusfile,libflac] sdl2-ttf sdl2-net bullet3 glm assimp libogg libvorbis libtheora opus[avx] opusfile yaml-cpp entt mpg123 spdlog imgui[opengl3-binding,sdl2-binding]
+./vcpkg.exe install --recurse  zlib freetype sdl2 libpng sdl2-image[libjpeg-turbo,libwebp,tiff] sdl2-mixer[libvorbis,mpg123,libmodplug,opusfile,libflac] sdl2-ttf sdl2-net bullet3 glm assimp libogg libvorbis libtheora opus[avx] opusfile yaml-cpp entt mpg123 spdlog imgui[opengl3-binding,sdl2-binding] qt5-base
 
 cmake .. -DCMAKE_TOOLCHAIN_FILE=~/proj/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -Dozz_build_simd_ref=ON -Dozz_build_msvc_rt_dll=OFF -Dozz_build_tools=OFF  -Dozz_build_samples=OFF -Dozz_build_tests=OFF -Dozz_build_howtos=OFF
 

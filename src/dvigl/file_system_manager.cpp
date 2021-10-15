@@ -59,4 +59,4 @@ int FileSystemMgr::get_size(std::string file_name)
     return size;
 }
 
-void FileSystemMgr::release() {}
+void FileSystemMgr::release() { }

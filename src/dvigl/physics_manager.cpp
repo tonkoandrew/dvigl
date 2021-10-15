@@ -125,7 +125,8 @@
 //     }
 
 //     glm::vec3 v
-//         = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+//         = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()),
+//         float(trans.getOrigin().getZ()));
 
 //     // auto renderable = LODGroupMgr::ptr()->lod_groups["suzan"];
 //     // renderable->set_position(v);

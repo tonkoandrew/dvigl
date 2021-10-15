@@ -16,5 +16,5 @@ public:
     std::unordered_map<std::string, SpotLightNode*> spot_lights;
 
     CameraNode* current_camera;
-// private:
+    // private:
 };

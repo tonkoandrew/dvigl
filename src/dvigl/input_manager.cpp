@@ -123,4 +123,4 @@ bool InputMgr::init()
     return true;
 }
 
-void InputMgr::release() {}
+void InputMgr::release() { }

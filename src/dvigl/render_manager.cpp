@@ -50,7 +50,8 @@ bool RenderMgr::init()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #endif
 
-    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI
+    int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+        | SDL_WINDOW_ALLOW_HIGHDPI
         // | SDL_WINDOW_MOUSE_FOCUS
         // | SDL_WINDOW_INPUT_GRABBED
         // | SDL_WINDOW_FULLSCREEN
@@ -411,9 +412,10 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
 
     s->uniform1i("visualization_type", vis_type);
 
-    s->uniform3i("numDirPointSpotLights", glm::ivec3((int)SceneMgr::ptr()->get_current_scene()->dir_lights.size(),
-                                              (int)SceneMgr::ptr()->get_current_scene()->point_lights.size(),
-                                              (int)SceneMgr::ptr()->get_current_scene()->spot_lights.size()));
+    s->uniform3i("numDirPointSpotLights",
+        glm::ivec3((int)SceneMgr::ptr()->get_current_scene()->dir_lights.size(),
+            (int)SceneMgr::ptr()->get_current_scene()->point_lights.size(),
+            (int)SceneMgr::ptr()->get_current_scene()->spot_lights.size()));
 
     // send light relevant uniforms
     int i = 0;
@@ -543,7 +545,7 @@ void RenderMgr::shadow_pass()
     // ConfigureShaderAndMatrices();
 
     glm::mat4 lightProjection = glm::ortho(-shadow_frustum_size, shadow_frustum_size, -shadow_frustum_size,
-        shadow_frustum_size, shadow_near_plane, shadow_far_plane*2);
+        shadow_frustum_size, shadow_near_plane, shadow_far_plane * 2);
     glm::mat4 lightView = glm::lookAt(
         glm::vec3(sun_pos_x, sun_pos_y, sun_pos_z), glm::vec3(0.0f, -100.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     lightSpaceMatrix = lightProjection * lightView;
@@ -565,13 +567,6 @@ void RenderMgr::shadow_pass()
         m->draw();
     }
 
-
-
-
-
-
-
-
     s = ShaderMgr::ptr()->get_shader("skinned_shadows");
     s->bind();
 
@@ -584,12 +579,6 @@ void RenderMgr::shadow_pass()
         s->uniformMatrix4("light_mvp", light_mvp);
         m->draw(s);
     }
-
-
-
-
-
-
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glEnable(GL_CULL_FACE);
@@ -704,8 +693,16 @@ void RenderMgr::gui_pass()
     ImGui::Separator();
     ImGui::Text("Visualization:");
 
-    static const char* s_ptNames[]{
-        "None", "Albedo", "Normals", "Metallic", "Roughness", "AO", "World pos", "Velocity", "Wireframe",
+    static const char* s_ptNames[] {
+        "None",
+        "Albedo",
+        "Normals",
+        "Metallic",
+        "Roughness",
+        "AO",
+        "World pos",
+        "Velocity",
+        "Wireframe",
     };
 
     ImGui::Combo("", (int*)&vis_type, s_ptNames, COUNTOF(s_ptNames));
@@ -739,8 +736,26 @@ void RenderMgr::render_quad()
     {
         float quadVertices[] = {
             // positions        // texture Coords
-            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-            0.0f, 1.0f, 0.0f,
+            -1.0f,
+            1.0f,
+            0.0f,
+            0.0f,
+            1.0f,
+            -1.0f,
+            -1.0f,
+            0.0f,
+            0.0f,
+            0.0f,
+            1.0f,
+            1.0f,
+            0.0f,
+            1.0f,
+            1.0f,
+            1.0f,
+            -1.0f,
+            0.0f,
+            1.0f,
+            0.0f,
         };
         // setup plane VAO
         glGenVertexArrays(1, &quadVAO);

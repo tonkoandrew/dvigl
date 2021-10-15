@@ -2,8 +2,8 @@
 #include <dvigl/audio_manager.h>
 #include <dvigl/scene.h>
 #include <dvigl/scene_manager.h>
-#include <dvigl/shader_manager.h>
 #include <dvigl/shader.h>
+#include <dvigl/shader_manager.h>
 #include <dvigl/texture.h>
 #include <dvigl/texture_manager.h>
 
@@ -54,7 +54,7 @@ bool SceneMgr::load_scene(std::string file_name)
 
     Shader* s = ShaderMgr::ptr()->get_shader("skinned_geometry");
 
-    if(!s->FindAttribLocation("attr_pos"))
+    if (!s->FindAttribLocation("attr_pos"))
     {
         LOG("OOPS... Can not find attrib 'attr_pos'\n");
         return false;
@@ -63,7 +63,7 @@ bool SceneMgr::load_scene(std::string file_name)
     s->FindAttribLocation("attr_normal");
     s->FindAttribLocation("attr_bitangent");
     s->FindAttribLocation("attr_tangent");
-    
+
     LOG("attr_pos = %d\n", s->attrib("attr_pos"));
     LOG("attr_texcoord = %d\n", s->attrib("attr_texcoord"));
     LOG("attr_normal = %d\n", s->attrib("attr_normal"));
@@ -404,4 +404,4 @@ void SceneMgr::update(float time_delta)
 
 Scene* SceneMgr::get_current_scene() { return current_scene; }
 
-void SceneMgr::release() {}
+void SceneMgr::release() { }

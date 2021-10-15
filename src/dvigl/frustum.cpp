@@ -1,6 +1,6 @@
 #include <dvigl/frustum.h>
 
-Frustum::Frustum() {}
+Frustum::Frustum() { }
 
 void NormalizePlane(float frustum[6][4], int side)
 {
@@ -163,4 +163,4 @@ bool Frustum::cube_test(glm::vec3 center, float size)
     return true;
 }
 
-void Frustum::release() {}
+void Frustum::release() { }

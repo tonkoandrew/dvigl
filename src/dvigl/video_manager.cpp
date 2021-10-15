@@ -4,7 +4,8 @@
 
 // VideoMgr gVideoMgr;
 
-// // ffmpeg -i path/to/eagames.mp4 -codec:v libtheora -qscale:v 7 -codec:a libvorbis -qscale:a 5 ../res/videos/video.ogv
+// // ffmpeg -i path/to/eagames.mp4 -codec:v libtheora -qscale:v 7 -codec:a libvorbis -qscale:a 5
+// ../res/videos/video.ogv
 
 // typedef struct AudioQueue
 // {
@@ -104,7 +105,8 @@
 //     renderer = SDL_CreateRenderer(screen, -1, 0);
 
 //     texture
-//         = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, video->width, video->height);
+//         = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING, video->width,
+//         video->height);
 
 //     initfailed = quit = (!screen || !texture);
 

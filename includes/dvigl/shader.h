@@ -21,8 +21,8 @@ public:
     GLint attrib(std::string name);
 
     std::unordered_map<std::string, GLint> attribs_;
+
 private:
     GLuint compile(GLenum type, std::string content);
     GLuint program_object;
-
 };

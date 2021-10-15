@@ -5,7 +5,6 @@
 #include <dvigl/shader.h>
 #include <dvigl/shader_manager.h>
 
-
 inline glm::mat4 aiMatrix4x4ToGlm(aiMatrix4x4* from)
 {
     glm::mat4 to;
