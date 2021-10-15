@@ -287,7 +287,7 @@ bool Application::main_loop()
 
         prev_tick = current_tick;
         current_tick = SDL_GetTicks();
-        time_delta = current_tick - prev_tick;
+        time_delta = (float) current_tick - prev_tick;
 
         // const int fixed_FPS = 500;
         // const int fixed_FPS = 60;

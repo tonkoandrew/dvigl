@@ -1,0 +1,81 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "dvigl",
+  "version": "0.3.0",
+  "builtin-baseline": "a151bfd9892d096cb7ce54afdb70530c09b12e7b",
+  "dependencies": [
+    "zlib",
+    "freetype",
+    "sdl2",
+    "libpng",
+    {
+      "name": "sdl2-image",
+      "default-features": false,
+      "features": [
+        "libjpeg-turbo",
+        "libwebp",
+        "tiff"
+      ]
+    },
+    {
+      "name": "sdl2-mixer",
+      "features": [
+        "libvorbis",
+        "mpg123",
+        "libmodplug",
+        "opusfile",
+        "libflac"
+      ]
+    },
+    "sdl2-ttf",
+    "sdl2-net",
+    "bullet3",
+    "glm",
+    "assimp",
+    "libogg",
+    "libvorbis",
+    "libtheora",
+    {
+      "name": "opus",
+      "default-features": false,
+      "features": [
+        "avx"
+      ]
+    },
+    "opusfile",
+    "yaml-cpp",
+    "entt",
+    "mpg123",
+    "spdlog",
+    {
+      "name": "imgui",
+      "default-features": false,
+      "features": [
+        "opengl3-binding",
+        "sdl2-binding"
+      ]
+    }
+  ],
+  "overrides": [
+    { "name": "zlib", "version": "1.2.11#12" },
+    { "name": "freetype", "version": "2.11.0" },
+    { "name": "sdl2", "version": "2.0.16" },
+    { "name": "libpng", "version": "1.6.37#15" },
+    { "name": "entt", "version": "3.8.0#1" },
+    { "name": "imgui", "version": "1.84.2#1" },
+    { "name": "sdl2-image", "version": "2.0.5#2" },
+    { "name": "sdl2-mixer", "version": "2.0.4#13" },
+    { "name": "sdl2-ttf", "version": "2.0.15#4" },
+    { "name": "sdl2-net", "version": "2.0.1#9" },
+    { "name": "bullet3", "version": "3.17#1" },
+    { "name": "glm", "version": "0.9.9.8#1" },
+    { "name": "assimp", "version": "5.0.1#5" },
+    { "name": "libogg", "version": "1.3.5" },
+    { "name": "spdlog", "version": "1.9.2" },
+    { "name": "libvorbis", "version": "1.3.7#1" },
+    { "name": "opus", "version": "1.3.1#6" },
+    { "name": "opusfile", "version": "0.12#1" },
+    { "name": "yaml-cpp", "version": "0.7.0#1" },
+    { "name": "mpg123", "version": "1.28.0" }
+  ]
+}

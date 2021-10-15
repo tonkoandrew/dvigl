@@ -392,7 +392,7 @@ void RenderMgr::deferred_pass(float time_delta, float aspect)
     s = ShaderMgr::ptr()->get_shader("deferred");
     s->bind();
 
-    glm::mat4 model_m;
+    // glm::mat4 model_m;
     glm::mat4 view_m;
     glm::mat4 proj_m;
     glm::mat4 view_proj_m;

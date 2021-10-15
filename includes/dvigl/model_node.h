@@ -8,7 +8,6 @@ class ModelNode : public Node
 {
 public:
     ModelNode(char* content, int content_size, std::string format, float scale);
-    ModelNode(int w, int h, std::string texture);
     void draw();
     void release();
     float get_bounding_sphere_radius();

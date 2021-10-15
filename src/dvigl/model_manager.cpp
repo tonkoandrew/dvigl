@@ -62,19 +62,6 @@ bool ModelMgr::load_model(std::string name, std::string file_name, std::string f
 //   return true;
 // }
 
-bool ModelMgr::generate_plane_model(std::string name, int w, int h, std::string material)
-{
-    auto it = models.find(name);
-    while (it != models.end())
-    {
-        it->second->release();
-        models.erase(it);
-        it = models.find(name);
-    }
-    models[name] = new ModelNode(w, h, material);
-    return true;
-}
-
 ModelNode* ModelMgr::get_model(std::string name)
 {
     auto it = models.find(name);

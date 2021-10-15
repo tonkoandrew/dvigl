@@ -34,7 +34,7 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
     LOG("ModelNode IMPORTED %d MESHES\n", scene->mNumMeshes);
     LOG("ModelNode IMPORTED %d ANIMATIONS\n", scene->mNumAnimations);
 
-    for (int m = 0; m < scene->mNumMeshes; m++)
+    for (uint32_t m = 0; m < scene->mNumMeshes; m++)
     {
         for (int i = 0; i < (int)scene->mNumAnimations; i++)
         {
@@ -102,7 +102,7 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
                     return;
                 }
 
-                for (int m = 0; m < scene->mNumMeshes; m++)
+                for (uint32_t m = 0; m < scene->mNumMeshes; m++)
                 {
                     if (i == meshes[m]->mat_idx)
                     {
@@ -114,13 +114,6 @@ ModelNode::ModelNode(char* content, int content_size, std::string format, float 
     }
 
     aiReleaseImport(scene);
-}
-
-ModelNode::ModelNode(int w, int h, std::string material)
-{
-    meshes.resize(1);
-    meshes[0] = new Mesh(w, h);
-    meshes[0]->material = MaterialMgr::ptr()->get_material(material);
 }
 
 void ModelNode::draw()

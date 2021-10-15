@@ -7,7 +7,6 @@ class Mesh
 {
 public:
     Mesh();
-    Mesh(int w, int h);
     Mesh(struct aiMesh* mesh);
     void draw();
     void release();

@@ -27,6 +27,12 @@ else()
 endif()
 
 
+if(WIN32)
+    set(VCPKG_TARGET_TRIPLET x64-windows-static)
+else()
+endif()
+
+
 # set(CMAKE_MODULE_PATH
 #     ${CMAKE_MODULE_PATH}
 #     "${CMAKE_SOURCE_DIR}/cmake/modules/;${CMAKE_MODULE_PATH}"
@@ -162,6 +168,13 @@ message(STATUS "EnTT version ${EnTT_VERSION}")
 
 find_package(imgui CONFIG REQUIRED)
 
+
+set(ozz_build_simd_ref ON)
+set(ozz_build_msvc_rt_dll OFF)
+set(ozz_build_tools OFF)
+set(ozz_build_samples OFF)
+set(ozz_build_tests OFF)
+set(ozz_build_howtos OFF)
 
 add_subdirectory("C:\\Users\\yoda\\proj\\ozz-animation" "ozz-animation/")
 

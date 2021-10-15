@@ -92,11 +92,11 @@ void InputMgr::process_input(float time_delta)
 
     if (keystates[SDL_SCANCODE_9])
     {
-        RenderMgr::ptr()->fov += 0.001 * time_delta;
+        RenderMgr::ptr()->fov += 0.001f * time_delta;
     }
     if (keystates[SDL_SCANCODE_0])
     {
-        RenderMgr::ptr()->fov -= 0.001 * time_delta;
+        RenderMgr::ptr()->fov -= 0.001f * time_delta;
     }
 }
 

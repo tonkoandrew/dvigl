@@ -64,6 +64,6 @@ private:
     float shadow_far_plane = 1000.0f;
     float shadow_frustum_size = 250.0f;
 
-    float shadowBias = 0.0005;
+    float shadowBias = 0.0005f;
     glm::mat4 lightSpaceMatrix;
 };
